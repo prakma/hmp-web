@@ -1,0 +1,72 @@
+<div class="container" ng-controller="PatientQCtrl">
+	<h1> <span class="text-muted">New Consultation with </span> <a ui-sref="doc_profile({docProfileId:{{providerId}}})">{{provider.name}}</a> </h1>
+	<hr class="featurette-divider">
+	<div class="row">
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNgYPj/FgAC8AHt42P55QAAAABJRU5ErkJggg==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Appointment</span>
+			<ul>
+				<li>Requested</li>
+				<li>Confirmed</li>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNgYPj/FgAC8AHt42P55QAAAABJRU5ErkJggg==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Payment</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM4+p/hLQAHAwKyxcxsuwAAAABJRU5ErkJggg==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Patient Form</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Meeting</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Prescription</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Feedback</span>
+		</div>
+	</div>
+	<hr class="featurette-divider">
+	<div class="row">
+		<div class="col-lg-3">
+			<h5>Reference No</h5>
+			<a ui-sref="doc_profile({docProfileId:22})">{{wf.reference}}</a>
+		</div>
+		<div class="col-lg-6">
+	        <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;"> -->
+	        <h3>Step 3: Patient Form</h3>
+	        <p/>
+	        <p>Please provide symptoms and other information below</p>
+	        <div>
+	            <form>
+	                  
+	                <div class="form-group">
+	                    <label for="problemDesc1">Describe your problem</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.qkey1"></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label for="problemDesc2">When did the symptoms begin? Can you suggest some factors that helped create these symptoms?</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.qkey2"></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label for="problemDesc3">Please describe anything that you feel is associated with the current symptoms that is unusual, rare and/or peculiar or any other information which you wish to add.</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.qkey3"></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label for="problemDesc4">If this is not the first occurrence please describe any previous problems of this kind.</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.qkey4"></textarea>
+	                </div>
+
+	                <button type="submit" class="btn btn-primary" ng-click="patientQ()">Save</button>
+	            </form>
+
+	        </div>
+	    </div>
+	    <div class="col-lg-3"/>
+
+    </div>
+</div>

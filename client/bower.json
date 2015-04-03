@@ -1,0 +1,36 @@
+{
+  "name": "client",
+  "version": "0.0.1",
+  "homepage": "https://github.com/prakma/hmp-web.git",
+  "authors": [
+    "manoj.prakash@gmail.com"
+  ],
+  "description": "HMP web client",
+  "keywords": [
+    "HMP",
+    "webpage",
+    "homeopathy"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-cookie": "~4.0.6",
+    "angular-loader": "1.2.x",
+    "angular-route": "1.2.x",
+    "angular-mocks": "~1.2.x",
+    "angular-resource": "1.2.28",
+    "angular-ui-router": "~0.2.13",
+    "angular-ui-calendar": "~0.8.1",
+    "bootstrap": "~3.3.1",
+    "html5-boilerplate": "~4.3.0",
+    "holderjs": "~2.4.1"
+  }
+}

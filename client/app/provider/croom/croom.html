@@ -1,0 +1,50 @@
+<div ng-controller="CRoomCtrl">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="#">Waiting Room Queue <span class="sr-only">(current)</span></a>
+                </li>
+                <li><a href="#">Patient A</a>
+                </li>
+                <li><a href="#">Patient B</a>
+                </li>
+                <li><a href="#">Patient C</a>
+                </li>
+            </ul>
+            
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Patient A</h1>
+
+            <div class="row placeholders">
+                
+                <div class="pane" id="pane_1" style="display: none">
+                    <input type="button" value="Call Patient {{patientDesc}}" id="call" class="btn btn-info btn-default btn-block">
+                </div>
+                <div class="pane" id="pane_2" style="display: none">
+                    <div id="video_container"></div>
+                    <input type="button" value="Stop Call" id="quit" class="btn btn-danger btn-default btn-block">
+                </div>
+                <div class="panel panel-default">
+
+                  <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <img my-holder="holder.js/300x300/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <img my-holder="holder.js/300x300/auto/black" class="img-responsive" alt="Generic placeholder thumbnail"/>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="panel-footer">
+                    <button class="btn btn-primary" type="submit">Call Patient A</button>
+                    <button class="btn btn-danger" type="submit">Disconnect Call</button>
+                  </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script type="text/javascript" src="https://api.bistri.com/bistri.conference.min.js"></script>
+</div>

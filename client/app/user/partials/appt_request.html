@@ -1,0 +1,120 @@
+<div class="container" ng-controller="ApptCtrl">
+	<h1> <span class="text-muted">New Consultation with </span> <a ui-sref="doc_profile({docProfileId:{{providerId}}})">{{provider.name}}</a> </h1>
+	<hr class="featurette-divider">
+	<div class="row">
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM4+p/hLQAHAwKyxcxsuwAAAABJRU5ErkJggg==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Appointment</span>
+			<ul>
+				<li>Requested</li>
+				<li>Confirmed</li>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Payment</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Patient Form</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Meeting</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Prescription</span>
+		</div>
+		<div class="col-sm-2">
+			<img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 30px; height: 30px;">
+			<span>Feedback</span>
+		</div>
+	</div>
+	<hr class="featurette-divider">
+	<div class="row">
+		<div class="col-lg-3">
+			<h5>Reference No</h5>
+			<a ui-sref="doc_profile({docProfileId:22})">{{wf.reference}}</a>
+		</div>
+		<div class="col-lg-6">
+	        <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;"> -->
+	        <h3>Step 1: Appointment</h3>
+	        <p/>
+	        <p>Select your preferred appointment time-window, and provide short information</p>
+	        <div>
+	            <form>
+	                <div class="form-group">
+	                    <label for="exampleApptTS">Appointment Time</label>
+	                    <div class="row">
+	                        <div class="col-xs-6">
+	                            <input type="text" class="form-control" id="exampleApptTS" ng-model="wf.requestedTS" placeholder="Select Appointment Day/Time from Calendar"/>
+	                        </div>
+	                        <div class="col-xs-4">
+	                            <button type="button" class="btn btn-primary btn-sm btn-sm" data-toggle="modal" data-target="#myModal">
+	                              Select available time-window
+	                            </button>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="form-group">
+	                    <label for="exampleInputName">Name</label>
+	                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientName" placeholder="Enter Your Name">
+	                </div>
+	                <div class="form-group">
+	                    <div class="row">
+	                        <div class="col-xs-4">
+	                            <label for="exampleInputAge">Age</label>
+	                            <input type="text" class="form-control" id="exampleInputAge" ng-model="wf.age" placeholder="Your Age">
+	                        </div>
+	                        <div class="col-xs-8">
+	                            <label>
+	                            <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="wf.sex" value="M" checked/>
+	                            Male
+	                            </label>
+	                            <label>
+	                            <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="wf.sex" value="F"/>
+	                            Female
+	                            </label>
+	                        </div>
+	                    
+	                </div>
+	                <!-- <div class="form-group radio">
+	                    <label>
+	                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+	                    Male
+	                    </label>
+	                    <label>
+	                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+	                    Female
+	                    </label>
+	                </div> -->
+	                <div class="form-group">
+	                    <label for="problemDesc">Describe your problem</label>
+	                    <textarea class="form-control" id="problemDesc" rows="4" ng-model="wf.problemSummary" ></textarea>
+	                </div>
+
+	                <!-- <button type="submit" class="btn btn-primary" ng-click="gotoPayment()">Pay Rs. 200</button> -->
+	                <a class="btn btn-primary" ng-click="requestAppt()">Pay Rs. 200</a>
+	            </form>
+	            <!-- Modal -->
+	            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	              <div class="modal-dialog modal-lg">
+	                <div class="modal-content">
+	                  <div class="modal-body">
+	                    <h3>Click on the available time slot</h3>
+	                    <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
+	                  </div>
+	                  <div class="modal-footer">
+	                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	                    <button type="button" class="btn btn-primary">Save changes</button>
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+
+	        </div>
+	    </div>
+	    <div class="col-lg-3"/>
+
+    </div>
+</div>

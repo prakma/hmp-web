@@ -1,0 +1,58 @@
+<!-- Jumbotron -->
+        <div ng-controller="HomeCtrlDefault">
+          <div class="main">
+            <h2 class="page-header" ng-if="authFlag">Appointments</h2>
+            <div class="row placeholders">
+                <div class="col-sm-6 placeholder" ng-repeat="appt in apptList">
+                    
+                    <h4><a href="#">Status - {{appt.apptWF.apptStatus}}</a></h4>
+                    <span class="text-muted">on {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </span>
+                    <p> Status - <span class="text-muted">{{appt.apptWF.apptStatus}}</span> </p>
+                    <div class="btn-group" role="group" aria-label="...">
+                          <a type="button" class="btn btn-success" ui-sref="consult_wf.appt({ cref: appt._id })">See Details</a>
+                          <a type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Goto Consultation Room</a>
+                    </div>
+                
+                <!-- <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>Dr. Veena Gupta</h4>
+                    <span class="text-muted">BG Road</span>
+                </div>
+                
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>Dr. Vincent Vishard</h4>
+                    <span class="text-muted">Domlur</span>
+                </div> -->
+            </div>
+          </div>  
+          <div class="main">
+            <h2 class="page-header">Reputed Doctors</h2>
+
+            <div class="row placeholders">
+                <div class="col-xs-6 col-sm-3 placeholder" ng-repeat="provider in providerList">
+                    <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4><a ui-sref="doc_profile({docProfileId:{{provider._id}} })">{{provider.name}}</a></h4>
+                    <span class="text-muted">{{provider.primaryLocationStr}}</span>
+                </div>
+                
+                <!-- <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>Dr. Veena Gupta</h4>
+                    <span class="text-muted">BG Road</span>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>Dr.Srikanth Satya</h4>
+                    <span class="text-muted">Rajaji Nagar</span>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>Dr. Vincent Vishard</h4>
+                    <span class="text-muted">Domlur</span>
+                </div> -->
+            </div>
+          </div>
+
+        </div>
+

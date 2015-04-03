@@ -6,7 +6,7 @@
 # TODO: Enter your application id below. If you have signed up
 # using cloud.google.com/console use the "project id" for your application
 # id.
-application: your-application-id-here
+application: secret-sky-819
 version: 1
 runtime: python27
 api_version: 1
@@ -17,14 +17,36 @@ handlers:
 
 # App Engine serves and caches static files contained in the listed directories
 # (and subdirectories). Uncomment and set the directory as needed.
-#- url: /client
-#  static_dir: client
+
+# - url: /img
+#   static_dir: client/static/img
+
+# - url: /css
+#   static_dir: client/static/css
+
+# - url: /js
+#   static_dir: client/static/js
+
+# - url: /bower_components/bootstrap
+#   static_dir: bower_components/bootstrap
+
+# - url: /(.*\.(gif|png|jpg|ico))$
+#   static_files: static/\1
+#   upload: static/.*\.(gif|png|jpg|ico)$
+
 
 # This handler tells app engine how to route requests to a WSGI application.
 # The script value is in the format <path.to.module>.<wsgi_application>
 # where <wsgi_application> is a WSGI application object.
-- url: .*  # This regex directs all routes to main.bottle
+- url: /s/.*  # This regex directs all routes to main.bottle
   script: main.bottle
+
+- url: /$
+  static_files: client/app/index.html
+  upload: client/app/index.html
+
+- url: /*
+  static_dir: client/app
 
 # Third party libraries that are included in the App Engine SDK must be listed
 # here if you want to use them.  See

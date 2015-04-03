@@ -1,0 +1,78 @@
+<!-- Marketing messaging and featurettes
+      ================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
+<link rel="stylesheet" href="/bower_components/fullcalendar/fullcalendar.css"/>
+<div class="container marketing" ng-controller="DocProfileCtrl">
+	<hr class="visual-profile">
+	<div class="row">
+        <div class="col-md-5">
+            <img class="featurette-image img-responsive" my-holder="holder.js/300x200/auto" alt="Generic placeholder image">
+        </div>
+        <div class="col-md-7">
+            <div>
+                <h2 class="featurette-heading">{{provider.name}} <span class="text-muted"> BHMS, ABCD Homeo Hall</span></h2>
+                <p class="lead">Dr Kumar is based in Domlur, Bangalore. He sees patients from all over the Karnataka and outside, including from Delhi, Mumbai and New Jersey.</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4"><a href="#">Rating</a></div>
+                <div class="col-lg-4"><a href="#">Reviews <span class="badge">6</span></a></div>
+                <div class="col-lg-4"><a ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a></div>
+            </div>
+            
+        </div>
+	</div>
+
+	<hr class="featurette-divider">
+
+    <!-- Three columns of text below the carousel -->
+
+    <div class="row">
+        <div>
+            <div class="col-lg-3">
+                <h3>Location</h3>
+                <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;">
+                <!-- <h3>1. </h3>
+                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
+                
+                <p>Domlur, Bangalore</p>
+                <p> Karnataka, India </p>
+                <p>Phone - 322-323-2222</p>
+            </div>
+            <div class="col-lg-3">
+                <h3>Timing</h3>
+                <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;">
+                <!-- <h3>1. </h3>
+                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
+                
+                <p>Dr Kumar's preferred timing for online consultation is</p>
+                <p> Monday to Friday - Anytime after 10 am </p>
+                <p>Saturday - Between 8 am - 4 pm</p>
+                <p>Sunday - No new consultation. But if you are existing patient, then request for appointment</p>
+            </div>
+            <div class="col-lg-3">
+                <h3>Services</h3>
+                <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;">
+                <!-- <h3>1. </h3>
+                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
+                
+                <h5>Consultation By Appointment</h5>
+                <p>Emergency Consultation</p>
+                <p>Package Treatment Options</p>
+                <p>Medicine Delivery</p>
+            </div>
+            <div class="col-lg-3">
+                <h3>Fees</h3>
+                <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;">
+                <!-- <h3>1. </h3>
+                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
+                
+                <p> New Patient - INR 200 </p>
+                <p> Regular Patient - INR 150 </p>
+                <p> Followup Consultation - INR 100 </p>
+            </div>
+            
+        </div>
+    </div>
+    <!-- /.row -->
+
+</div>
