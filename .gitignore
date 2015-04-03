@@ -3,3 +3,6 @@
 lib/
 !lib/README.md
 .DS_Store
+test/servertest/venv
+client/app/bower_components/
+server/seed/
