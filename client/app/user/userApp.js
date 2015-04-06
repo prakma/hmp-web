@@ -3,7 +3,7 @@ function debug () {
 }
 
 angular.module('userApp', [
-  'ui.router','ngResource','providerApp.version','myApp.services','ui.calendar','ipCookie',
+  'ui.router','ngResource','providerApp.version','myApp.services',/*'ui.calendar'*/,'ipCookie',
   'userApp.croom'
 ]).
 config(function($stateProvider, $urlRouterProvider){
