@@ -72,7 +72,8 @@ def register(args):
 #login, logout methods
 session_args = {
     'email': Arg(str),
-    'passwd': Arg(str)
+    'passwd': Arg(str),
+    'pf': Arg(bool)
 }
 @bottle.route('/s/login', method='POST')
 @use_args(session_args)

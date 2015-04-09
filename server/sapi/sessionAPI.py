@@ -6,6 +6,7 @@ def login (args):
 
 	email = args['email']
 	password = args['passwd']
+	providerFlag = ['pf']
 
 	failureResult = { 'result' : 'Failure', 'message' : '' }
 	successResult = {'result' : 'Success', 'token' : '', 'userName':'', 'id':''}
@@ -17,6 +18,14 @@ def login (args):
 		flag = user.checkPassword(password)
 
 		if (flag):
+
+			# check if user is trying to login as provider, if so is he really a provider
+			if (providerFlag):
+				genuineProvider = user.isProvider()
+				if (not genuineProvider):
+					failureResult['message'] = 'Not a known provider'
+					return failureResult
+
 
 			# check if the session object exists and has not expired
 			existingSessionCursor = queryAPI.findSubscriberSession (user.key)

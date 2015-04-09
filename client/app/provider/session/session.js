@@ -18,14 +18,20 @@ angular.module('providerApp.session', ['ngRoute'])
       debug('login method doing its work');
         Subscriber.login({}, {
             'email': givenEmail,
-            'passwd': givenPassword
+            'passwd': givenPassword,
+            'pf': true
         }, function(value, responseHeaders) {
             //debug('login response' , value, responseHeaders);
-            HMPUser.login(value);
-            $scope.$emit('loginEvent', 'some junk');
-            debug('main controller emitted login event');
-            //$window.location.href = '/user/index.html';
-            $state.go('dashboard');
+            if(value.result && value.result !== 'Failure') {
+                HMPUser.login(value);
+                $scope.$emit('loginEvent', 'some junk');
+                debug('main controller emitted login event');
+                //$window.location.href = '/user/index.html';
+                $state.go('dashboard');
+            } else {
+                debug('todo - invalid login attempt');
+            }
+            
         }, function(httpResponse) {
             debug('login error response', httpResponse);
         });

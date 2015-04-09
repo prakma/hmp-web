@@ -37,7 +37,8 @@ angular.module('myApp.services', [])
 				url: '/s/login/',
 				params:{
 					email: '@givenEmail',
-					passwd: '@givenPassword'
+					passwd: '@givenPassword',
+					pf: '@pf'
 				}
 			},
 			logout: {

@@ -34,6 +34,9 @@ class Subscriber(ndb.Model):
 	def checkPassword (self, p):
 		return (self.passwd == p )
 
+	def isProvider(self):
+		return self.providerFlag != None and self.providerFlag== True
+
 
 class SubscriberSession(ndb.Model):
 	subscriber = ndb.KeyProperty(kind=Subscriber)
