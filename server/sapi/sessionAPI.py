@@ -6,7 +6,8 @@ def login (args):
 
 	email = args['email']
 	password = args['passwd']
-	providerFlag = ['pf']
+	providerFlag = args['pf']
+	print 'provider flag is', providerFlag
 
 	failureResult = { 'result' : 'Failure', 'message' : '' }
 	successResult = {'result' : 'Success', 'token' : '', 'userName':'', 'id':''}
@@ -22,6 +23,7 @@ def login (args):
 			# check if user is trying to login as provider, if so is he really a provider
 			if (providerFlag):
 				genuineProvider = user.isProvider()
+				print 'genuineProvider', genuineProvider
 				if (not genuineProvider):
 					failureResult['message'] = 'Not a known provider'
 					return failureResult
