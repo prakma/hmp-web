@@ -50,7 +50,12 @@ def x_querySubscriberByToken(token):
 	sessionCursor = queryAPI.findSubscriberSessionByToken(token)
 	print 'authentication check result', sessionCursor
 	if ( len (sessionCursor) > 0 ):
-		user = sessionCursor[0].subscriber.get()
+		print 'authenticated user found'
+		subscriberKey = sessionCursor[0].subscriber
+		print 'subscriber key', subscriberKey
+		user = subscriberKey.get()
+		if(user == None):
+			raise ValueError('session exists but could not get subscriber', token, user)
 		return user
 	else:
 		return None

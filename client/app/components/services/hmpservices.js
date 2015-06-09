@@ -161,7 +161,61 @@ angular.module('myApp.services', [])
 				url: '/s/consult/provider_appts',
 				isArray:true
 
+			},
+			set_apptWFState: {
+				method: 'POST',
+				url: '/s/consult/cwf/:cref/apptwf'
 			}
 		});
+
+	}])
+.factory('fPatientQBank', [
+	function(){
+		return function (qKeyVar){
+			var qBank = {
+				Summary: 'Summary...',
+				qkey1: 'Describe your problem',
+				qkey2: 'When did the symptoms begin? Can you suggest some factors that helped create these symptoms?',
+				qkey3: 'Please describe anything that you feel is associated with the current symptoms that is unusual, rare and/or peculiar or any other information which you wish to add.',
+				qkey4: 'If this is not the first occurrence please describe any previous problems of this kind.',
+				qkey5: 'qkey5 is not populated or used'
+			}
+
+			if(qBank[qKeyVar])
+				return qBank[qKeyVar];
+			else
+				return qKeyVar + ' - '+'Unknown Question';
+		}
+
+	}])
+.factory('ProviderProfile', [
+	'$resource', function($resource){
+		return $resource('/s/provider/:providerId/profile',{},{
+			
+			getProvider: {
+				method: 'GET',
+				url: '/s/subscriber/doc/:providerId',
+				params:{
+					providerId: '@providerId'
+				}
+			}
+		});
+
+	}])
+.factory('Prescription', [
+	'$resource', function($resource){
+		return $resource('/s/consult/cwf/:cref/createPrescriptionURL',{},{
+			getUploadURL: {
+				method: 'POST',
+				params:{
+					cref: '@cref'
+				}
+			}
+		});
+
+	}])
+.factory('fmoment', [
+	function(){
+		return moment;
 
 	}]);

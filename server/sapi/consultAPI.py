@@ -1,5 +1,9 @@
 from model import subscriber, queryAPI, ndb_json
 import dateutil.parser
+import datetime
+import hashlib
+from google.appengine.ext import blobstore
+from google.appengine.ext.webapp import blobstore_handlers
 
 def beginConsultWF (args):
 	providerId = args['providerId']
@@ -17,6 +21,7 @@ def beginConsultWF (args):
 
 	cwf = subscriber.ConsultationWF()
 	cwf.provider = provider.key
+	cwf.providerName = provider.name
 	cwf.user = user.key
 	# New
 	cwf.overallStatus = 1
@@ -40,6 +45,7 @@ def apptRequestWF (args):
 	patientAge = args['age']
 	patientSex = args['sex']
 	requestTSStr = args['requestedTS']
+	print 'requestTSStr received', requestTSStr
 	problemSummary = args['problemSummary']
 	user = args['user']
 
@@ -59,8 +65,9 @@ def apptRequestWF (args):
 		return failureResult
 
 	cwf.apptWF = subscriber.ApptWF()
-	cwf.apptWF.requestedTS = dateutil.parser.parse(requestTSStr)
-	cwf.apptWF.confirmedTS = dateutil.parser.parse(requestTSStr)
+	cwf.apptWF.requestedTS = dateutil.parser.parse(requestTSStr).replace(tzinfo=None)
+	print 'requestTS into python', cwf.apptWF.requestedTS
+	cwf.apptWF.confirmedTS = dateutil.parser.parse(requestTSStr).replace(tzinfo=None)
 	cwf.apptWF.apptStatusChain = [2,3]
 	cwf.apptWF.apptStatus = 3
 
@@ -118,8 +125,8 @@ def patientQuestionWF (args):
 		failureResult['message'] = 'Invalid Appointment Request. C-Ref belongs to another user'
 		return failureResult
 
-	cwf.patientDetailsWF.questionId = []
-	cwf.patientDetailsWF.answerText = []
+	# cwf.patientDetailsWF.questionId = []
+	# cwf.patientDetailsWF.answerText = []
 
 	for k in sorted(args.keys()):
 		if (k != 'cref' and k != 'reference' and k != 'user'):
@@ -199,13 +206,184 @@ def getConsultWF (args):
 		return failureResult
 
 	# check that cwf was initiated by this same user
-	if(cwf.user.id() != user.key.id()):
+	if(cwf.user.id() != user.key.id() and cwf.provider.id() != user.key.id()):
 		failureResult['message'] = 'Invalid Appointment Request. C-Ref belongs to another user'
 		return failureResult
 
 	successResult = ndb_json.dumps(cwf)
 	#successResult['result'] = 'Success'
 	return successResult
+
+
+def consultWF_setApptState(args):
+	cref = args['cref']
+	user = args['user']
+	aptWFCd = args['aptWFCd']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	#successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Reference - ' + str(cref)
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference - ' + str(cref)
+		return failureResult
+
+	# check that cwf was initiated by this same user
+	if(cwf.user.id() != user.key.id() and cwf.provider.id() != user.key.id() ):
+		failureResult['message'] = 'Invalid Appointment Request. C-Ref belongs to another user/provider'
+		return failureResult
+
+
+	# def rescheduleByProvider():
+	# 	rescheduleDt = args['rescheduleDt']
+	# 	reason = args['reason']
+	# 	cwf.apptWF.rescheduleTimeByProvider(rescheduleDt, reason)
+
+
+	stateMap = {3:"confirmTimeByProvider", 4: "rescheduleByUser", 5: "rescheduleTimeByProvider", 6: "canceledByUser", 7: "canceledByProvider"}
+
+	if(aptWFCd not in stateMap):
+		failureResult['message'] = 'Invalid workflow state - '+ str(aptWFCd)
+		return failureResult
+
+	rescheduleDtIfProvided = args['rescheduledDt'] 
+	reasonIfProvided = args['reason']
+
+	getattr(cwf.apptWF, stateMap[aptWFCd])(reasonIfProvided, rescheduleDtIfProvided )
+	cwf.put()
+
+	successResult = ndb_json.dumps(cwf)
+	#successResult['result'] = 'Success'
+	return successResult
+
+def consultWF_updatePayment(args):
+	secretWord = 'MjRiZmYxZjQtZjcwZi00NDE3LWIzOWEtODUwMGFmOWFkYWJj'
+	accountNo = '901274976'
+	key = args['key']
+	order_number = args['order_number']
+	demo_order_no =  '1'
+	invoice_id = args['invoice_id']
+	paymentProcessed = args['credit_card_processed']
+	total = args['total']
+	cref = args['li_0_product_id']
+
+	m = hashlib.md5()
+	m.update(secretWord)
+	m.update(accountNo)
+	# change it to use actual order number
+	m.update(demo_order_no)
+	m.update(total)
+
+	calculatedKey = m.digest()
+
+	print 'payment key', key, 'calculatedKey', calculatedKey
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref on receiving payment confirmation - ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference in payment processing handback - ' + str(cref)
+		return failureResult
+
+	if not cwf.paymentWF:
+		cwf.paymentWF = subscriber.PaymemtWF()	
+
+	cwf.paymentWF.basicAmount = float(total)
+
+	if not cwf.paymentWF.paymentConfirmToken:
+		cwf.paymentWF.paymentConfirmToken = [invoice_id]
+	else:
+		cwf.paymentWF.paymentConfirmToken.append(invoice_id)
+
+	if cwf.paymentWF.paymentConfirmTS:
+		cwf.paymentWF.paymentConfirmTS.append( datetime.datetime.now() )
+	else:
+		cwf.paymentWF.paymentConfirmTS = [datetime.datetime.now()]
+
+	# 3 = payment_successful, #4 = payment_rejected	
+	cwf.paymentWF.paymentStatus = 3 if paymentProcessed == 'Y' else 4	
+	paymentProcessed
+	if cwf.paymentWF.paymentStatusChain:
+		cwf.paymentWF.paymentStatusChain.append( datetime.datetime.now() )
+	else:
+		cwf.paymentWF.paymentStatusChain = [cwf.paymentWF.paymentStatus]
+
+	cwf.put()
+
+	successResult = {'result' : 'Success', 'message' : 'Payment Processed Recorded','reference': cref }
+
+	return successResult
+
+def create_upload_url(args):
+	prescription_url = args['prescription_url']
+	if not args:
+		return {'result': 'Failure', 'message': 'Could not create upload url. Required parameters unavailable'}
+	cref = args['cref']	
+	upload_url = blobstore.create_upload_url(prescription_url)
+	return {'result' : 'Success', 'message' : 'Upload Url Created','upload_url': upload_url } 
+
+
+class PrescriptionUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+	def post(self):
+		try:
+			upload = self.get_uploads()[0]
+			user_photo = UserPhoto(user=users.get_current_user().user_id(), blob_key=upload.key())
+			user_photo.put()
+
+			self.redirect('/view_photo/%s' % upload.key())
+
+		except:
+			self.redirect('/upload_failure.html')
+
+def handlePrescriptionOnUpload(args):
+	print 'todo - handle prescription on upload'
+	cref = args['cref']
+	blobKey = args['blob_key']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref - ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference in prescription upload - ' + str(cref)
+		return failureResult
+
+	if not cwf.fullfillmentWF:
+		cwf.fullfillmentWF = subscriber.FulfillmentWF()
+
+	cwf.fullfillmentWF.prescription_ref = blobKey
+	cwf.fullfillmentWF.prescriptionTS = datetime.datetime.now()
+	cwf.fullfillmentWF.fulfillmentStatus = 1
+
+	cwf.put()
+	
+	successResult['reference'] = cref
+	return successResult	
+
+
+
+	
 
 
 

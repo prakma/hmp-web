@@ -19,6 +19,12 @@ indexes:
 
 - kind: ConsultationWF
   properties:
+  - name: provider
+  - name: overallStatus
+  - name: apptWF.confirmedTS
+
+- kind: ConsultationWF
+  properties:
   - name: user
   - name: lastRefreshedTS
     direction: desc

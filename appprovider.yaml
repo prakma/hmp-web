@@ -1,0 +1,18 @@
+
+application: secret-sky-819
+module: dr
+version: dr1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /s/.*  # This regex directs all routes to main.bottle
+  script: main.bottle
+
+- url: /$
+  static_files: client/app/pgm/provider_landing/index.html
+  upload: client/app/pgm/provider_landing/index.html
+
+- url: /*
+  static_dir: client/app

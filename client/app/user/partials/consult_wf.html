@@ -1,13 +1,13 @@
 <div class="container">
-	<h1> <span class="text-muted">New Consultation with </span> TODO - Fill Doctor's Name </h1>
+	<h1> <span class="text-muted">Consultation with </span> {{wf.providerName}} </h1>
 	<hr class="featurette-divider">
 	<div class="row">
 		<ul class="nav nav-pills">
-		  <li role="presentation" class="active"><a href="#"><span class="glyphicon glyphicon-tag" aria-hidden="true">Appt</span></a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment</span></a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-tasks" aria-hidden="true">Questions</span></a></li>
+		  <li role="presentation" class="active"><a ui-sref="consult_wf.appt({ cref: wf._id })"><span class="glyphicon glyphicon-tag" aria-hidden="true">Appt</span></a></li>
+		  <li role="presentation"><a ui-sref="consult_wf.payment({ cref: wf._id })"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment</span></a></li>
+		  <li role="presentation"><a ui-sref="consult_wf.questions({ cref: wf._id })"><span class="glyphicon glyphicon-tasks" aria-hidden="true">Questions</span></a></li>
 		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-headphones" aria-hidden="true">Meeting</span></a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></a></li>
+		  <li role="presentation"><a ui-sref="consult_wf.prescription({ cref: wf._id })"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></a></li>
 		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-comment" aria-hidden="true">Feedback</span></a></li>
 		</ul>
 	</div>

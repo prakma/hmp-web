@@ -1,0 +1,16 @@
+<div>
+	<div class="row">
+		
+		<div>
+	     
+	        <h3>Prescription</h3>
+	        <div ng-if="wf.fullfillmentWF">
+		        <strong>Status - {{wf.fullfillmentWF.fulfillmentStatus | cwfFilter:'fullfillment'}} on {{wf.fullfillmentWF.prescriptionTS | date:'MMM d, y h:mm:ss a'}} </strong>
+		        <div ng-if="wf.fullfillmentWF.fulfillmentStatus >= 1">
+		            <a href="/s/consult/cwf/{{wf._id}}/prescription/{{wf.fullfillmentWF.prescription_ref}}">Download Prescription</a>
+		        </div>
+		    </div>
+	    </div>
+
+    </div>
+</div>

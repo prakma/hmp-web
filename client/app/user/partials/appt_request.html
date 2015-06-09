@@ -1,5 +1,5 @@
 <div class="container" ng-controller="ApptCtrl">
-	<h1> <span class="text-muted">New Consultation with </span> <a ui-sref="doc_profile({docProfileId:{{providerId}}})">{{provider.name}}</a> </h1>
+	<h1> <span class="text-muted">New Consultation with </span> <a ui-sref="doc_profile({docId:{{providerId}}})">{{provider.name}}</a> </h1>
 	<hr class="featurette-divider">
 	<div class="row">
 		<div class="col-sm-2">
@@ -34,7 +34,7 @@
 	<div class="row">
 		<div class="col-lg-3">
 			<h5>Reference No</h5>
-			<a ui-sref="doc_profile({docProfileId:22})">{{wf.reference}}</a>
+			<a ui-sref="doc_profile({docId:22})">{{wf.reference}}</a>
 		</div>
 		<div class="col-lg-6">
 	        <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;"> -->
@@ -43,7 +43,7 @@
 	        <p>Select your preferred appointment time-window, and provide short information</p>
 	        <div>
 	            <form>
-	                <div class="form-group">
+	                <!-- <div class="form-group">
 	                    <label for="exampleApptTS">Appointment Time</label>
 	                    <div class="row">
 	                        <div class="col-xs-6">
@@ -54,6 +54,18 @@
 	                              Select available time-window
 	                            </button>
 	                        </div>
+	                    </div>
+
+	                </div> -->
+	                <div class="form-group">
+	                    <label class="control-label"><i class="fa fa-calendar"></i>When</label><br>
+	                    <div class="form-group">
+	                      <input type="text" size="10" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
+	                      data-min-date="today" placeholder="Date" bs-datepicker>
+	                    </div>
+	                    <div class="form-group">
+	                      <input type="text" size="8" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
+	                      placeholder="Time" bs-timepicker>
 	                    </div>
 	                </div>
 	                <div class="form-group">

@@ -1,0 +1,38 @@
+<div>
+
+	
+	<div class="row">
+		
+		<div>
+	     
+	        <h3>Step 3: Patient Form</h3>
+	        <p/>
+	        <p>Please provide symptoms and other information below</p>
+	        <div>
+	            <form>
+	                  
+	                <div class="form-group">
+	                    <label for="problemDesc1">Describe your problem</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.patientDetailsWF.answerText[1]"></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label for="problemDesc2">When did the symptoms begin? Can you suggest some factors that helped create these symptoms?</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.patientDetailsWF.answerText[2]"></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label for="problemDesc3">Please describe anything that you feel is associated with the current symptoms that is unusual, rare and/or peculiar or any other information which you wish to add.</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.patientDetailsWF.answerText[3]"></textarea>
+	                </div>
+	                <div class="form-group">
+	                    <label for="problemDesc4">If this is not the first occurrence please describe any previous problems of this kind.</label>
+	                    <textarea class="form-control" rows="4" ng-model="wf.patientDetailsWF.answerText[4]"></textarea>
+	                </div>
+
+	                <button type="submit" class="btn btn-primary" ng-click="patientQ()">Save</button>
+	            </form>
+
+	        </div>
+	    </div>
+
+    </div>
+</div>

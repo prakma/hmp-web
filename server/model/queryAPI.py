@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from subscriber import Subscriber, SubscriberSession, ConsultationWF
+from providerProfile import PbProfile
 
 def findEntityByKey(entityName, key):
 	entityKeyObj = ndb.Key(entityName, key)
@@ -37,6 +38,7 @@ def findConsultationWFById(cwfRef):
 	return cwfKey.get()
 
 def findConsultationByUserId(userId):
+	print 'find consultation by user id', userId
 	return ConsultationWF.query(
 				ConsultationWF.user == ndb.Key('Subscriber', userId)
 				
@@ -45,6 +47,10 @@ def findConsultationByUserId(userId):
 def findConsultationByProviderId(providerId):
 	return ConsultationWF.query(
 				ConsultationWF.provider == ndb.Key('Subscriber', providerId),
-				ConsultationWF.apptWF.apptStatus == 3,
 				ConsultationWF.overallStatus < 3
 			).order(ConsultationWF.overallStatus, ConsultationWF.apptWF.confirmedTS).fetch(10) 
+
+def findProfileByProviderId(providerId):
+	return PbProfile.query(
+		PbProfile.subscriber == ndb.Key('Subscriber', providerId),
+		).fetch(1);

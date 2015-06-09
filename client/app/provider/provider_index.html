@@ -49,11 +49,11 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" ng-if="authFlag">
-                            <li><a href="#/dashboard">{{userName}}</span></a>
+                            <li><a ui-sref="dashboard.current_view">{{userName}}</span></a>
                             </li>
-                            <li><a href="#/profile">Profile</a>
+                            <li><a ui-sref="doc_profile({docId:{{provider.providerId}} })">Profile</a>
                             </li>
-                            <li><a href="#/setting">Calendar</a>
+                            <li><a ui-sref="provider_calendar">Calendar</a>
                             </li>
                             <li><a href="#/setting">Help</a>
                             </li>
@@ -85,11 +85,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/2.1.2/angular-strap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/2.1.2/angular-strap.tpl.min.js"></script>
 
     <script src="/bower_components/angular-route/angular-route.min.js"></script>
     <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="/bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="/bower_components/angular-cookie/angular-cookie.min.js"></script>
+    <script src="/bower_components/moment/min/moment-with-locales.min.js"></script>
+
+ <!--    
+    <script src="/bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.min.js"></script>
+
+ -->
+    <script type="text/javascript" src="/bower_components/angular-ui-calendar/src/calendar.js"></script>
+    <script type="text/javascript" src="/bower_components/fullcalendar/fullcalendar.js"></script>
+    <script type="text/javascript" src="/bower_components/fullcalendar/gcal.js"></script> 
 
     <script src="/bower_components/holderjs/holder.js"></script>
     <script src="/components/services/hmpservices.js"></script>
@@ -99,8 +110,9 @@
     <script src="providerApp.js"></script>
     <script src="dashboard/dashboard.js"></script>
     <script src="profile/profile.js"></script>
+    <script src="calendar/calendar.js"></script>
     <script src="session/session.js"></script>
-    <script src="croom/croom.js"></script>
+    <script src="croom/croom2.js"></script>
     
   </body>
 </html>

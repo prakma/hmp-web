@@ -3,7 +3,7 @@ function debug () {
 }
 
 angular.module('userApp', [
-  'ui.router','ngResource','providerApp.version','myApp.services',/*'ui.calendar'*/,'ipCookie',
+  'ui.router','ngResource','providerApp.version','myApp.services',/*'ui.calendar'*/'mgcrea.ngStrap','ipCookie',
   'userApp.croom'
 ]).
 config(function($stateProvider, $urlRouterProvider){
@@ -22,7 +22,7 @@ config(function($stateProvider, $urlRouterProvider){
 			templateUrl: '/user/partials/userLanding.html'
 		}).
 		state('appt',{
-			url: '/user/appt/:docProfileId',
+			url: '/user/appt/:docId',
 			templateUrl: '/user/partials/appt_request.html'
 		}).
 		state('doc',{
@@ -32,7 +32,7 @@ config(function($stateProvider, $urlRouterProvider){
 			controller: 'DocCtrl'
 		}).
 		state('doc_profile',{
-			url: '/user/doc/:docProfileId',
+			url: '/user/doc/:docId',
 			templateUrl: '/user/partials/doctor_profile.html'
 		}).
 		state('patient_question',{
@@ -47,6 +47,23 @@ config(function($stateProvider, $urlRouterProvider){
 		state('consult_wf.appt',{
 			url: '^/user/cwf/:cref/appt',
 			templateUrl: '/user/partials/consult_wf_appt.html'
+		}).
+		state('consult_wf.payment',{
+			url: '^/user/cwf/:cref/payment',
+			templateUrl: '/user/partials/consult_wf_payment.html'
+		}).
+		state('consult_wf.paymentReturn',{
+			url: '^/user/cwf/:cref/payment/return',
+			templateUrl: '/user/partials/consult_wf_payment_return.html',
+			controller:'CwfPaymentReturnCtrl'
+		}).
+		state('consult_wf.questions',{
+			url: '^/user/cwf/:cref/questions',
+			templateUrl: '/user/partials/consult_wf_questions.html'
+		}).
+		state('consult_wf.prescription',{
+			url: '^/user/cwf/:cref/prescription',
+			templateUrl: '/user/partials/consult_wf_prescription.html'
 		}).
 		state('croom',{
 			templateUrl: '/user/partials/croom/croom.html',
@@ -151,26 +168,46 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 		$scope.apptList = Subscriber.getAppointments();
 	}
 
+	$scope.currApptFilterFn = function(apptObj){
+		//debug('currApptFilterFn invoked' );
+		if(apptObj.apptWF){
+			return [2,3,4,5].indexOf(apptObj.apptWF.apptStatus) > 0;
+		} else{
+			return false;
+		}
+	}
+
+	$scope.unfinishedApptFilterFn = function(apptObj){
+		//debug('currApptFilterFn invoked' );
+		if(apptObj.apptWF){
+			return apptObj.apptWF.apptStatus == 1;
+		} else{
+			return true;
+		}
+	}
+
 	$scope.gotoCRoom = function (apptObj) {
 		debug('appt obj for gotoCRoom', apptObj);
 		$state.go('croom', {appt:apptObj});
 	}
 	
 }).
-controller('DocProfileCtrl', function($scope, $window, $timeout, $state, Subscriber, HMPUser){
+controller('DocProfileCtrl', ['$scope', '$window', '$timeout', '$state', 'Subscriber', 'HMPUser','ProviderProfile',function($scope, $window, $timeout, $state, Subscriber, HMPUser, ProviderProfile){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
-	debug('DocProfileCtrl invoked', $state.params.docProfileId);
-	var provider = Subscriber.getProvider({providerId:$state.params.docProfileId});
-	$scope.provider = provider;
-	HMPUser.setProvider(provider);
-	debug('provider information', $scope.provider);
+	debug('DocProfileCtrl invoked', $state.params.docId);
+	//var provider = Subscriber.getProvider({providerId:$state.params.docId});
+
+	$scope.userIsProvider = false;
+	$scope.provider = ProviderProfile.get({providerId:$state.params.docId});
+
+	//$scope.provider = provider;
+	HMPUser.setProvider($scope.provider);
+	//debug('provider information', $scope.provider);
 	$scope.beginWF = function (){
-		$state.go ('appt', {'docProfileId':$state.params.docProfileId});
+		$state.go ('appt', {'docId':$state.params.docId});
 	}
-	
-	
-}).
+}]).
 /*controller('HomeCtrl4', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
@@ -211,14 +248,29 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	debug('consultation object fetched', cwf);
 	$scope.wf = cwf;
 
+	$scope.saveCwfState = function(){
+		console.log('saving cwf state');
+		cwf.$save(function(wf){
+			console.log('cwf state saved', cwf);
+		});
+	}
+
 	
+
+    
+}).
+controller('CwfPaymentReturnCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation){
+
+	// first create a consultation WF instance for reference
+	var cref = $stateParams.cref;
+	debug('CwfPaymentReturnCtrl called with cref', cref);
 
     
 }).
 controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation){
 
 	// first create a consultation WF instance for reference
-	var providerId = $stateParams.docProfileId;
+	var providerId = $stateParams.docId;
 	$scope.providerId = providerId;
 	$scope.provider = HMPUser.selectedProvider();
 	debug('stateparams object', $stateParams);

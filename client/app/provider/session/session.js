@@ -27,7 +27,7 @@ angular.module('providerApp.session', ['ngRoute'])
                 $scope.$emit('loginEvent', 'some junk');
                 debug('main controller emitted login event');
                 //$window.location.href = '/user/index.html';
-                $state.go('dashboard');
+                $state.go('dashboard.current_view');
             } else {
                 debug('todo - invalid login attempt');
             }

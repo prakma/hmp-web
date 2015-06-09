@@ -95,7 +95,6 @@ class TestSubscriberAPI(TestWithLogin):
         rp = r.json()
         print 'authenticated query by email', rp
 
-        
     
 
     # def test_choice(self):

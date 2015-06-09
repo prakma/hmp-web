@@ -33,6 +33,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
     userName = hUser.getName();
     userId = 'D'+hUser.getId();
     $scope.patientDesc = $stateParams.appt.patientDetailsWF.patientName;
+    var myroom;
 
 
     $window.onBistriConferenceReady = function() {
@@ -40,6 +41,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         console.log('bistri onBistriConferenceReady invoked for provider locally');
 
         var localStream;
+        //var room;
 
         // test if the browser is WebRTC compatible
         if (!bc.isCompatible()) {
@@ -80,15 +82,17 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
 
         // when the user has joined a room
         bc.signaling.bind("onJoinedRoom", function(data) {
+            console.log('onJoinedRoom received in provider', data);
             // set the current room name
-            room = data.room;
-            // then, for every single members present in the room ...
-            for (var i = 0, max = data.members.length; i < max; i++) {
-                // ... request a call
-                bc.call(data.members[i].id, data.room, {
-                    stream: localStream
-                });
-            }
+            //room = data.room;
+            myroom = data.room;
+            // // then, for every single members present in the room ...
+            // for (var i = 0, max = data.members.length; i < max; i++) {
+            //     // ... request a call
+            //     bc.call(data.members[i].id, data.room, {
+            //         stream: localStream
+            //     });
+            // }
         });
 
         // when an error occurred while trying to join a room
@@ -101,6 +105,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         bc.signaling.bind("onQuittedRoom", function(room) {
             // reset the current room name
             room = undefined;
+            myroom = undefined;
             // show pane with id "pane_1"
             showPanel("pane_1");
             // stop the local stream
@@ -113,7 +118,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         // when a new remote stream is received
         bc.streams.bind("onStreamAdded", function(remoteStream) {
             // insert the new remote stream into div#video_container node
-            bc.attachStream(remoteStream, q("#video_container"));
+            bc.attachStream(remoteStream, q("#video_container_remote"));
         });
 
         // when a local or a remote stream has been stopped
@@ -121,9 +126,10 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
             // remove the remote stream from the page
             bc.detachStream(stream);
             // if room has not been quitted yet
-            if (room) {
+            if (myroom) { // was room
                 // quit room
                 bc.quitRoom(room);
+                myroom = undefined;
             }
         });
 
@@ -131,16 +137,17 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         bc.signaling.bind("onPresence", function(result) {
             if (result.presence != "offline") {
                 // ask the user to access to his webcam and set the resolution to 640x480
-                bc.startStream("640x480", function(stream) {
+                bc.startStream("320x240:12", function(stream) {
                     // when webcam access has been granted
                     // show pane with id "pane_2"
                     showPanel("pane_2");
                     // insert the local webcam stream into the page body, mirror option invert the display
-                    bc.attachStream(stream, q("#video_container"), {
+                    bc.attachStream(stream, q("#video_container_local"), {
                         mirror: true
                     });
                     // invite user
-                    bc.call(result.id, getRandomRoomName(), {
+                    myroom = getRandomRoomName();
+                    bc.call(result.id, myroom, {
                         stream: stream
                     });
                 });
@@ -150,32 +157,32 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         });
 
         // when a call request is received from remote user
-        bc.signaling.bind("onIncomingRequest", function(request) {
-            // ask the user to accept or decline the invitation
-            if (confirm(request.name + " is inviting you to join his conference room. Click \"Ok\" to start the call.")) {
-                // invitation has been accepted
-                // ask the user to access to his webcam and set the resolution to 640x480
-                bc.startStream("640x480", function(stream) {
-                    // when webcam access has been granted
-                    // show pane with id "pane_2"
-                    showPanel("pane_2");
-                    // set "localStream" variable with the local stream
-                    localStream = stream;
-                    // insert the local webcam stream into the page body, mirror option invert the display
-                    bc.attachStream(stream, q("#video_container"), {
-                        mirror: true
-                    });
-                    // then join the room specified in the "request" object
-                    bc.joinRoom(request.room);
-                });
-            }
-        });
+        // bc.signaling.bind("onIncomingRequest", function(request) {
+        //     // ask the user to accept or decline the invitation
+        //     if (confirm(request.name + " is inviting you to join his conference room. Click \"Ok\" to start the call.")) {
+        //         // invitation has been accepted
+        //         // ask the user to access to his webcam and set the resolution to 640x480
+        //         bc.startStream("640x480", function(stream) {
+        //             // when webcam access has been granted
+        //             // show pane with id "pane_2"
+        //             showPanel("pane_2");
+        //             // set "localStream" variable with the local stream
+        //             localStream = stream;
+        //             // insert the local webcam stream into the page body, mirror option invert the display
+        //             bc.attachStream(stream, q("#video_container"), {
+        //                 mirror: true
+        //             });
+        //             // then join the room specified in the "request" object
+        //             bc.joinRoom(request.room);
+        //         });
+        //     }
+        // });
 
-        // bind function "callUser" to button "Call XXX"
-        q("#call").addEventListener("click", callUser);
+        // // bind function "callUser" to button "Call XXX"
+        // q("#call").addEventListener("click", callUser);
 
-        // bind function "stopCall" to button "Stop Call"
-        q("#quit").addEventListener("click", stopCall);
+        // // bind function "stopCall" to button "Stop Call"
+        // q("#quit").addEventListener("click", stopCall);
 
         // open a new session on the server
         bc.connect();
@@ -188,22 +195,23 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
 
     $scope.stopCall = function(){
         // quit the current conference room
-        bc.quitRoom(room);
+        if(myroom)
+            bc.quitRoom(myroom);
     }
 
 }]);
 
-// when button "Call XXX" has been clicked
-function callUser() {
-    // check remote user presence
-    bc.getPresence(remoteUserId);
-}
+// // when button "Call XXX" has been clicked
+// function callUser() {
+//     // check remote user presence
+//     bc.getPresence(remoteUserId);
+// }
 
-// when button "Stop Call" has been clicked
-function stopCall() {
-    // quit the current conference room
-    bc.quitRoom(room);
-}
+// // when button "Stop Call" has been clicked
+// function stopCall() {
+//     // quit the current conference room
+//     bc.quitRoom(room);
+// }
 
 function getRandomRoomName() {
     var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
@@ -216,12 +224,12 @@ function getRandomRoomName() {
 }
 
 function showPanel(id) {
-    var panes = document.querySelectorAll(".pane");
-    // for all nodes matching the query ".pane"
-    for (var i = 0, max = panes.length; i < max; i++) {
-        // hide all nodes except the one to show
-        panes[i].style.display = panes[i].id == id ? "block" : "none";
-    };
+    // var panes = document.querySelectorAll(".pane");
+    // // for all nodes matching the query ".pane"
+    // for (var i = 0, max = panes.length; i < max; i++) {
+    //     // hide all nodes except the one to show
+    //     panes[i].style.display = panes[i].id == id ? "block" : "none";
+    // };
 }
 
 function q(query) {

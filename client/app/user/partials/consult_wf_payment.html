@@ -1,0 +1,39 @@
+<div>
+	<div class="row">
+		
+		<div>
+	     
+	        <h3>Step 2: Payment</h3>
+	        <strong>Status - {{wf.paymentWF.paymentStatus | cwfFilter:'payment'}} on {{wf.paymentWF.paymentConfirmTS[0] | date:'MMM d, y h:mm:ss a'}} </strong>
+	        <div ng-if="wf.paymentWF.paymentStatus != 3">
+	            <form>
+	                  
+	                <div class="form-group">
+	                    <label for="consultationCost">Online Consultation Cost</label>
+	                    <span class="label label-default">{{wf.paymentWF.basicAmount}}(INR 500)</span>
+	                </div>
+	                
+	            </form>
+
+	            <form action='https://sandbox.2checkout.com/checkout/purchase' method='post'>
+	              <input type='hidden' name='sid' value='901274976' />
+	              <input type='hidden' name='mode' value='2CO' />
+	              <input type='hidden' name='li_0_type' value='Remote Consultation' />
+	              <input type='hidden' name='li_0_product_id' value='{{wf._id}}' />
+	              <input type='hidden' name='li_0_name' value='{{wf._id}}' />
+	              <input type='hidden' name='li_0_price' value='200' />
+	              <input type='hidden' name='email' value='manoj.prakash@gmail.com' />
+	              <input type='hidden' name='phone' value='614-921-2450' />
+	              <input type='hidden' name='currency_code' value='INR' />
+	              <input type='hidden' name='merchant_order_id' value='{{wf._id}}' />
+	              
+	              <input type='hidden' name='x_receipt_link_url' value='http://SANDBOX:8080/user/index.html#/user/cwf/{{wf._id}}/payment/return' />
+	              <!-- <input name='submit' type='submit' value='Checkout' /> -->
+	              <button type="submit" class="btn btn-primary" ng-click="patientQ()">Pay INR {{wf.paymentWF.basicAmount}}(500 Rs)</button>
+	            </form>
+
+	        </div>
+	    </div>
+
+    </div>
+</div>

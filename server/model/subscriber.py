@@ -79,19 +79,59 @@ class ApptWF(ndb.Model):
 	confirmedTS = ndb.DateTimeProperty()
 	confirmedTS_chain = ndb.DateTimeProperty(repeated=True)
 	apptStatusChain = ndb.IntegerProperty(repeated=True)
-	# 1 = not started, 2 = requested, 3 = confirmed , 4 = new time rescheduled by user, 5 = new time proposed by provider, 6 = canceled
+	# 1 = not started, 2 = requested, 3 = confirmed , 4 = new time rescheduled by user, 5 = new time proposed by provider, 6 = canceled by user, 7 = canceled by provider
 	apptStatus = ndb.IntegerProperty(default=1)
+	reasonChain = ndb.StringProperty(repeated=True)
+
+	def confirmTimeByProvider(self, *args, **kwargs):
+		self.confirmedTS = self.requestedTS
+		self.confirmedTS_chain.append(self.confirmedTS)
+		self.apptStatus = 3
+		self.apptStatusChain.append(3)
+
+	def confirmTimeByUser(self, *args, **kwargs):
+		self.confirmedTS = self.proposedTS
+		self.confirmedTS_chain.append(self.confirmedTS)
+		self.apptStatus = 3
+		self.apptStatusChain.append(3)
+
+	def rescheduleTimeByUser(self, reason, dt):
+		self.requestedTS = self.dt
+		self.apptStatus = 4
+		self.apptStatusChain.append(4)
+		self.reasonChain.append('U: ' + reason)
+
+
+	def rescheduleTimeByProvider(self, reason, dt):
+		self.proposedTS = self.dt
+		self.apptStatus = 5
+		self.apptStatusChain.append(5)
+		self.reasonChain.append('P: ' + reason)
+
+	def cancelByUser(self, reason):
+		self.apptStatus = 6
+		self.apptStatusChain.append(6)
+		self.reasonChain.append('P: ' + reason)
+
+	def cancelByProvider(self, reason):
+		self.apptStatus = 7
+		self.apptStatusChain.append(7)
+		self.reasonChain.append('P: ' + reason)
 
 ## payment_info_provided, sent_to_bank, bank_confirmed
 class PaymemtWF(ndb.Model):
+	basicAmount = ndb.FloatProperty()
+	additionalPendingCharges = ndb.FloatProperty(repeated=True)
+	currency = ndb.StringProperty(default="INR")
+
 	paymentToken = ndb.StringProperty(repeated=True)
 	paymentBeginTS = ndb.DateTimeProperty(repeated=True)
 	paymentConfirmToken = ndb.StringProperty(repeated=True)
-	paymentConfirmTS = ndb.StringProperty(repeated=True)
+	paymentConfirmTS = ndb.DateTimeProperty(repeated=True)
 
-	#default=not_initiated,
+	#1=not_initiated, #2 payment_in_process, #3 payment_processed, #4 payment_denied
 	paymentStatusChain = ndb.IntegerProperty(repeated=True)
-	paymentStatus = ndb.IntegerProperty()
+	paymentStatus = ndb.IntegerProperty(default=1)
 
 
 ## no_info, partial_info, nearly_complete, complete
@@ -122,6 +162,7 @@ class MeetingWF(ndb.Model):
 class FulfillmentWF(ndb.Model):
 	prescription_ref = ndb.StringProperty()
 	prescriptionTS = ndb.DateTimeProperty()
+	#1 = prescription uploaded, #3 = fulfillment complete
 	fulfillmentStatus = ndb.IntegerProperty()
 
 
@@ -137,6 +178,7 @@ class StatusWF(ndb.Model):
 
 class ConsultationWF(ndb.Model):
 	provider = ndb.KeyProperty(kind=Subscriber)
+	providerName = ndb.StringProperty()
 	user = ndb.KeyProperty(kind=Subscriber)
 	parentConsultation = ndb.KeyProperty(kind='ConsultationWF')
 	apptWF = ndb.StructuredProperty(ApptWF)

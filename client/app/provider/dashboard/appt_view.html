@@ -1,0 +1,78 @@
+<div class="row">
+    <h2 class="header">Consultation Reference # {{appt._id}}</h3>
+    <div class="col-md-6">
+        <h3 class="sub-header">Patient Information</h3>
+        <div class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img my-holder="holder.js/80x80/auto/sky" class="media-object" alt="Patient">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{appt.patientDetailsWF.patientName}}</h4>
+                <span class="text-muted">{{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span>
+            </div>
+        </div>
+        <p></p>
+        <div class="row" ng-repeat="aQuestionIndex in qLoopHelper">
+            <p class="bg-info"><strong>{{qbank(appt.patientDetailsWF.questionId[aQuestionIndex])}}</strong></p>
+            <p class="text-muted">{{appt.patientDetailsWF.answerText[aQuestionIndex]}}</p>
+            <br/>
+            <br/>
+            <br/>
+        </div>
+        <!-- <div class="panel panel-default" ng-repeat="aQuestionIndex in qLoopHelper">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{qbank(appt.patientDetailsWF.questionId[aQuestionIndex])}}</h3>
+              </div>
+              <div class="panel-body">
+                {{appt.patientDetailsWF.answerText[aQuestionIndex]}}
+              </div>
+            </div> -->
+    </div>
+    <div class="col-md-6">
+        <h3 class="sub-header">Appointment</h3>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">at {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h3>
+                <small>Status</small> <span class="label label-default">{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</span>
+                <br/>
+                <small>Payment</small> <span class="label label-success">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</span>
+            </div>
+            <div class="panel-body">
+                <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default">Confirm</button>
+                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)">Ask for Reschedule</button>
+                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)">Cancel</button>
+                    <button type="button" class="btn btn-primary">Go to Consultation Room</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Prescription/Notes</h3>
+            </div>
+            <div class="panel-body">
+                
+                <form action="{{uploadURL}}" enctype="multipart/form-data" method="post">
+                    Upload New Prescription: <br>
+                   
+                   <!-- <input type="submit" value="Send"> -->
+                   <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                        <input type="file" ng-click="generateUploadURL()" name="uploaded_files" size="40">
+                        <button type="submit" class="btn btn-default">Upload</button>
+                    </div>
+                </form>
+                
+                <ul class="list-group">
+                    <li class="list-group-item" ng-if=" ! appt.fullfillmentWF">No Prescription Uploaded yet</li>
+                    <li class="list-group-item" ng-if="appt.fullfillmentWF"><a href="/s/consult/cwf/{{appt._id}}/prescription/{{appt.fullfillmentWF.prescription_ref}}">Download Prescription</a></li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <h3>Feedback</h3>
+            <span>No feedback on this appointment yet!</span>
+        </div>
+    </div>
+</div>

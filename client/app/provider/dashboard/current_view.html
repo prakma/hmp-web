@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-md-6">
+        <h3 class="sub-header">Waiting Room Queue</h3>
+        <!-- <div class="placeholder" ng-repeat="appt in apptList">
+                <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                <h4>{{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h4>
+                <span class="text-muted">{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span>
+                <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                    <button type="button" class="btn btn-success">Details</button>
+                    <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Room</button>
+                </div>
+            </div> -->
+        <div class="media" ng-repeat="appt in apptList">
+            <div class="media-left">
+                <a href="#">
+                    <img my-holder="holder.js/80x80/auto/sky" class="media-object" alt="Patient">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h4>
+                <span class="text-muted">{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span>
+                <div>
+                    <a href ng-click="gotoApptDetails(appt)">See Patient Details</a>
+                    <span> or  </span>
+                    <a href ng-click="gotoCRoom(appt)">Go to Consultation Room</a>
+                </div>
+                <!-- <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                    <button type="button" class="btn btn-success">Details</button>
+                    <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Room</button>
+                </div> -->
+            </div>
+        </div>
+        <div class="row placeholders">
+            <!-- <div class="placeholder" ng-repeat="appt in apptList">
+                    <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>{{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h4>
+                    <span class="text-muted">{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                        <button type="button" class="btn btn-success">Details</button>
+                        <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Room</button>
+                    </div>
+                </div> -->
+            <!-- <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>11.00 am</h4>
+                    <span class="text-muted">Veena Gupta, BG Road</span>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>11.30 am</h4>
+                    <span class="text-muted">Srikanth Satya, Rajaji Nagar</span>
+                </div>
+                <div class="col-xs-6 col-sm-3 placeholder">
+                    <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <h4>12.00 Noon</h4>
+                    <span class="text-muted">Hema Sastry, Domlur</span>
+                </div> -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h3 class="sub-header">Confirm these appointments - </h3>
+        <span>(These are new appointment requests, pending for your schedule confirmation)</span>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Patient</th>
+                        <th>Time Requested</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="appt in apptList">
+                        <td><a href ng-click="gotoApptDetails(appt)">{{appt._id}}</a></td>
+                        <td>{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}} </td>
+                        <td>{{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</td>
+                        <td><a class="btn btn-primary" href ng-click="confirmAppt(appt)">Confirm</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

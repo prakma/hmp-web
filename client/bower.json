@@ -31,6 +31,8 @@
     "angular-ui-calendar": "~0.8.1",
     "bootstrap": "~3.3.1",
     "html5-boilerplate": "~4.3.0",
-    "holderjs": "~2.4.1"
+    "holderjs": "~2.4.1",
+    "angular-strap": "~2.2.1",
+    "angular-bootstrap-calendar": "~0.9.2"
   }
 }

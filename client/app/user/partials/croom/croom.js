@@ -136,7 +136,7 @@ angular.module('userApp.croom', [
 		if( confirm( request.name + " is inviting you to join his conference room. Click \"Ok\" to start the call." ) ){
 			// invitation has been accepted
 			// ask the user to access to his webcam and set the resolution to 640x480
-			 bc.startStream( "640x480", function( stream ){
+			 bc.startStream( "320x240:12", function( stream ){
 				// when webcam access has been granted
 				// show pane with id "pane_2"
 				showPanel( "pane_2" );

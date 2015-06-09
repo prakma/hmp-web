@@ -8,7 +8,7 @@ angular.module('providerApp.version.version-directive', [])
   };
 }])
 .directive('myHolder', function() {
-	console.log('myholder directive invoked');
+	//console.log('myholder directive invoked');
   return {
     link: function(scope, element, attrs) {
       attrs.$set('data-src', attrs.myHolder);

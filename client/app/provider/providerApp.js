@@ -12,12 +12,14 @@ angular.module('providerApp', [
     'ngRoute',
     'ui.router',
     'ngResource',
+    'mgcrea.ngStrap',
     'myApp.services',
     'providerApp.version',
     'ipCookie',
     'providerApp.session',
     'providerApp.dashboard',
     'providerApp.profile',
+    'providerApp.calendar',
     'providerApp.croom'
 ]).
 config(['$routeProvider', function($routeProvider) {
@@ -36,11 +38,21 @@ config(function($stateProvider, $urlRouterProvider) {
         url: '/provider/dashboard',
         templateUrl: '/provider/dashboard/dashboard.html'
     }).
+    state('dashboard.current_view', {
+        templateUrl: '/provider/dashboard/current_view.html'
+    }).
+    state('dashboard.appt_view', {
+        url: '/:cref/appt_view.html',
+        templateUrl: '/provider/dashboard/appt_view.html',
+        params: {appt:{}},
+        controller: 'PatientApptCtrl'
+    }).
     state('croom', {
         /*url: '/provider/croom',*/
         templateUrl: '/provider/croom/croom.html',
         params: {appt:{}}
     })
+
 }).
 directive('myHolder1', function() {
     console.log('myholder1 directive invoked');
@@ -64,6 +76,10 @@ directive('myHolder1', function() {
         debug('initializeUser from menubar invoked. hmpuser ', HMPUser);
         $scope.authFlag = HMPUser.isLoggedId();
         $scope.userName = HMPUser.getName();
+        $scope.provider = {
+            providerId: HMPUser.getId(),
+            name: HMPUser.getName()
+        }
         debug('is user logged in', HMPUser.isLoggedId(), $scope.authFlag, 'name', HMPUser.getName());
     }
 
@@ -91,7 +107,7 @@ directive('myHolder1', function() {
     }
 
     if (HMPUser.isLoggedId()) {
-        $state.go('dashboard');
+        $state.go('dashboard.current_view');
     } else {
         $state.go('login');
     }

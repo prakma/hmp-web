@@ -10,13 +10,15 @@
         </div>
         <div class="col-md-7">
             <div>
-                <h2 class="featurette-heading">{{provider.name}} <span class="text-muted"> BHMS, ABCD Homeo Hall</span></h2>
-                <p class="lead">Dr Kumar is based in Domlur, Bangalore. He sees patients from all over the Karnataka and outside, including from Delhi, Mumbai and New Jersey.</p>
+                <h2 class="featurette-heading">{{provider.name}} <span class="text-muted"> {{provider.oneLiner}}</span></h2>
+                <div ng-repeat="profileDescSnippet in provider.profileDesc">
+                    <p class="lead">{{profileDescSnippet}}</p>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-4"><a href="#">Rating</a></div>
                 <div class="col-lg-4"><a href="#">Reviews <span class="badge">6</span></a></div>
-                <div class="col-lg-4"><a ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a></div>
+                <div class="col-lg-4"><a ng-if="userIsProvider===false" ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a></div>
             </div>
             
         </div>
@@ -33,7 +35,9 @@
                 <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;">
                 <!-- <h3>1. </h3>
                 <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
-                
+                <div ng-repeat="locationSnippet in provider.genLocation">
+                    <p>{{locationSnippet}}</p>
+                </div>
                 <p>Domlur, Bangalore</p>
                 <p> Karnataka, India </p>
                 <p>Phone - 322-323-2222</p>
@@ -44,10 +48,13 @@
                 <!-- <h3>1. </h3>
                 <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
                 
-                <p>Dr Kumar's preferred timing for online consultation is</p>
+                <!-- <p>Dr Kumar's preferred timing for online consultation is</p>
                 <p> Monday to Friday - Anytime after 10 am </p>
                 <p>Saturday - Between 8 am - 4 pm</p>
-                <p>Sunday - No new consultation. But if you are existing patient, then request for appointment</p>
+                <p>Sunday - No new consultation. But if you are existing patient, then request for appointment</p> -->
+                <div ng-repeat="timingSnippet in provider.timing">
+                    <p>{{timingSnippet}}</p>
+                </div>
             </div>
             <div class="col-lg-3">
                 <h3>Services</h3>
@@ -55,10 +62,13 @@
                 <!-- <h3>1. </h3>
                 <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
                 
-                <h5>Consultation By Appointment</h5>
+                <!-- <h5>Consultation By Appointment</h5>
                 <p>Emergency Consultation</p>
                 <p>Package Treatment Options</p>
-                <p>Medicine Delivery</p>
+                <p>Medicine Delivery</p> -->
+                <div ng-repeat="servicesSnippet in provider.servicesOffered">
+                    <p>{{servicesSnippet}}</p>
+                </div>
             </div>
             <div class="col-lg-3">
                 <h3>Fees</h3>
@@ -66,9 +76,12 @@
                 <!-- <h3>1. </h3>
                 <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
                 
-                <p> New Patient - INR 200 </p>
+                <!-- <p> New Patient - INR 200 </p>
                 <p> Regular Patient - INR 150 </p>
-                <p> Followup Consultation - INR 100 </p>
+                <p> Followup Consultation - INR 100 </p> -->
+                <div ng-repeat="feeSnippet in provider.feeStructure">
+                    <p>{{feeSnippet}}</p>
+                </div>
             </div>
             
         </div>
