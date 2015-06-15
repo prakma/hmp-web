@@ -19,7 +19,7 @@ angular.module('providerApp', [
     'providerApp.session',
     'providerApp.dashboard',
     'providerApp.profile',
-    'providerApp.calendar',
+    /*'providerApp.calendar',*/
     'providerApp.croom'
 ]).
 config(['$routeProvider', function($routeProvider) {

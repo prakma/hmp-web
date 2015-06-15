@@ -13,7 +13,7 @@ angular.module('providerApp.dashboard', ['ngRoute'])
         console.log('dashboard controller called !');
         // provider_appts
         $scope.apptList = Consultation.provider_appts();
-        console.log('current time from moment', moment());
+        //console.log('current time from moment', moment());
         $scope.currApptFilter = function(apptObj, index) {
             if (apptObj.apptWF.status == 3)
                 return true;

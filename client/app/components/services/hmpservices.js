@@ -216,6 +216,6 @@ angular.module('myApp.services', [])
 	}])
 .factory('fmoment', [
 	function(){
-		return moment;
+		return {};//moment;
 
 	}]);
