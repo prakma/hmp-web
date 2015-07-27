@@ -205,7 +205,13 @@ controller('DocProfileCtrl', ['$scope', '$window', '$timeout', '$state', 'Subscr
 	HMPUser.setProvider($scope.provider);
 	//debug('provider information', $scope.provider);
 	$scope.beginWF = function (){
-		$state.go ('appt', {'docId':$state.params.docId});
+		if ( HMPUser.isLoggedId() ) {
+			$state.go ('appt', {'docId':$state.params.docId});
+			
+		} else {
+			$state.go('login');
+		}
+		
 	}
 }]).
 /*controller('HomeCtrl4', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser){
