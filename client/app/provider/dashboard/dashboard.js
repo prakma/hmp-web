@@ -12,8 +12,53 @@ angular.module('providerApp.dashboard', ['ngRoute'])
 .controller('DashboardCtrl', ['$scope', '$state', 'Consultation', 'fmoment', function($scope, $state, Consultation, fmoment) {
         console.log('dashboard controller called !');
         // provider_appts
+        
         $scope.apptList = Consultation.provider_appts();
+        function setActiveView(viewName){
+            if(viewName == 'dashboard.current_view'){
+                $scope.currview_active = "active";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "inactive";
+            } else if(viewName == 'dashboard.pastappt_view'){
+                $scope.apptList = Consultation.provider_appts();
+                $scope.currview_active = "inactive";
+                $scope.pastview_active = "active";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "inactive";
+
+            } else if(viewName == 'dashboard.todayappt_view'){
+                $scope.apptList = Consultation.provider_appts();
+                $scope.currview_active = "inactive";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "active";
+                $scope.futureview_active = "inactive";
+
+            } else if(viewName == 'dashboard.futureappt_view'){
+                $scope.apptList = Consultation.provider_appts();
+                $scope.currview_active = "inactive";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "active";
+
+            } else {
+                $scope.currview_active = "active";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "inactive";
+            }
+            
+        }
+
+        setActiveView("default");
         //console.log('current time from moment', moment());
+
+        $scope.$on('$stateChangeSuccess', 
+            function(event, toState, toParams, fromState, fromParams){
+                console.log('state change happened', fromState, toState);
+                setActiveView(toState.name);
+            });
+
         $scope.currApptFilter = function(apptObj, index) {
             if (apptObj.apptWF.status == 3)
                 return true;

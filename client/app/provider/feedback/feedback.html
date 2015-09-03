@@ -1,0 +1,36 @@
+<hr/>
+<div class="row">
+  
+  <div class="col-lg-3"></div>
+  <div class="col-lg-6" ng-controller="FeedbackCtrl">
+    <div ng-if="s_initial">
+      <h2> Please submit this information. We will get in touch.</h2>
+      <form ng-submit="send_feedback()">
+        <div class="form-group">
+          <label for="inputName">Name</label>
+          <input type="text" class="form-control" id="inputName" placeholder="Enter Name" ng-model="name">
+        </div>
+        <div class="form-group">
+          <label for="inputSubject">Subject</label>
+          <input type="text" class="form-control" id="inputSubject" placeholder="Enter subject" ng-model="subject">
+        </div>
+        <div class="form-group">
+          <label for="inputDesc">Please write your contact information and question/comments</label>
+          <textarea class="form-control" id="inputDesc" placeholder="Enter your contact information and your question or comments"  rows="5" ng-model="body"/>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      
+    </div>
+    <div ng-if="s_feedback_done">
+      <div class="alert alert-success" role="alert">
+        <p>{{status}}</p>
+      </div>
+      
+      <p><a href="/pgm/provider_landing/index.html">Main page</a><p>
+    </div>
+  </div>
+
+  <div class="col-lg-3"></div>
+</div>

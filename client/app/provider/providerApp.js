@@ -17,6 +17,7 @@ angular.module('providerApp', [
     'providerApp.version',
     'ipCookie',
     'providerApp.session',
+    'providerApp.feedback',
     'providerApp.dashboard',
     'providerApp.profile',
     /*'providerApp.calendar',*/
@@ -34,12 +35,25 @@ config(function($stateProvider, $urlRouterProvider) {
         url: '/provider/login',
         templateUrl: '/provider/session/login.html'
     }).
+    state('feedback', {
+        url: '/provider/newaccq',
+        templateUrl: '/provider/feedback/feedback.html'
+    }).
     state('dashboard', {
         url: '/provider/dashboard',
         templateUrl: '/provider/dashboard/dashboard.html'
     }).
     state('dashboard.current_view', {
         templateUrl: '/provider/dashboard/current_view.html'
+    }).
+    state('dashboard.pastappt_view', {
+        templateUrl: '/provider/dashboard/pastappt_view.html'
+    }).
+    state('dashboard.todayappt_view', {
+        templateUrl: '/provider/dashboard/todayappt_view.html'
+    }).
+    state('dashboard.futureappt_view', {
+        templateUrl: '/provider/dashboard/futureappt_view.html'
     }).
     state('dashboard.appt_view', {
         url: '/:cref/appt_view.html',
@@ -66,6 +80,7 @@ directive('myHolder1', function() {
     };
 }).controller('MenuContainerCtrl', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser) {
     debug('MenuContainerCtrl called');
+    // debug('route params', $routeParams, $location, $window.location);
 
     $scope.$on('loginEvent', function(event, args) {
         debug('Menubar ctrl received login event');
@@ -108,6 +123,9 @@ directive('myHolder1', function() {
 
     if (HMPUser.isLoggedId()) {
         $state.go('dashboard.current_view');
+    } else if($window.location.search.indexOf("interest") > 0){
+        debug('go to feedback');
+        $state.go('feedback');
     } else {
         $state.go('login');
     }

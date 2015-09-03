@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from subscriber import Subscriber, SubscriberSession, ConsultationWF
 from providerProfile import PbProfile
+from feedback import GeneralFeedback
 
 def findEntityByKey(entityName, key):
 	entityKeyObj = ndb.Key(entityName, key)
@@ -54,3 +55,7 @@ def findProfileByProviderId(providerId):
 	return PbProfile.query(
 		PbProfile.subscriber == ndb.Key('Subscriber', providerId),
 		).fetch(1);
+	
+def findFeedbackById(feedbackId):
+	feedbackKey = ndb.Key('GeneralFeedback', feedbackId)
+	return feedbackKey.get()

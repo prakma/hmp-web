@@ -214,6 +214,21 @@ angular.module('myApp.services', [])
 		});
 
 	}])
+.factory('Feedback', [
+	'$resource', function($resource){
+		return $resource('/s/feedback/',{},{
+			docAccountInterest: {
+				method: 'PUT',
+				params:{
+					cref: '@cref',
+					name:'@name',
+					subject:'@subject',
+					body:'@body'
+				}
+			}
+		});
+
+	}])
 .factory('fmoment', [
 	function(){
 		return {};//moment;

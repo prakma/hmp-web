@@ -5,7 +5,7 @@ from bottle import Bottle, template, static_file, request, response, redirect
 from webargs import Arg
 from webargs.bottleparser import use_args
 
-from sapi import subscriberAPI, sessionAPI, consultAPI, profileAPI
+from sapi import subscriberAPI, sessionAPI, consultAPI, profileAPI, feedbackAPI
 
 import os, base64
 
@@ -338,6 +338,21 @@ def prescription_download(cref, blobKey):
 	response.set_header('X-AppEngine-BlobKey', blobKey) #base64.b64decode(blobKey[1:-1] ) )
 	response.set_header('content-disposition', 'attachment; filename=prescription_'+cref+'.pdf')
 	return response;
+
+feedback_args = {
+	'name': Arg(str),
+	'subject': Arg(str),
+	'body': Arg(str),
+	'subscriber': Arg(str),
+	'parent': Arg(str)
+	
+}
+@bottle.route('/s/feedback', method='PUT')
+@use_args(feedback_args)
+def create_feedback(feedback_json):
+	
+	print 'create new feedback', feedback_json
+	return feedbackAPI.createFeedbackEntry(feedback_json)
 
 
 

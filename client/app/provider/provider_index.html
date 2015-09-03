@@ -43,9 +43,9 @@
                     </div>
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right" ng-if="!authFlag">
-                            <li><a href="#/user/register">Login</a>
+                            <li><a ui-sref="login">Login</a>
                             </li>
-                            <li><a href="#/user/login">Contact</a>
+                            <li><a ui-sref="feedback">Contact</a>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right" ng-if="authFlag">
@@ -53,11 +53,11 @@
                             </li>
                             <li><a ui-sref="doc_profile({docId:{{provider.providerId}} })">Profile</a>
                             </li>
-                            <li><a ui-sref="provider_calendar">Calendar</a>
-                            </li>
-                            <li><a href="#/setting">Help</a>
-                            </li>
-                            <li><a href="#/setting">Contact</a>
+                            <!-- <li><a ui-sref="provider_calendar">Calendar</a>
+                            </li> -->
+                            <!-- <li><a href="#/setting">Payments</a>
+                            </li> -->
+                            <li><a ui-sref="feedback">Contact</a>
                             </li>
                             <li><a href ng-click="logout()">Logout</a>
                             </li>
@@ -113,6 +113,7 @@
     <script src="calendar/calendar.js"></script>
     <script src="session/session.js"></script>
     <script src="croom/croom2.js"></script>
+    <script src="feedback/feedback.js"></script>
     
   </body>
 </html>
