@@ -30,12 +30,12 @@
 	</div> -->
 	<div class="row">
 		<ul class="nav nav-pills">
-		  <li role="presentation" class="active"><a ui-sref="consult_wf.appt({ cref: wf._id })"><span class="glyphicon glyphicon-tag" aria-hidden="true">Appt</span></a></li>
-		  <li role="presentation"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment</span></li>
-		  <li role="presentation"><span class="glyphicon glyphicon-tasks" aria-hidden="true">Questions</span></li>
-		  <li role="presentation"><span class="glyphicon glyphicon-headphones" aria-hidden="true">Meeting</span></li>
-		  <li role="presentation"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></li>
-		  <li role="presentation"><span class="glyphicon glyphicon-comment" aria-hidden="true">Feedback</span></li>
+		  <li role="presentation" class="active"><a ui-sref="consult_wf.appt({ cref: wf._id })"><span class="glyphicon glyphicon-tag" aria-hidden="true">Appt  </span> </a> </li>
+		  <li role="presentation"><a ui-sref="consult_wf.payment({ cref: wf._id })"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment  </span> </a></li>
+		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-tasks" aria-hidden="true">Questions</span></a></li>
+		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-headphones" aria-hidden="true">Meeting</span></a></li>
+		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></a></li>
+		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-comment" aria-hidden="true">Feedback</span></a></li>
 		</ul>
 	</div>
 	<hr class="featurette-divider">
@@ -114,7 +114,7 @@
 	                </div>
 
 	                <!-- <button type="submit" class="btn btn-primary" ng-click="gotoPayment()">Pay Rs. 200</button> -->
-	                <a class="btn btn-primary" ng-click="requestAppt()">Pay Rs. 200</a>
+	                <a class="btn btn-primary" ng-click="requestAppt()">Proceed to Payment Step</a>
 	            </form>
 	            <!-- Modal -->
 	            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

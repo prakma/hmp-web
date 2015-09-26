@@ -165,7 +165,18 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 	$scope.providerList = Subscriber.getDefault();
 	debug('$scope.providerList', $scope.providerList);
 	if (HMPUser.isLoggedId()){
-		$scope.apptList = Subscriber.getAppointments();
+		$scope.apptList = Subscriber.getAppointments(function(){
+			$scope.unfinishedApptList = $scope.apptList.filter(function(apptObj){
+				debug('currApptFilterFn invoked', apptObj.apptWF);
+				if(apptObj.apptWF){
+					return apptObj.apptWF.apptStatus == 1;
+				} else{
+					return true;
+				}
+			});
+			console.log('unfinished appt list', $scope.unfinishedApptList);
+		});
+		
 	}
 
 	$scope.currApptFilterFn = function(apptObj){
@@ -177,14 +188,14 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 		}
 	}
 
-	$scope.unfinishedApptFilterFn = function(apptObj){
-		//debug('currApptFilterFn invoked' );
-		if(apptObj.apptWF){
-			return apptObj.apptWF.apptStatus == 1;
-		} else{
-			return true;
-		}
-	}
+	// $scope.unfinishedApptFilterFn = function(apptObj){
+	// 	//debug('currApptFilterFn invoked' );
+	// 	if(apptObj.apptWF){
+	// 		return apptObj.apptWF.apptStatus == 1;
+	// 	} else{
+	// 		return true;
+	// 	}
+	// }
 
 	$scope.gotoCRoom = function (apptObj) {
 		debug('appt obj for gotoCRoom', apptObj);
@@ -306,7 +317,9 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     		debug('patient details saved !');
     		wf.cref = wf.reference;
     		HMPUser.setConsultationWF(wf.cwf);
-    		$state.go('patient_question',{'cref':wf.cref});
+    		//$state.go('patient_question',{'cref':wf.cref});
+    		$state.go('consult_wf.payment',{'cref':wf.cref});
+    		
     	})
     };
 

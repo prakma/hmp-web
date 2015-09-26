@@ -1,8 +1,78 @@
 <!-- Jumbotron -->
 <div ng-controller="HomeCtrlDefault">
     <div class="main">
-        <div>
-            <h2 class="page-header" ng-if="authFlag">Current Appointments</h2>
+        <div ng-if="authFlag">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Your Appointments</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div ng-if="apptList.length>0">
+                                <div class="col-xs-6" ng-repeat="appt in apptList | filter: currApptFilterFn">
+                                    <h4><!-- <span class="glyphicon glyphicon-minus" aria-hidden="true"> </span> -->&rsaquo; With <a href="#">{{appt.providerName}} </a></h4>
+                                    <p><span class="text-muted">On {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </span><br/>
+                                    <span class="text-muted">Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong><br/>
+                                    <span class="text-muted">Reference : {{appt._id}} </span></p>
+                                    
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <a type="button" class="btn btn-success" ui-sref="consult_wf.appt({ cref: appt._id })">See Details</a>
+                                        <a type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Goto Consultation Room</a>
+                                    </div>
+                                    <hr/>
+                                </div>
+                            </div>
+                            <div ng-if="apptList.length==0">
+                                <p>To create appointment, please click on your doctor's name and begin making appointment request.</p>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <div ng-if="unfinishedApptList.length>0">
+                                <h4>Appointments you started to create but did not complete</h4>
+                                <div ng-repeat="appt in unfinishedApptList">
+                                    <span class="label label-default">{{$index+1}} .</span><span> <a ui-sref="consult_wf.appt({ cref: appt._id })">Reference : {{appt._id}}</a></span>
+                                    <p> With <strong>{{appt.providerName}}</strong> 
+                                    <span class="text-muted">Started on {{appt.lastRefreshedTS | date:'MMM d, y h:mm:ss a'}} </span>
+                                    <hr/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-1"></div>
+                <div class="col-xs-5">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Panel of Doctors to consult</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div ng-repeat="provider in providerList">
+                                <div class="media">
+                                  <div class="media-left media-middle">
+                                    <a ui-sref="doc_profile({docId:{{provider._id}} })">
+                                      <img src="/img/uindex_doc_headshot.jpg" class="media-object" alt="Generic placeholder thumbnail">
+                                    </a>
+                                  </div>
+                                  <div class="media-body">
+                                    <h4 class="media-heading"><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
+                                    <span class="text-muted">{{provider.primaryLocationStr}}</span>
+                                  </div>
+                                </div>
+                                <div><hr/></div>
+                            </div>
+                            
+                        </div>
+                        <div class="panel-footer">
+                            <span> More Doctors...</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <!-- <div>
+            <h2 class="page-header" ng-if="authFlag">Your Appointments</h2>
             <div class="row placeholders">
                 <div class="col-sm-6 placeholder" ng-repeat="appt in apptList | filter: currApptFilterFn">
                     <h4><a href="#">Status - {{appt.apptWF.apptStatus}}</a></h4>
@@ -16,16 +86,17 @@
             </div>
         </div>
         <div>
-            <h2 class="page-header" ng-if="authFlag">Unfinished Appointments</h2>
+            <h2 class="page-header" ng-if="authFlag">Appointments you started to create but did not complete</h2>
             <div class="row placeholders">
                 <div class="col-sm-6 placeholder" ng-repeat="appt in apptList | filter: unfinishedApptFilterFn">
                     <p> With <strong>{{appt.providerName}}</strong> <span> <a ui-sref="consult_wf.appt({ cref: appt._id })">Reference : {{appt._id}}</a></span> </p>
                     <span class="text-muted">Started on {{appt.lastRefreshedTS | date:'MMM d, y h:mm:ss a'}} </span>
                 </div>
             </div>
-        </div>
-        <div>
-            <h2 class="page-header">Reputed Doctors</h2>
+        </div> -->
+
+        <div ng-if="authFlag != true">
+            <h2 class="page-header">Doctors to consult</h2>
             <div class="row placeholders">
                 <div class="col-xs-6 col-sm-3 placeholder" ng-repeat="provider in providerList">
                     <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
