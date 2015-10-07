@@ -31,18 +31,18 @@
 	<div class="row">
 		<ul class="nav nav-pills">
 		  <li role="presentation" class="active"><a ui-sref="consult_wf.appt({ cref: wf._id })"><span class="glyphicon glyphicon-tag" aria-hidden="true">Appt  </span> </a> </li>
-		  <li role="presentation"><a ui-sref="consult_wf.payment({ cref: wf._id })"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment  </span> </a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-tasks" aria-hidden="true">Questions</span></a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-headphones" aria-hidden="true">Meeting</span></a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></a></li>
-		  <li role="presentation"><a href="#"><span class="glyphicon glyphicon-comment" aria-hidden="true">Feedback</span></a></li>
+		  <li role="presentation"><a href="#" disabled="disabled"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment  </span> </a></li>
+		  <li role="presentation"><a href="#" class="disabled"><span class="glyphicon glyphicon-tasks" aria-hidden="true">Questions</span></a></li>
+		  <li role="presentation"><a href="#" class="disabled"><span class="glyphicon glyphicon-headphones" aria-hidden="true">Meeting</span></a></li>
+		  <li role="presentation"><a href="#" class="disabled"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></a></li>
+		  <li role="presentation"><a href="#" class="disabled"><span class="glyphicon glyphicon-comment" aria-hidden="true">Feedback</span></a></li>
 		</ul>
 	</div>
 	<hr class="featurette-divider">
 	<div class="row">
 		<div class="col-lg-3">
 			<h5>Reference No</h5>
-			<a ui-sref="doc_profile({docId:22})">{{wf.reference}}</a>
+			<a href="#">{{wf.reference}}</a>
 		</div>
 		<div class="col-lg-6">
 	        <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;"> -->
@@ -114,7 +114,7 @@
 	                </div>
 
 	                <!-- <button type="submit" class="btn btn-primary" ng-click="gotoPayment()">Pay Rs. 200</button> -->
-	                <a class="btn btn-primary" ng-click="requestAppt()">Proceed to Payment Step</a>
+	                <a class="btn btn-primary" ng-click="requestAppt()">Next Step</a>
 	            </form>
 	            <!-- Modal -->
 	            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -34,6 +34,7 @@
                                     <span class="label label-default">{{$index+1}} .</span><span> <a ui-sref="consult_wf.appt({ cref: appt._id })">Reference : {{appt._id}}</a></span>
                                     <p> With <strong>{{appt.providerName}}</strong> 
                                     <span class="text-muted">Started on {{appt.lastRefreshedTS | date:'MMM d, y h:mm:ss a'}} </span>
+                                    <button type="button" class="close" aria-label="Close" ng-click="removeUnfinishedAppt(appt)"><span aria-hidden="true">&times;</span></button>
                                     <hr/>
                                 </div>
                             </div>
@@ -51,12 +52,13 @@
                                 <div class="media">
                                   <div class="media-left media-middle">
                                     <a ui-sref="doc_profile({docId:{{provider._id}} })">
-                                      <img src="/img/uindex_doc_headshot.jpg" class="media-object" alt="Generic placeholder thumbnail">
+                                      <img src="/img/uindex_doc_headshot.jpg" class="media-object" alt="Generic placeholder thumbnail" style="width: 100px; height: 100px;">
                                     </a>
                                   </div>
                                   <div class="media-body">
                                     <h4 class="media-heading"><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
-                                    <span class="text-muted">{{provider.primaryLocationStr}}</span>
+                                    <span class="text-muted">{{provider.primaryLocationStr}}</span><p/><p/>
+                                    <a class="btn btn-success" ui-sref="doc_profile({docId:{{provider._id}} })" role="button">Consult &raquo;</a>
                                   </div>
                                 </div>
                                 <div><hr/></div>

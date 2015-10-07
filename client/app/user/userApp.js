@@ -201,6 +201,16 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 		debug('appt obj for gotoCRoom', apptObj);
 		$state.go('croom', {appt:apptObj});
 	}
+
+	$scope.removeUnfinishedAppt = function (apptObj) {
+		debug('removing this appt', apptObj);
+		newUnfinishedList = $scope.unfinishedApptList.filter(function(oneApptObj){
+			//console.log('will remove it later');
+			return apptObj._id != oneApptObj._id;
+		});
+		$scope.unfinishedApptList = newUnfinishedList;
+
+	}
 	
 }).
 controller('DocProfileCtrl', ['$scope', '$window', '$timeout', '$state', 'Subscriber', 'HMPUser','ProviderProfile',function($scope, $window, $timeout, $state, Subscriber, HMPUser, ProviderProfile){
@@ -271,6 +281,17 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 			console.log('cwf state saved', cwf);
 		});
 	}
+
+	$scope.setActiveStep = function(){
+		$scope.apptStepState = "active";
+		$scope.pmtStepState = "inactive";
+		$scope.questStepState = "inactive";
+		$scope.meetStepState = "inactive";
+		$scope.prescStepState = "inactive";
+		$scope.feedbStepState = "inactive";
+	}
+
+	
 
 	
 

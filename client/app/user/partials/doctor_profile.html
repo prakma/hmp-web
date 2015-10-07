@@ -20,7 +20,12 @@
                 <!-- <div class="col-lg-4"><a href="#">Rating</a></div>
                 <div class="col-lg-4"><a href="#">Reviews <span class="badge">6</span></a></div>
                 <div class="col-lg-4"><a ng-if="userIsProvider===false" ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a></div> -->
-                <a ng-if="userIsProvider===false" ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a></div>
+                <div ng-if="userIsProvider===false" class="btn-group" role="group" aria-label="Appointment">
+                  <button type="button" class="btn btn-primary" ng-click="beginWF()">Begin Appointment by Video</button>
+                  <button type="button" class="btn btn-default" ng-click="beginWF()" disabled="disabled">Begin Appointment by Phone</button>
+                  <button type="button" class="btn btn-default" ng-click="beginWF()" disabled="disabled">Begin Appointment by Email</button>
+                </div>
+                <!-- <a ng-if="userIsProvider===false" ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a> -->
             </div>
             
         </div>
@@ -94,5 +99,12 @@
         </div>
     </div>
     <!-- /.row -->
+    <div class="row" ng-if="userIsProvider===true">
+        <div class="alert alert-success" role="alert">
+            Please 
+          <a ui-sref="feedback" class="alert-link">contact us </a>
+          for any change in your profile.
+        </div>
+    </div>
 
 </div>

@@ -36,7 +36,7 @@ config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/provider/session/login.html'
     }).
     state('feedback', {
-        url: '/provider/newaccq',
+        url: '/provider/acctreq',
         templateUrl: '/provider/feedback/feedback.html'
     }).
     state('dashboard', {
