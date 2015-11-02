@@ -30,6 +30,7 @@ angular.module('providerApp.session', ['ngRoute'])
                 $state.go('dashboard.current_view');
             } else {
                 debug('todo - invalid login attempt');
+                $scope.loginError = "Invalid Login Credentials"
             }
             
         }, function(httpResponse) {

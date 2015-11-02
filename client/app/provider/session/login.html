@@ -17,6 +17,10 @@
         </div>
         
         <button type="submit" class="btn btn-primary">Login</button>
+        <div ng-show="loginError" class="alert alert-warning alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong>Login Failed!</strong> {{loginError}}
+        </div>
       </form>
   </div>
   <div class="col-lg-3"></div>
