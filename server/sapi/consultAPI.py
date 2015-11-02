@@ -68,8 +68,8 @@ def apptRequestWF (args):
 	cwf.apptWF.requestedTS = dateutil.parser.parse(requestTSStr).replace(tzinfo=None)
 	print 'requestTS into python', cwf.apptWF.requestedTS
 	cwf.apptWF.confirmedTS = dateutil.parser.parse(requestTSStr).replace(tzinfo=None)
-	cwf.apptWF.apptStatusChain = [2,3]
-	cwf.apptWF.apptStatus = 3
+	cwf.apptWF.apptStatusChain = [2]
+	cwf.apptWF.apptStatus = 2
 
 
 	# cwf = subscriber.ConsultationWF()
@@ -246,7 +246,7 @@ def consultWF_setApptState(args):
 	# 	cwf.apptWF.rescheduleTimeByProvider(rescheduleDt, reason)
 
 
-	stateMap = {3:"confirmTimeByProvider", 4: "rescheduleByUser", 5: "rescheduleTimeByProvider", 6: "canceledByUser", 7: "canceledByProvider"}
+	stateMap = {3:"confirmTimeByProvider", 4: "rescheduleByUser", 5: "rescheduleTimeByProvider", 6: "cancelByUser", 7: "cancelByProvider"}
 
 	if(aptWFCd not in stateMap):
 		failureResult['message'] = 'Invalid workflow state - '+ str(aptWFCd)
@@ -254,8 +254,22 @@ def consultWF_setApptState(args):
 
 	rescheduleDtIfProvided = args['rescheduledDt'] 
 	reasonIfProvided = args['reason']
+	print 'statemap/aptWFCd', aptWFCd, stateMap[aptWFCd], cwf
 
-	getattr(cwf.apptWF, stateMap[aptWFCd])(reasonIfProvided, rescheduleDtIfProvided )
+	if(cwf.apptWF == None):
+		# delete this junk(unfinished) appointment
+		cwf.key.delete()
+		return {'result' : 'Success', 'message' : 'Unfinished Appointment Deleted','reference':cref }
+
+	statusAction = getattr(cwf.apptWF, stateMap[aptWFCd])
+
+	
+	
+	if(statusAction != None):
+		getattr(cwf.apptWF, stateMap[aptWFCd])(reasonIfProvided, rescheduleDtIfProvided )
+	else:
+		# appt wf object does not exist so we just junk it now.
+		pass
 	cwf.put()
 
 	successResult = ndb_json.dumps(cwf)

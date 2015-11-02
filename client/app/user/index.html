@@ -21,6 +21,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
     <!-- Custom styles for this template -->
     <link href="provider.css" rel="stylesheet">
@@ -52,7 +53,9 @@
                             
                         </ul>
                         <ul class="nav navbar-nav navbar-right" ng-if="authFlag">
-                            <li><a href="#/dashboard">{{userName}}</span></a>
+                            <li><a href="#/dashboard">{{userName}}'s Dashboard</a>
+                            </li>
+                            <li><a ui-sref="consultation_list">Consultations</a>
                             </li>
                             
                             <li><a href ng-click="logout()">Logout</a>
@@ -94,6 +97,7 @@
     <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="/bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="/bower_components/angular-cookie/angular-cookie.min.js"></script>
+    <script src="/bower_components/moment/moment.js"></script>
 
     <script src="/bower_components/holderjs/holder.js"></script>
 

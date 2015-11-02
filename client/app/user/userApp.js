@@ -39,6 +39,11 @@ config(function($stateProvider, $urlRouterProvider){
 			url: '/user/:cref/questions',
 			templateUrl: '/user/partials/patient_qform1.html'
 		}).
+		state('consultation_list',{
+			url:'/user/consultations',
+			templateUrl: '/user/partials/consultation_list.html',
+			controller: 'ConsultationListCtrl'
+		}).
 		state('consult_wf',{
 			url: '/user/cwf/:cref',
 			templateUrl: '/user/partials/consult_wf.html',
@@ -145,27 +150,53 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 	};
 
 	$scope.login = function (givenEmail, givenPassword) {
+		$scope.loginError = '';
 		Subscriber.login ( {}, {'email': givenEmail, 'passwd':givenPassword}, function (value, responseHeaders){
 			//debug('login response' , value, responseHeaders);
-			HMPUser.login(value);
-			$scope.$emit('loginEvent', 'some junk');
-			debug('main controller emitted login event');
-			//$window.location.href = '/user/index.html';
-			$state.go('userLanding');
+			if(value.result=='Success'){
+				HMPUser.login(value);
+				$scope.$emit('loginEvent', 'some junk');
+				debug('main controller emitted login event');
+				//$window.location.href = '/user/index.html';
+				$state.go('userLanding');
+			} else{
+				// something was wrong. login was not successful
+				$scope.loginError = value.message;
+			}
+			
 		}, function (httpResponse){
 			debug ('login error response', httpResponse);
+			$scope.loginError = "Something went wrong. Please try agian.";
 		});
 	};
 
 }).
-controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser){
+controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser, Consultation, fmoment){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
 	debug('HomeCtrlDefault invoked');
 	$scope.providerList = Subscriber.getDefault();
 	debug('$scope.providerList', $scope.providerList);
+
+	var currTime = fmoment();    
+    var oneDayFuture = currTime.add(1, 'd');
+    var oneDayPast = currTime.subtract(1, 'd');
+
 	if (HMPUser.isLoggedId()){
-		$scope.apptList = Subscriber.getAppointments(function(){
+		// $scope.apptList = Subscriber.getAppointments(function(){
+		// 	$scope.unfinishedApptList = $scope.apptList.filter(function(apptObj){
+		// 		debug('currApptFilterFn invoked', apptObj.apptWF);
+		// 		if(apptObj.apptWF){
+		// 			return apptObj.apptWF.apptStatus == 1;
+		// 		} else{
+		// 			return true;
+		// 		}
+		// 	});
+		// 	console.log('unfinished appt list', $scope.unfinishedApptList);
+		// });
+
+		$scope.apptList = Consultation.user_appts(function(){
+			$scope.lastRefreshedTS = fmoment();
 			$scope.unfinishedApptList = $scope.apptList.filter(function(apptObj){
 				debug('currApptFilterFn invoked', apptObj.apptWF);
 				if(apptObj.apptWF){
@@ -182,7 +213,23 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 	$scope.currApptFilterFn = function(apptObj){
 		//debug('currApptFilterFn invoked' );
 		if(apptObj.apptWF){
-			return [2,3,4,5].indexOf(apptObj.apptWF.apptStatus) > 0;
+			if( [2,3,4,5].indexOf(apptObj.apptWF.apptStatus) > 0 ){
+				// check if the appointment day is within +/- 1 day
+				if(apptObj.apptWF.confirmedTS){
+					var tmpApptTime = apptObj.apptWF.confirmedTS;
+	                if(!tmpApptTime) return false;
+	                if ( fmoment(tmpApptTime).isBetween(oneDayPast, oneDayFuture, 'd') ){
+	                    return true;
+	                }
+	                return false;
+				} else{
+					return false;
+				}
+				
+
+			} else{
+				return false;
+			}
 		} else{
 			return false;
 		}
@@ -204,11 +251,22 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 
 	$scope.removeUnfinishedAppt = function (apptObj) {
 		debug('removing this appt', apptObj);
-		newUnfinishedList = $scope.unfinishedApptList.filter(function(oneApptObj){
-			//console.log('will remove it later');
-			return apptObj._id != oneApptObj._id;
-		});
-		$scope.unfinishedApptList = newUnfinishedList;
+		apptObj.$set_apptWFState({
+	            cref: apptObj._id,
+	            aptWFCd: 6
+	        },
+	        function(value, responseHeaders) {
+	            console.log('appt deleted', value);
+	            newUnfinishedList = $scope.unfinishedApptList.filter(function(oneApptObj){
+					//console.log('will remove it later');
+					return apptObj._id != oneApptObj._id;
+				});
+				$scope.unfinishedApptList = newUnfinishedList;
+	        },
+	        function(httpResponse) {
+	            console.log('appt not deleted. something wrong with the server', httpResponse);
+	        });
+		
 
 	}
 	
@@ -235,37 +293,36 @@ controller('DocProfileCtrl', ['$scope', '$window', '$timeout', '$state', 'Subscr
 		
 	}
 }]).
-/*controller('HomeCtrl4', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser){
+controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
-	debug('homectrl invoked');
-	function initializeUser(){
-		debug('initializeUser invoked');
-		$scope.authFlag = HMPUser.isLoggedId();
-		$scope.userName = HMPUser.getName();
-		debug('is user logged in', HMPUser.isLoggedId(), $scope.authFlag,'name',HMPUser.getName() );
-	}
-
-	initializeUser();
+	console.log('ConsultationListCtrl invoked');
+	var sortByApptTime = function(apptObjX, apptObjY){
+        if (apptObjX.apptWF.confirmedTS){
+            if(apptObjY.apptWF.confirmedTS){
+                // we are good to proceed with time checks
+                var timeX = fmoment(apptObjX.apptWF.confirmedTS);
+                var timeY = fmoment(apptObjY.apptWF.confirmedTS);
+                if(timeX.isBefore(timeY))
+                    return 1;
+                else if(timeX.isAfter(timeY))
+                    return -1;
+                else return 0;
+                
+            } else return 1;
+        } else
+            return -1;
+    }
+	$scope.apptList = Consultation.user_appts(function(){
+			$scope.lastRefreshedTS = fmoment();
+			$scope.timeSortedApptList = $scope.apptList.sort(sortByApptTime);
+			console.log('all consultation appt list', $scope.timeSortedApptList);
+		});
 	
 
 	
-	$scope.docSearch = function(){
-		console.log("redirect to do a doc free text search with ", $scope.docSearchText);
-		$state.go('doc',{searchText:$scope.docSearchText});
-	}
-	$scope.logout = function () {
-		ipCookie.remove('hmp_account',{ path: '/' });
-		HMPUser.logout();
-		initializeUser();
-		$timeout(function(){
-			//$route.reload();
-			//$window.location.href = '/user/index.html';
-			$state.go('userLanding');
-		},5000);
-
-	}
-}).*/
+	
+}).
 controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation){
 
 	// first create a consultation WF instance for reference

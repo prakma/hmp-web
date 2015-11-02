@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <h3 class="sub-header">Waiting Room Queue</h3>
         <!-- <div class="placeholder" ng-repeat="appt in apptList">
                 <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
@@ -10,7 +10,7 @@
                     <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Room</button>
                 </div>
             </div> -->
-        <div class="media" ng-repeat="appt in apptList">
+        <div class="media" ng-repeat="appt in dashboardApptList">
             <div class="media-left">
                 <a href="#">
                     <img my-holder="holder.js/80x80/auto/sky" class="media-object" alt="Patient">
@@ -57,25 +57,29 @@
                 </div> -->
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-7">
         <h3 class="sub-header">Confirm these appointments - </h3>
-        <span>(These are new appointment requests, pending for your schedule confirmation)</span>
+        <span>(These are new/resceduled appointment requests, pending for your schedule confirmation)</span>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Reference</th>
+                        
                         <th>Patient</th>
                         <th>Time Requested</th>
                         <th>Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="appt in apptList">
-                        <td><a href ng-click="gotoApptDetails(appt)">{{appt._id}}</a></td>
+                    <!-- <tr ng-repeat="appt in pendingApptList | filter: pendingApptFilter"> -->
+                    <tr ng-repeat="appt in pendingApptList">
+                        <!-- <td><a href ng-click="gotoApptDetails(appt)">{{appt._id}}</a></td> -->
                         <td>{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}} </td>
                         <td>{{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</td>
-                        <td><a class="btn btn-primary" href ng-click="confirmAppt(appt)">Confirm</a></td>
+                        <td><a class="btn btn-primary" href ng-click="confirmAppt(appt)">Confirm</a>
+                            <a class="btn btn-warning" href ng-disabled="1">Reschedule</a>{{feedbackStr}}</td>
+
                     </tr>
                 </tbody>
             </table>

@@ -79,7 +79,7 @@ class ApptWF(ndb.Model):
 	confirmedTS = ndb.DateTimeProperty()
 	confirmedTS_chain = ndb.DateTimeProperty(repeated=True)
 	apptStatusChain = ndb.IntegerProperty(repeated=True)
-	# 1 = not started, 2 = requested, 3 = confirmed , 4 = new time rescheduled by user, 5 = new time proposed by provider, 6 = canceled by user, 7 = canceled by provider
+	# 1 = not started, 2 = requested, 3 = confirmed , 4 = new time rescheduled by user, 5 = new time proposed by provider, 6 = canceled by user, 7 = canceled by provider, 8 = abandoned by user
 	apptStatus = ndb.IntegerProperty(default=1)
 	reasonChain = ndb.StringProperty(repeated=True)
 

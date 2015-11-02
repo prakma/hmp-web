@@ -7,6 +7,7 @@
                 <h3 class="panel-title">Login/Sign-in</h3>
             </div>
             <div class="panel-body">
+                
                 <form ng-submit="login(givenEmail,givenPassword)">
                     <div class="form-group">
                         <label for="inputEmail">Email address</label>
@@ -21,6 +22,10 @@
                 </form>
             </div>
             <div class="panel-footer">
+                <div ng-show="loginError" class="alert alert-warning alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Login Failed!</strong> {{loginError}}
+                </div>
                 <span> If you have not registered before, please <label><a ui-sref="register">register</a></label> before you can login </span>
             </div>
         </div>

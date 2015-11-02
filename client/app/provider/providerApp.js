@@ -40,19 +40,23 @@ config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/provider/feedback/feedback.html'
     }).
     state('dashboard', {
-        url: '/provider/dashboard',
+        // url: '/provider/dashboard',
         templateUrl: '/provider/dashboard/dashboard.html'
     }).
     state('dashboard.current_view', {
+        url: '/provider/dashboard/main',
         templateUrl: '/provider/dashboard/current_view.html'
     }).
     state('dashboard.pastappt_view', {
+        url: '/provider/dashboard/pastonly',
         templateUrl: '/provider/dashboard/pastappt_view.html'
     }).
     state('dashboard.todayappt_view', {
+        url: '/provider/dashboard/todayonly',
         templateUrl: '/provider/dashboard/todayappt_view.html'
     }).
     state('dashboard.futureappt_view', {
+        url: '/provider/dashboard/futureonly',
         templateUrl: '/provider/dashboard/futureappt_view.html'
     }).
     state('dashboard.appt_view', {

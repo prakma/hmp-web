@@ -162,6 +162,12 @@ angular.module('myApp.services', [])
 				isArray:true
 
 			},
+			user_appts: {
+				method: 'GET',
+				url: '/s/consult/user_appts',
+				isArray:true
+
+			},
 			set_apptWFState: {
 				method: 'POST',
 				url: '/s/consult/cwf/:cref/apptwf'
@@ -231,6 +237,6 @@ angular.module('myApp.services', [])
 	}])
 .factory('fmoment', [
 	function(){
-		return {};//moment;
+		return moment;
 
 	}]);

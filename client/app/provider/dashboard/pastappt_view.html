@@ -11,7 +11,7 @@
                     <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)">Room</button>
                 </div>
             </div> -->
-        <div class="media" ng-repeat="appt in apptList">
+        <div class="media" ng-repeat="appt in olderApptList">
             <div class="media-left">
                 <a href="#">
                     <img my-holder="holder.js/80x80/auto/sky" class="media-object" alt="Patient">
@@ -22,8 +22,8 @@
                 <span class="text-muted">{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span>
                 <div>
                     <a href ng-click="gotoApptDetails(appt)">See Patient Details</a>
-                    <span> or  </span>
-                    <a href ng-click="gotoCRoom(appt)">Go to Consultation Room</a>
+                    <!-- <span> or  </span>
+                    <a href ng-click="gotoCRoom(appt)">Go to Consultation Room</a> -->
                 </div>
                 <!-- <div class="btn-group btn-group-sm" role="group" aria-label="...">
                     <button type="button" class="btn btn-success">Details</button>

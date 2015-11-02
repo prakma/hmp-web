@@ -1,0 +1,19 @@
+<!-- Jumbotron -->
+<div>
+    <div class="main">
+        <div>
+            <h2 class="page-header">All Consultations</h2>
+            <div class="rowxxx placeholdersxxx">
+                <div class="col-sm-6sdsd placeholderxxx" ng-repeat="appt in timeSortedApptList">
+                    <h4> &rsaquo; <a ui-sref="consult_wf.appt({ cref: appt._id })">Reference # {{appt._id}}</a> </h4>
+                    <p> With <strong>{{appt.providerName}} </strong></p>
+                    <p>On {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</p>
+                    
+                    
+                    <p> Status - <span class="text-muted">{{appt.apptWF.apptStatus}}</span> </p>
+                    <hr/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

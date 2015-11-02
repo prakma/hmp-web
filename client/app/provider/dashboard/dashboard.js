@@ -11,46 +11,16 @@ angular.module('providerApp.dashboard', ['ngRoute'])
 
 .controller('DashboardCtrl', ['$scope', '$state', 'Consultation', 'fmoment', function($scope, $state, Consultation, fmoment) {
         console.log('dashboard controller called !');
+        var currTime = fmoment();
+        var fourHrLater = fmoment().add(4, 'h');
+        var oneDayFuture = fmoment().add(1, 'd');
+        var oneDayPast = fmoment().subtract(1, 'd');
         // provider_appts
         
-        $scope.apptList = Consultation.provider_appts();
-        function setActiveView(viewName){
-            if(viewName == 'dashboard.current_view'){
-                $scope.currview_active = "active";
-                $scope.pastview_active = "inactive";
-                $scope.todayview_active = "inactive";
-                $scope.futureview_active = "inactive";
-            } else if(viewName == 'dashboard.pastappt_view'){
-                $scope.apptList = Consultation.provider_appts();
-                $scope.currview_active = "inactive";
-                $scope.pastview_active = "active";
-                $scope.todayview_active = "inactive";
-                $scope.futureview_active = "inactive";
 
-            } else if(viewName == 'dashboard.todayappt_view'){
-                $scope.apptList = Consultation.provider_appts();
-                $scope.currview_active = "inactive";
-                $scope.pastview_active = "inactive";
-                $scope.todayview_active = "active";
-                $scope.futureview_active = "inactive";
+        
 
-            } else if(viewName == 'dashboard.futureappt_view'){
-                $scope.apptList = Consultation.provider_appts();
-                $scope.currview_active = "inactive";
-                $scope.pastview_active = "inactive";
-                $scope.todayview_active = "inactive";
-                $scope.futureview_active = "active";
-
-            } else {
-                $scope.currview_active = "active";
-                $scope.pastview_active = "inactive";
-                $scope.todayview_active = "inactive";
-                $scope.futureview_active = "inactive";
-            }
-            
-        }
-
-        setActiveView("default");
+        
         //console.log('current time from moment', moment());
 
         $scope.$on('$stateChangeSuccess', 
@@ -59,13 +29,207 @@ angular.module('providerApp.dashboard', ['ngRoute'])
                 setActiveView(toState.name);
             });
 
-        $scope.currApptFilter = function(apptObj, index) {
-            if (apptObj.apptWF.status == 3)
+        var confirmedApptFilter = function(apptObj, index) {
+            if (apptObj.apptWF.apptStatus == 3)
                 return true;
             else
                 return false;
 
         }
+        var pendingApptFilter = function(apptObj, index) {
+            if (apptObj.apptWF.apptStatus == 2)
+                return true;
+            else
+                return false;
+
+        }
+        var olderApptFilter = function(apptObj, index) {
+            // check for appointments that were scheduled yesterday or before
+            //console.log('filtering for older appointments');
+            if (apptObj.apptWF.apptStatus){
+                var tmpApptTime = apptObj.apptWF.confirmedTS;
+                if(!tmpApptTime){
+                    // may be it was never confirmed so check for requested time
+                    return false;
+                } 
+                if ( fmoment(tmpApptTime).isBefore(currTime, 'day') ){
+                    return true;
+                }
+                return false;
+            }
+            else
+                return false;
+
+        }
+        var futureApptFilter = function(apptObj, index) {
+            // check for confirmed appointments of future ie, scheduled tomorrow or after
+            console.log('filtering for future confirmed appointments');
+            
+            if (apptObj.apptWF.apptStatus){
+
+                // if it is not confirmed, no need to show under today's appointments
+                if (apptObj.apptWF.apptStatus < 3)
+                    return false;
+
+                var tmpApptTime = apptObj.apptWF.confirmedTS;
+                if(!tmpApptTime){
+                    // may be it was never confirmed so check for requested time
+                    return false;
+                } 
+                if ( fmoment(tmpApptTime).isAfter(currTime, 'day') ){
+                    return true;
+                }
+                return false;
+            }
+            else
+                return false;
+
+        }
+        var todaysApptFilter = function(apptObj, index) {
+            // check for appointments that were scheduled yesterday or before
+            //console.log('filtering for today\'s confirmed appointments only');
+            
+            if (apptObj.apptWF.apptStatus){
+
+                // if it is not confirmed, no need to show under today's appointments
+                if (apptObj.apptWF.apptStatus < 3)
+                    return false;
+
+                var tmpApptTime = apptObj.apptWF.confirmedTS;
+                if(!tmpApptTime){
+                    // may be it was never confirmed so check for requested time
+                    return false;
+                } 
+                if ( fmoment(tmpApptTime).isSame(currTime, 'day') ){
+                    return true;
+                }
+                return false;
+            }
+            else
+                return false;
+
+        }
+        var dashboardApptFilter = function(apptObj, index) {
+            // check if the appointment is both confirmed and within the next 4 hour window
+            //console.log('filtering for dashboard');
+            if (apptObj.apptWF.apptStatus == 3){
+                var tmpApptTime = apptObj.apptWF.confirmedTS;
+                if(!tmpApptTime) return false;
+                if ( fmoment(tmpApptTime).isBetween(currTime, fourHrLater, 'minute') ){
+                    return true;
+                }
+                return false;
+            }
+            else
+                return false;
+        }
+
+        // var sortByApptTime = function(apptObjX, apptObjY){
+        //     if (apptObjX.apptWF.confirmedTS){
+        //         if(apptObjY.apptWF.confirmedTS){
+        //             // we are good to proceed with time checks
+        //             var timeX = fmoment(apptObjX.apptWF.confirmedTS);
+        //             var timeY = fmoment(apptObjY.apptWF.confirmedTS);
+        //             if(timeX.isBefore(timeY))
+        //                 return -1;
+        //             else if(timeX.isAfter(timeY))
+        //                 return 1;
+        //             else return 0;
+                    
+        //         } else return 1;
+        //     } else
+        //         return -1;
+        // }
+
+        function refreshData(resolve){
+            var fullApptList = Consultation.provider_appts();
+            fullApptList.$promise.then(function(values){
+                $scope.fullApptList = values;
+                resolve();
+            }, function(response){
+                console.log('failed to get appointments', response);
+                //reject();
+            });
+            
+        }
+        
+
+        function setActiveView(viewName){
+            if(viewName == 'dashboard.current_view'){
+                //$scope.apptList = $scope.fullApptList.filter($scope.dashboardApptFilter);
+                $scope.currview_active = "active";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "inactive";
+                refreshData(
+                    function(){
+                        // on success
+                        // $scope.fullApptList is already set by refreshData so we can directly use it now
+                        $scope.pendingApptList = $scope.fullApptList.filter(pendingApptFilter);
+                        $scope.dashboardApptList = $scope.fullApptList.filter(dashboardApptFilter);
+                    });
+            } else if(viewName == 'dashboard.pastappt_view'){
+                //$scope.apptList = Consultation.provider_appts();
+                $scope.currview_active = "inactive";
+                $scope.pastview_active = "active";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "inactive";
+                refreshData(
+                    function(){
+                        // on success
+                        // $scope.fullApptList is already set by refreshData so we can directly use it now
+                        var olderApptList = $scope.fullApptList.filter(olderApptFilter);
+                        // now sort by on appt time
+                        //olderApptList.sort(sortByApptTime);
+                        $scope.olderApptList = olderApptList.reverse();
+                    });
+
+            } else if(viewName == 'dashboard.todayappt_view'){
+                //$scope.apptList = Consultation.provider_appts();
+                $scope.currview_active = "inactive";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "active";
+                $scope.futureview_active = "inactive";
+                //console.log('refresh data for todays appt view');
+                refreshData(
+                    
+                    function(){
+                        // on success
+                        // $scope.fullApptList is already set by refreshData so we can directly use it now
+                        //console.log('refreshing data for todays appt view');
+                        $scope.todaysApptList = $scope.fullApptList.filter(todaysApptFilter);
+                    });
+                
+
+            } else if(viewName == 'dashboard.futureappt_view'){
+                //$scope.apptList = Consultation.provider_appts();
+                $scope.currview_active = "inactive";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "active";
+                //console.log('refresh data for todays appt view');
+                refreshData(
+                    
+                    function(){
+                        // on success
+                        // $scope.fullApptList is already set by refreshData so we can directly use it now
+                        console.log('refreshing data for future appt view');
+                        $scope.futureApptList = $scope.fullApptList.filter(futureApptFilter);
+                    });
+                
+
+            } else {
+                $scope.currview_active = "active";
+                $scope.pastview_active = "inactive";
+                $scope.todayview_active = "inactive";
+                $scope.futureview_active = "inactive";
+            }
+            
+            
+        }
+
+        //setActiveView("default");
+        //refreshData();
         $scope.gotoCRoom = function(apptObj) {
             //console.log('goto consulting room', cid, uid, pid);
             $state.go('croom', {
@@ -83,6 +247,7 @@ angular.module('providerApp.dashboard', ['ngRoute'])
 
         $scope.confirmAppt = function(apptObj) {
             console.log('confirm appointment clicked');
+            $scope.feedbackStr = "Confirming..."
             setTimeout(function() {
                 apptObj.$set_apptWFState({
                         cref: apptObj._id,
@@ -90,6 +255,18 @@ angular.module('providerApp.dashboard', ['ngRoute'])
                     },
                     function(value, responseHeaders) {
                         console.log('appt confirmed', value);
+                        $scope.feedbackStr = "Confirmed"
+                        setTimeout(function(){
+                            refreshData(
+                                function(){
+                                    // on success
+                                    // $scope.fullApptList is already set by refreshData so we can directly use it now
+                                    $scope.feedbackStr = "";
+                                    $scope.pendingApptList = $scope.fullApptList.filter(pendingApptFilter);
+                                    $scope.dashboardApptList = $scope.fullApptList.filter(dashboardApptFilter);
+                                });
+                        }, 2000);
+                        
                     },
                     function(httpResponse) {
                         console.log('appt not confirmed. something wrong with the server', httpResponse);

@@ -43,13 +43,13 @@ def findConsultationByUserId(userId):
 	return ConsultationWF.query(
 				ConsultationWF.user == ndb.Key('Subscriber', userId)
 				
-			).order(-ConsultationWF.lastRefreshedTS).fetch(5) 
+			).order(-ConsultationWF.lastRefreshedTS).fetch() 
 
 def findConsultationByProviderId(providerId):
 	return ConsultationWF.query(
 				ConsultationWF.provider == ndb.Key('Subscriber', providerId),
 				ConsultationWF.overallStatus < 3
-			).order(ConsultationWF.overallStatus, ConsultationWF.apptWF.confirmedTS).fetch(10) 
+			).order(ConsultationWF.overallStatus, ConsultationWF.apptWF.confirmedTS).fetch() 
 
 def findProfileByProviderId(providerId):
 	return PbProfile.query(
