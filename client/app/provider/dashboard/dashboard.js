@@ -12,6 +12,7 @@ angular.module('providerApp.dashboard', ['ngRoute'])
 .controller('DashboardCtrl', ['$scope', '$state', 'Consultation', 'fmoment', function($scope, $state, Consultation, fmoment) {
         console.log('dashboard controller called !');
         var currTime = fmoment();
+        var fourHrBefore = fmoment().subtract(4, 'h');
         var fourHrLater = fmoment().add(4, 'h');
         var oneDayFuture = fmoment().add(1, 'd');
         var oneDayPast = fmoment().subtract(1, 'd');
@@ -115,7 +116,7 @@ angular.module('providerApp.dashboard', ['ngRoute'])
             if (apptObj.apptWF.apptStatus == 3){
                 var tmpApptTime = apptObj.apptWF.confirmedTS;
                 if(!tmpApptTime) return false;
-                if ( fmoment(tmpApptTime).isBetween(currTime, fourHrLater, 'minute') ){
+                if ( fmoment(tmpApptTime).isBetween(fourHrBefore, fourHrLater, 'minute') ){
                     return true;
                 }
                 return false;

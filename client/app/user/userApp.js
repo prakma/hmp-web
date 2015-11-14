@@ -179,9 +179,9 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 	debug('$scope.providerList', $scope.providerList);
 
 	var currTime = fmoment();    
-    var oneDayFuture = currTime.add(1, 'd');
-    var oneDayPast = currTime.subtract(1, 'd');
-
+    var oneDayFuture = fmoment().add(1, 'days');
+    var oneDayPast = fmoment().subtract(1, 'days');
+    console.log('currtime',currTime.format(),'onedaypast',oneDayPast.format(),'onedayfuture',oneDayFuture.format() );
 	if (HMPUser.isLoggedId()){
 		// $scope.apptList = Subscriber.getAppointments(function(){
 		// 	$scope.unfinishedApptList = $scope.apptList.filter(function(apptObj){
@@ -196,9 +196,9 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 		// });
 
 		$scope.apptList = Consultation.user_appts(function(){
-			$scope.lastRefreshedTS = fmoment();
+			$scope.lastRefreshedTS = fmoment().format("[today] ddd, h:mm:ss A"); ;
 			$scope.unfinishedApptList = $scope.apptList.filter(function(apptObj){
-				debug('currApptFilterFn invoked', apptObj.apptWF);
+				//debug('currApptFilterFn invoked', apptObj.apptWF);
 				if(apptObj.apptWF){
 					return apptObj.apptWF.apptStatus == 1;
 				} else{
@@ -218,9 +218,11 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 				if(apptObj.apptWF.confirmedTS){
 					var tmpApptTime = apptObj.apptWF.confirmedTS;
 	                if(!tmpApptTime) return false;
+	                
 	                if ( fmoment(tmpApptTime).isBetween(oneDayPast, oneDayFuture, 'd') ){
 	                    return true;
 	                }
+	                console.log('currtime wasnt between +/- 1 day');
 	                return false;
 				} else{
 					return false;

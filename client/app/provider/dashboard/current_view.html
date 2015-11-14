@@ -77,8 +77,14 @@
                         <!-- <td><a href ng-click="gotoApptDetails(appt)">{{appt._id}}</a></td> -->
                         <td>{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}} </td>
                         <td>{{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</td>
-                        <td><a class="btn btn-primary" href ng-click="confirmAppt(appt)">Confirm</a>
-                            <a class="btn btn-warning" href ng-disabled="1">Reschedule</a>{{feedbackStr}}</td>
+                        <td><!-- <a class="btn btn-primary" href ng-click="confirmAppt(appt)">Confirm</a>
+                            <a class="btn btn-warning" href ng-disabled="1">Reschedule</a>{{feedbackStr}} -->
+                            <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                                <button type="button" class="btn btn-primary" ng-click="confirmAppt(appt)">Confirm</button>
+                                <button type="button" class="btn btn-warning" ng-click="gotoCRoom(appt)" ng-disabled="1">Reschedule</button>
+                            </div>
+                        </td>
+                            
 
                     </tr>
                 </tbody>

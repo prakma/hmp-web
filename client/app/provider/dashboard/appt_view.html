@@ -35,27 +35,27 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">at {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h3>
-                <small>Status</small> <span class="label label-default">{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</span>
+                <small>Status</small> <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong>
                 <br/>
-                <small>Payment</small> <span class="label label-success">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</span>
+                <small>Payment</small> <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong>
             </div>
             <div class="panel-body">
-                <div class="btn-group btn-group-sm" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default">Confirm</button>
-                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)">Ask for Reschedule</button>
-                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)">Cancel</button>
-                    <button type="button" class="btn btn-primary">Go to Consultation Room</button>
+                <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default" ng-show="appt | cwfStateTransitionAllowed : 'apptConfirmByUser' ">Confirm</button>
+                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptRescheduleByProvider' ">Reschedule</button>
+                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptCancelByProvider' ">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
                 </div>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Prescription/Notes</h3>
+                <h3 class="panel-title">Prescription/Notes<small></h3>
             </div>
             <div class="panel-body">
                 
                 <form action="{{uploadURL}}" enctype="multipart/form-data" method="post">
-                    Upload New Prescription: <br>
+                    Upload New Prescription or Note: <br>
                    
                    <!-- <input type="submit" value="Send"> -->
                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
@@ -65,14 +65,14 @@
                 </form>
                 
                 <ul class="list-group">
-                    <li class="list-group-item" ng-if=" ! appt.fullfillmentWF">No Prescription Uploaded yet</li>
+                    <li class="list-group-item" ng-if=" ! appt.fullfillmentWF">Upload the prescription or note after the online consultation is over. It will be visible to patient immediately.</li>
                     <li class="list-group-item" ng-if="appt.fullfillmentWF"><a href="/s/consult/cwf/{{appt._id}}/prescription/{{appt.fullfillmentWF.prescription_ref}}">Download Prescription</a></li>
                 </ul>
             </div>
         </div>
         <div>
             <h3>Feedback</h3>
-            <span>No feedback on this appointment yet!</span>
+            <span>No feedback yet. (Patient may provide a feedback few days after the consultation.)</span>
         </div>
     </div>
 </div>

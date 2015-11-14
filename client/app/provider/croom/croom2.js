@@ -22,11 +22,27 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
 // })
 
 
-.controller('CRoomCtrl', ['$scope', '$window', '$stateParams', 'HMPUser', 'Consultation', function($scope, $window, $stateParams, hUser, Consultation) {
+.controller('CRoomCtrl', ['$scope', '$window', '$stateParams', 'HMPUser', 'Consultation', 'fPatientQBank','fmoment', function($scope, $window, $stateParams, hUser, Consultation, fPatientQBank, fmoment) {
 
     console.log('croom controller for provider called !', $stateParams);
     userId = 'D'+$stateParams.appt.provider[0][1];
     remoteUserId = 'U'+$stateParams.appt.user[0][1];
+    function setupPatientDataForDisplay(){
+        $scope.appt = $stateParams.appt;
+        var questionSize, questionSizeArray = [];
+        questionSize = 0 || $scope.appt.patientDetailsWF.questionId.length;
+        for (var i = 0; i < questionSize; i++) {
+            questionSizeArray.push(i);
+        }
+
+        $scope.qLoopHelper = questionSizeArray;
+        // console.log('question size array', questionSizeArray);
+        // console.log('qid 1', $stateParams.appt.patientDetailsWF.questionId[0]);
+        $scope.qbank = fPatientQBank;
+        $scope.waitingSince = fmoment($stateParams.appt.apptWF.confirmedTS).fromNow()
+    }
+    setupPatientDataForDisplay();
+    
     // provider_appts
     // $scope.apptList = Consultation.provider_appts();
 

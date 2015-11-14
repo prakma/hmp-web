@@ -1,4 +1,5 @@
 <div ng-controller="CRoomCtrl">
+
     <div class="row">
         <!-- <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
@@ -15,7 +16,15 @@
         </div> -->
         <!-- <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"> -->
         <div class="col-sm-12 main">    
-            <h1 class="page-header">Patient - {{patientDesc}}</h1>
+            <h1 class="page-header">Patient - {{patientDesc}} <span class="text-muted">{{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span></h1>
+            <p>
+                
+                <h3 class="panel-title">Confirmed Appointment at {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h3>
+                <br/>
+                <small>Payment</small> <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong>
+                <br/>
+                Patient is <span class="label label-success">Online</span>. Waiting since <strong>{{waitingSince}}</strong>
+            </p>
 
             <div class="row placeholders">
                 
@@ -30,26 +39,90 @@
 
                   <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-8">
                             
                             <img id="video_local_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
                             <div id="video_container_local">
 
                             </div>
+                            <br/>
+                            <button class="btn btn-primary" type="submit" ng-click="callUser()">Call This Patient</button>
+                    <button class="btn btn-danger" type="submit" ng-click="stopCall()">Disconnect Call</button>
+                            <br/>
                         </div>
-                        <div class="col-sm-6">
-                            <img id="video_remote_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive" alt="Generic placeholder thumbnail"/>
-                            <div id="video_container_remote"></div>
+                        <div class="col-sm-4">
+                            <div class="panel panel-default">
+                              <div class="panel-body">
+                                Message Board
+                              </div>
+                              <div class="panel-footer">
+                                  <div class="input-group">
+                                      <input type="text" class="form-control" placeholder="Write message for patient (if needed) ">
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button">Send</button>
+                                      </span>
+                                    </div>                                  
+                              </div>
+                            </div>                    
                         </div>
                     </div>
+                    
                   </div>
                   <div class="panel-footer">
-                    <button class="btn btn-primary" type="submit" ng-click="callUser()">Call This Patient</button>
-                    <button class="btn btn-danger" type="submit" ng-click="stopCall()">Disconnect Call</button>
+                    <!-- <button class="btn btn-primary" type="submit" ng-click="callUser()">Call This Patient</button>
+                    <button class="btn btn-danger" type="submit" ng-click="stopCall()">Disconnect Call</button> -->
+                    After completion of online appointment, please upload prescription for the patient.
                   </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-6">
+                
+                    <img id="video_local_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
+                    <div id="video_container_local">
 
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <img id="video_remote_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive" alt="Generic placeholder thumbnail"/>
+                    <div id="video_container_remote"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+        <h3 class="sub-header">Patient Information</h3>
+        <div class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img my-holder="holder.js/80x80/auto/sky" class="media-object" alt="Patient">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{appt.patientDetailsWF.patientName}}</h4>
+                <span class="text-muted">{{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}}</span>
+            </div>
+        </div>
+        <p></p>
+        <div class="row" ng-repeat="aQuestionIndex in qLoopHelper">
+            <p class="bg-info"><strong>{{qbank(appt.patientDetailsWF.questionId[aQuestionIndex])}}</strong></p>
+            <p class="text-muted">{{appt.patientDetailsWF.answerText[aQuestionIndex]}}</p>
+            <br/>
+            <br/>
+            <br/>
+        </div>
+        <!-- <div class="panel panel-default" ng-repeat="aQuestionIndex in qLoopHelper">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{qbank(appt.patientDetailsWF.questionId[aQuestionIndex])}}</h3>
+              </div>
+              <div class="panel-body">
+                {{appt.patientDetailsWF.answerText[aQuestionIndex]}}
+              </div>
+            </div> -->
         </div>
     </div>
     <script type="text/javascript" src="https://api.bistri.com/bistri.conference.min.js"></script>
