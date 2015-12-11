@@ -1,4 +1,5 @@
-from model import subscriber, queryAPI, ndb_json
+from model import subscriber, queryAPI, ndb_json, providerProfile
+import platformAPI
 import dateutil.parser
 import datetime
 import hashlib
@@ -42,8 +43,10 @@ consult_args = {
 def apptRequestWF (args):
 	cref = args['cref'];
 	patientName = args['patientName']
+
 	patientAge = args['age']
 	patientSex = args['sex']
+	patientPhone = args['patientPhone']
 	requestTSStr = args['requestedTS']
 	print 'requestTSStr received', requestTSStr
 	problemSummary = args['problemSummary']
@@ -80,12 +83,32 @@ def apptRequestWF (args):
 	cwf.patientDetailsWF.patientName = patientName
 	cwf.patientDetailsWF.patientAge = patientAge
 	cwf.patientDetailsWF.patientSex = patientSex
+	cwf.patientDetailsWF.patientPhone = patientPhone
 	cwf.patientDetailsWF.questionId = ['Summary']
 	cwf.patientDetailsWF.answerText = [problemSummary]
 
 	cwf.statusWF = subscriber.StatusWF()
 	cwf.statusWF.overallStatusChain = [1]
 	cwf.statusWF.overallStatus = 1 
+
+	# create paymentWF and populate expected amount
+	cwf.paymentWF = subscriber.PaymemtWF()
+	# get the provider profile to populate expected payment
+	profileList = queryAPI.findProfileByProviderId(cwf.provider.id())
+	if(profileList == None or len(profileList) == 0):
+		failureResult['message'] = 'Invalid Provider - ' + str(cwf.provider.id())
+		return failureResult
+	profile = profileList[0]
+
+	cwf.paymentWF.prExpAmt = profile.feeStruc.regularFee
+	cwf.paymentWF.plExpAmt = profile.feeStruc.platformFee # platformAPI.getPlatformFee(cwf)
+	cwf.paymentWF.txExpAmt = 0
+	cwf.paymentWF.expCurr = profile.feeStruc.baseCurrency
+	cwf.paymentWF.deriveTotalExpectedAmount()
+	cwf.paymentWF.paymentStatus = 1
+	cwf.paymentWF.paymentStatusChain = [1]
+	
+	
 
 	# In-Progress
 	cwf.overallStatus = 2
@@ -98,14 +121,16 @@ def apptRequestWF (args):
 
 
 patientq_args = {
-    'cref': '',
-    'qkey':'',
-    'qtext':''
+    '_id': '',
+    'user':'',
+    # and the rest of json is cwf json object
+    
 }
 def patientQuestionWF (args):
-	cref = args['cref'];
+	print 'patientQuestionWF args', args
+	cref = args['_id']
 	user = args['user']
-
+	
 	failureResult = { 'result' : 'Failure', 'message' : '' }
 	successResult = {'result' : 'Success', 'message' : '','reference':'' }
 
@@ -128,14 +153,21 @@ def patientQuestionWF (args):
 	# cwf.patientDetailsWF.questionId = []
 	# cwf.patientDetailsWF.answerText = []
 
-	for k in sorted(args.keys()):
-		if (k != 'cref' and k != 'reference' and k != 'user'):
-			cwf.patientDetailsWF.questionId.append (k)
-			cwf.patientDetailsWF.answerText.append (args[k])		
+	# for k in sorted(args.keys()):
+	# 	if (k != 'cref' and k != 'reference' and k != 'user'):
+	# 		cwf.patientDetailsWF.questionId.append (k)
+	# 		cwf.patientDetailsWF.answerText.append (args[k])
+
+	# reset all existing answers, if there are any, but leave the first one because it is summary of the appointment
+	cwf.patientDetailsWF.answerText[1:] = []
+	for i in range(len(args['patientDetailsWF']['answerText'][1:])):
+		# print 'qkey'+str(i+1), args['patientDetailsWF']['answerText'][i+1]
+		cwf.patientDetailsWF.questionId.append ('qkey'+str(i+1))
+		cwf.patientDetailsWF.answerText.append (args['patientDetailsWF']['answerText'][i+1])		
 
 
 	# In-Progress
-	cwf.overallStatus = 2
+	# cwf.overallStatus = 2
 
 	cwf.put()
 	successResult['message'] = 'Patient Questionnaire Information Stored'
@@ -316,7 +348,7 @@ def consultWF_updatePayment(args):
 	if not cwf.paymentWF:
 		cwf.paymentWF = subscriber.PaymemtWF()	
 
-	cwf.paymentWF.basicAmount = float(total)
+	cwf.paymentWF.totalPaidAmount = float(total)
 
 	if not cwf.paymentWF.paymentConfirmToken:
 		cwf.paymentWF.paymentConfirmToken = [invoice_id]
@@ -332,7 +364,7 @@ def consultWF_updatePayment(args):
 	cwf.paymentWF.paymentStatus = 3 if paymentProcessed == 'Y' else 4	
 	paymentProcessed
 	if cwf.paymentWF.paymentStatusChain:
-		cwf.paymentWF.paymentStatusChain.append( datetime.datetime.now() )
+		cwf.paymentWF.paymentStatusChain.append( cwf.paymentWF.paymentStatus )
 	else:
 		cwf.paymentWF.paymentStatusChain = [cwf.paymentWF.paymentStatus]
 

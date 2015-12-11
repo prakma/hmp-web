@@ -107,10 +107,16 @@ def query(args):
 	#print request.body
 	#return {'result':'success'}
 
+
 @bottle.route('/s/subscriber/_default', method='GET')
 def defaultProviders():
 	print 'defaultprovider queried'
 	return subscriberAPI.getDefaultSubscribers()
+
+@bottle.route('/s/subscriber/user/<userSubscriberId:int>', method='GET')
+def fetchProvider(userSubscriberId):
+	print 'fetchusersubscriber queried', userSubscriberId
+	return subscriberAPI.getSubscriberByKey(userSubscriberId)
 
 @bottle.route('/s/subscriber/doc/<docProfileId:int>', method='GET')
 def fetchProvider(docProfileId):
@@ -154,6 +160,7 @@ consult_args = {
     'patientName': Arg(str),
     'age': Arg(str),
     'sex': Arg(str),
+    'patientPhone': Arg(str),
     'requestedTS': Arg(str),
     'problemSummary': Arg(str)
 }
@@ -166,6 +173,8 @@ def consultWF_appt(args):
 		return {'result':'Failure', 'message':'Unauthenticated'}
 	args['user'] = user	
 	return consultAPI.apptRequestWF(args)
+	# print 'will return failure message for now'
+	# return {'result':'Failure', 'message':'Service Temporarily unavailable'}
 
 
 # consult_patientq_args = {
@@ -185,7 +194,8 @@ def consultWF_patientq():
 	if(user == None):
 		return {'result':'Failure', 'message':'Unauthenticated'}
 	#args['user'] = user	
-	qkeys = request.json
+	#qkeys = request.json
+	#print 'request json is', qkeys
 	#qkey1 = args['qkey1']
 	args = {x:request.json.get(x) for x in request.json.keys()}
 	args['user'] = user
@@ -262,7 +272,10 @@ def set_provider_profile():
 @bottle.route('/s/provider/<providerId>/profile', method='GET')
 def get_provider_profile(providerId):
 	print 'get provider profile called', providerId
-	return profileAPI.getProfile(providerId);
+	profileJson = profileAPI.getProfile(providerId)
+	# return profileAPI.getProfile(providerId);
+	print profileJson
+	return profileJson
 
 # def update_appt_request
 

@@ -120,9 +120,27 @@ class ApptWF(ndb.Model):
 
 ## payment_info_provided, sent_to_bank, bank_confirmed
 class PaymemtWF(ndb.Model):
-	basicAmount = ndb.FloatProperty()
+	# provider expected amount
+	prExpAmt = ndb.FloatProperty()
+
+	# platform expected amount
+	plExpAmt = ndb.FloatProperty()
+
+	# taxes expected
+	txExpAmt = ndb.FloatProperty()
+
+	# total expected
+	ttlExpAmt = ndb.FloatProperty()
 	additionalPendingCharges = ndb.FloatProperty(repeated=True)
-	currency = ndb.StringProperty(default="INR")
+
+	# expected currency
+	expCurr = ndb.StringProperty(default="INR")
+
+	# total paid amount
+	totalPaidAmount = ndb.FloatProperty()
+
+	# paid in currency
+	paidCurrency = ndb.StringProperty(default="INR")
 
 	paymentToken = ndb.StringProperty(repeated=True)
 	paymentBeginTS = ndb.DateTimeProperty(repeated=True)
@@ -133,12 +151,16 @@ class PaymemtWF(ndb.Model):
 	paymentStatusChain = ndb.IntegerProperty(repeated=True)
 	paymentStatus = ndb.IntegerProperty(default=1)
 
+	def deriveTotalExpectedAmount(self):
+		self.ttlExpAmt = self.prExpAmt + self.plExpAmt + self.txExpAmt
+
 
 ## no_info, partial_info, nearly_complete, complete
 class PatientDetailsWF(ndb.Model):
 	patientName = ndb.StringProperty()
 	patientAge = ndb.StringProperty()
 	patientSex = ndb.StringProperty()
+	patientPhone = ndb.StringProperty()
 	#[Summary,]
 	questionId = ndb.StringProperty(repeated=True)
 	answerText = ndb.StringProperty(repeated=True)

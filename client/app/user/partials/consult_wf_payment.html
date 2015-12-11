@@ -3,14 +3,52 @@
 		
 		<div>
 	     
-	        <h3>Step 2: Payment</h3>
-	        <strong>Status - {{wf.paymentWF.paymentStatus | cwfFilter:'payment'}} on {{wf.paymentWF.paymentConfirmTS[0] | date:'MMM d, y h:mm:ss a'}} </strong>
+	        <h3>Payment</h3>
+	        <span>New Appointment Flow: {{newApptFlow}}</span>
+	        <div ng-if="newApptFlow">
+	        	<div class="alert alert-info" role="alert">Your appointment is not confirmed yet by Doctor. We advise you to pay now, but you can come back to this page later to complete your payment</div>
+	        </div>
+	        <div ng-if="newApptFlow == false">
+	        	<strong>Status - {{wf.paymentWF.paymentStatus | cwfFilter:'payment'}} on {{wf.paymentWF.paymentConfirmTS[0] | date:'MMM d, y h:mm:ss a'}} </strong>
+	        </div>
+	        <div class="table-responsive">
+		        <table class="table table-bordered table-condensed table-hover">
+		        	<thead>
+		                <tr>
+		                    <th>Description</th>
+		                    <th class="text-right">Fees ({{wf.paymentWF.expCurr}})</th>
+		                    
+		                </tr>
+		            </thead>
+		            <tbody>
+		                
+			        	<tr class="active">
+			        		<td>Consultation Fees</td>
+			        		<td class="text-right">{{consultationFee}}</td>
+			        	</tr>
+			        	<!-- <tr>
+			        		<td> Discount Code by Doctor</td>
+			        		<td class="text-right">- 60.00</td>
+			        	</tr>
+			        	<tr>
+			        		<td> Discount Code by R7</td>
+			        		<td class="text-right">- 40.00</td>
+			        	</tr> -->
+			        	<tr class="success">
+			        		<td class="text-capitalize">Total</td>
+			        		<td class="text-right">{{totalFee}}</td>
+			        	</tr>
+		            </tbody>
+		        	
+				</table>
+			</div>
+	        
 	        <div ng-if="wf.paymentWF.paymentStatus != 3">
 	            <form>
 	                  
 	                <div class="form-group">
 	                    <label for="consultationCost">Online Consultation Cost</label>
-	                    <span class="label label-default">{{wf.paymentWF.basicAmount}}(INR 500)</span>
+	                    <span class="label label-default">{{wf.paymentWF.expCurr}} {{totalFee}}</span>
 	                </div>
 	                
 	            </form>
@@ -20,16 +58,19 @@
 	              <input type='hidden' name='mode' value='2CO' />
 	              <input type='hidden' name='li_0_type' value='Remote Consultation' />
 	              <input type='hidden' name='li_0_product_id' value='{{wf._id}}' />
-	              <input type='hidden' name='li_0_name' value='{{wf._id}}' />
-	              <input type='hidden' name='li_0_price' value='200' />
-	              <input type='hidden' name='email' value='manoj.prakash@gmail.com' />
-	              <input type='hidden' name='phone' value='614-921-2450' />
-	              <input type='hidden' name='currency_code' value='INR' />
+	              <input type='hidden' name='li_0_name' value='{{wf.providerName}}/Consultation/{{wf.patientDetailsWF.patientName}}' />
+	              <input type='hidden' name='li_0_price' value='{{totalFee}}' />
+	              
+	              <input type='hidden' name='card_holder_name' value='{{userSubscriber.name}}' />
+	              <input type='hidden' name='email' value='{{userSubscriber.email[0]}}' />
+	              <input type='hidden' name='phone' value='{{wf.patientDetailsWF.patientPhone}}' />
+	              <input type='hidden' name='country' value='INDIA' />
+	              <input type='hidden' name='currency_code' value='{{wf.paymentWF.expCurr}}' />
 	              <input type='hidden' name='merchant_order_id' value='{{wf._id}}' />
 	              
 	              <input type='hidden' name='x_receipt_link_url' value='http://SANDBOX:8080/user/index.html#/user/cwf/{{wf._id}}/payment/return' />
 	              <!-- <input name='submit' type='submit' value='Checkout' /> -->
-	              <button type="submit" class="btn btn-primary" ng-click="patientQ()">Pay INR {{wf.paymentWF.basicAmount}}(500 Rs)</button>
+	              <button type="submit" class="btn btn-primary" ng-click="patientQ()">Pay {{wf.paymentWF.expCurr}} {{totalFee}}</button>
 	            </form>
 
 	        </div>

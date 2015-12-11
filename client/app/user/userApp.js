@@ -47,7 +47,8 @@ config(function($stateProvider, $urlRouterProvider){
 		state('consult_wf',{
 			url: '/user/cwf/:cref',
 			templateUrl: '/user/partials/consult_wf.html',
-			controller: 'CwfCtrl'
+			controller: 'CwfCtrl',
+			params: {'new_appt_flow':false}
 		}).
 		state('consult_wf.appt',{
 			url: '^/user/cwf/:cref/appt',
@@ -55,7 +56,8 @@ config(function($stateProvider, $urlRouterProvider){
 		}).
 		state('consult_wf.payment',{
 			url: '^/user/cwf/:cref/payment',
-			templateUrl: '/user/partials/consult_wf_payment.html'
+			templateUrl: '/user/partials/consult_wf_payment.html',
+			controller: 'CwfPaymentCtrl'
 		}).
 		state('consult_wf.paymentReturn',{
 			url: '^/user/cwf/:cref/payment/return',
@@ -174,13 +176,13 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser, Consultation, fmoment){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
-	debug('HomeCtrlDefault invoked');
+	// debug('HomeCtrlDefault invoked');
 	$scope.providerList = Subscriber.getDefault();
-	debug('$scope.providerList', $scope.providerList);
+	// debug('$scope.providerList', $scope.providerList);
 
 	var currTime = fmoment();    
     var oneDayFuture = fmoment().add(1, 'days');
-    var oneDayPast = fmoment().subtract(1, 'days');
+    var oneDayPast = fmoment().subtract(2, 'days');
     console.log('currtime',currTime.format(),'onedaypast',oneDayPast.format(),'onedayfuture',oneDayFuture.format() );
 	if (HMPUser.isLoggedId()){
 		// $scope.apptList = Subscriber.getAppointments(function(){
@@ -205,24 +207,27 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 					return true;
 				}
 			});
-			console.log('unfinished appt list', $scope.unfinishedApptList);
+			// console.log('unfinished appt list', $scope.unfinishedApptList);
 		});
 		
 	}
 
 	$scope.currApptFilterFn = function(apptObj){
-		//debug('currApptFilterFn invoked' );
+		//debug('currApptFilterFn0 invoked');
+		// if(apptObj.apptWF && apptObj.apptWF.requestedTS)
+		// 	debug('currApptFilterFn1 invoked, requestedTS is', apptObj.apptWF );
 		if(apptObj.apptWF){
-			if( [2,3,4,5].indexOf(apptObj.apptWF.apptStatus) > 0 ){
+			if( [2,3,4,5].indexOf(apptObj.apptWF.apptStatus) >= 0 ){
 				// check if the appointment day is within +/- 1 day
-				if(apptObj.apptWF.confirmedTS){
-					var tmpApptTime = apptObj.apptWF.confirmedTS;
+				if(apptObj.apptWF.requestedTS){
+					var tmpApptTime = apptObj.apptWF.requestedTS;
+					//debug('currApptFilterFn1.5 invoked, requestedTS is', tmpApptTime );
 	                if(!tmpApptTime) return false;
-	                
+	                //debug('currApptFilterFn2 invoked, requestedTS is', tmpApptTime );
 	                if ( fmoment(tmpApptTime).isBetween(oneDayPast, oneDayFuture, 'd') ){
 	                    return true;
 	                }
-	                console.log('currtime wasnt between +/- 1 day');
+	                // console.log('currtime wasnt between +/- 1 day');
 	                return false;
 				} else{
 					return false;
@@ -294,12 +299,37 @@ controller('DocProfileCtrl', ['$scope', '$window', '$timeout', '$state', 'Subscr
 		}
 		
 	}
+
+	$scope.showMoreFlag = false,$scope.more_less_text = "More..."; // default
+	console.log('current more/less text is',$scope.more_less_text);
+	$scope.showMoreOrLess = function (){
+		// toggle the div ... if current val is "more", show the div now, but toggle the text to "less"
+		console.log('toggle more or less');
+		if($scope.showMoreFlag){
+			$scope.showMoreFlag = false;
+			$scope.more_less_text = "More...";
+
+		} else{
+			$scope.showMoreFlag = true;
+			$scope.more_less_text = "Less...";
+		}
+
+	}
 }]).
 controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
-	console.log('ConsultationListCtrl invoked');
+	// console.log('ConsultationListCtrl invoked');
 	var sortByApptTime = function(apptObjX, apptObjY){
+		if(! apptObjX.apptWF ){
+			// when apptWF object is not yet set, for ex, when user did not save the first page of appointment
+			return -1;
+		}
+
+		if(! apptObjY.apptWF ){
+			// when apptWF object is not yet set, for ex, when user did not save the first page of appointment
+			return 1;
+		}
         if (apptObjX.apptWF.confirmedTS){
             if(apptObjY.apptWF.confirmedTS){
                 // we are good to proceed with time checks
@@ -318,27 +348,61 @@ controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 	$scope.apptList = Consultation.user_appts(function(){
 			$scope.lastRefreshedTS = fmoment();
 			$scope.timeSortedApptList = $scope.apptList.sort(sortByApptTime);
-			console.log('all consultation appt list', $scope.timeSortedApptList);
+			// console.log('all consultation appt list', $scope.timeSortedApptList);
 		});
 	
 
 	
 	
 }).
-controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation){
+controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation, fmoment){
 
-	// first create a consultation WF instance for reference
+	console.log('cwfctrl invoked');
 	var cref = $stateParams.cref;
-	debug('CwfCtrl called with cref', cref);
-	var cwf = Consultation.get_cwf({cref:cref});
-	debug('consultation object fetched', cwf);
-	$scope.wf = cwf;
+	var providerId = $stateParams.docId;
+	var cwf;
+	if(cref){
+		// consultation wf instance already exists, load it
+		cwf = Consultation.get_cwf({cref:cref});
+		// debug('consultation object fetched', cwf);
+		$scope.wf = cwf;
+		$scope.wf.$promise.then(function(){
+			$scope.wf.requestedTS = fmoment().add(1, 'days').format();
+		});
+
+	} else{
+		// // first create a consultation WF instance for reference
+		// var wf = new Consultation();
+		// var initialConsultation = wf.$begin({'providerId':providerId});
+		// initialConsultation.$promise.then(function(cwfObj){
+		// 	cwf = cwfObj;
+		// 	$scope.wf = cwf;
+
+		// })
+
+	}
+	
+	console.log('new appt flow stateparams',$stateParams, $state );
+
+	// max date on the datepicker
+    
+    var threeMonthsFuture = fmoment().add(3, 'months');
+    $scope.untilDate = threeMonthsFuture.format();
+    
+
+	// debug('CwfCtrl called with cref', cref);
+	
 
 	$scope.saveCwfState = function(){
 		console.log('saving cwf state');
-		cwf.$save(function(wf){
-			console.log('cwf state saved', cwf);
-		});
+		if(cwf){
+			cwf.$save(function(wf){
+				console.log('cwf state saved', cwf);
+			});
+		} else{
+			// this is 
+		}
+		
 	}
 
 	$scope.setActiveStep = function(){
@@ -349,6 +413,13 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 		$scope.prescStepState = "inactive";
 		$scope.feedbStepState = "inactive";
 	}
+
+	$scope.patientQ = function () {
+    	cwf.$patient_q({}, function(){
+    		console.log('patient questions are saved !');
+    		// $state.go('userLanding');
+    	})
+    };
 
 	
 
@@ -364,17 +435,60 @@ controller('CwfPaymentReturnCtrl', function($scope, $window, $timeout, $state, $
 
     
 }).
-controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation){
+controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation, fmoment){
 
 	// first create a consultation WF instance for reference
 	var providerId = $stateParams.docId;
 	$scope.providerId = providerId;
 	$scope.provider = HMPUser.selectedProvider();
-	debug('stateparams object', $stateParams);
+
+
+	function docTimingPrettyPrint(calStruc){
+		var prettyPrintedStr = '';
+		var timingVsDays = {}; // for ex, '8 Am to 5 pm': ['mon', 'tue', 'wed'], '10 Am to 2 pm': ['thu', 'fri']
+		var days = ['mon','tue','wed','thu','fri','sat','sun'];
+		var dayTiming;
+		days.forEach(function(entry) {
+		    console.log(entry);
+		    var dayTiming = calStruc[entry]; // for ex, '8AM to 5 PM'
+		    var daysWithSameTiming = timingVsDays[dayTiming]; // for ex, ['mon', 'tue']
+		    if(!daysWithSameTiming){
+		    	console.log('new entry', dayTiming);
+				timingVsDays[dayTiming] = [entry]; // first entry,'8 Am to 5 pm': ['mon']
+			} else{
+				console.log('existing entry push', dayTiming, entry, timingVsDays[dayTiming]);
+				timingVsDays[dayTiming].push(entry);
+			}
+
+		});
+
+		console.log('timingVsDays', timingVsDays);
+
+		// enumerate and add to prettyPrintedStr
+		for (var t in timingVsDays) {
+
+		    if (timingVsDays.hasOwnProperty(t)) {
+
+		        prettyPrintedStr += timingVsDays[t] + " - " + t  + "\n";
+		    }
+		}
+
+		console.log('prettyPrintedStr = ', prettyPrintedStr);
+
+		$scope.prettyPrintedDocTiming = prettyPrintedStr;
+		    
+		 
+		
+		
+	}
+
+	docTimingPrettyPrint($scope.provider.calStruc);
+	//$scope.docTiming
+	//debug('stateparams object', $stateParams);
 	var wf = new Consultation();
 	wf.$begin({'providerId':providerId});
 
-	debug("wf object", wf);
+	//debug("wf object", wf);
 	$scope.wf = wf;
 	$scope.eventSources = [];
 	/* config object */
@@ -391,16 +505,36 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
       }
     };
 
+    // max date on the datepicker
+    var currTime = fmoment();
+    var oneDay2HourFuture = fmoment().add(1,'days').add(2,'hours');    
+    var threeMonthsFuture = fmoment().add(3, 'months');
+    $scope.untilDate = threeMonthsFuture.format();
+    $scope.wf.requestedTS = oneDay2HourFuture.toJSON();
+    $scope.wf.requestedT = oneDay2HourFuture.toJSON();
+    $scope.wf.requestedD = oneDay2HourFuture.toJSON();
+
+
     $scope.requestAppt = function () {
     	wf.cref = wf.reference;
+    	console.log('request appt d and t', $scope.wf.requestedD, $scope.wf.requestedT );
+    	var requestedDate = fmoment($scope.wf.requestedD);
+    	var requestedTime = fmoment($scope.wf.requestedT);
+    	requestedDate.hours(requestedTime.hours()).minutes(requestedTime.minutes());
+    	$scope.wf.requestedTS = requestedDate;
+    	console.log('composed requstedTS ',requestedDate.toJSON() );
+    	console.log('scopewf', $scope.wf, wf);
     	wf.$request_appt({}, function(){
     		debug('patient details saved !');
     		wf.cref = wf.reference;
     		HMPUser.setConsultationWF(wf.cwf);
     		//$state.go('patient_question',{'cref':wf.cref});
-    		$state.go('consult_wf.payment',{'cref':wf.cref});
+    		var mapVal = {'cref':wf.cref,
+    			'new_appt_flow':true};
+    		console.log('passing the params to consult_wf.payment page', mapVal);
+    		$state.go('consult_wf.payment',mapVal);
     		
-    	})
+    	});
     };
 
 
@@ -408,6 +542,68 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     $scope.gotoPayment = function () {
     	$state.go('register');
     };
+}).
+controller('CwfPaymentCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation, ProviderProfile){
+
+	// cwf payment ctrl - get the provider's fees
+	var wfcref = $stateParams.cref;
+	console.log('CwfPaymentCtrl invoked', $stateParams);
+	$scope.cref = wfcref;
+	// $scope.provider = HMPUser.selectedProvider();
+	// $scope.providerId = $scope.provider._id;
+	// console.log('provider id is', $scope.wf);
+	if($scope.wf.$resolved){
+		// do nothing, because we have the object now
+		console.log('existing wf for payment is resolved ', $scope.wf);
+		setupFees($scope.wf.paymentWF);
+	} else{
+		$scope.wf.$promise.then(function(wf) {
+      		$scope.freshWf = wf;
+      		// console.log('fresh wf for payment is ', wf);
+      		// console.log('fresh provider id is ', wf.provider[0][1]);
+
+      		// $scope.providerProfile = ProviderProfile.get({providerId:wf.provider[0][1]});
+      		// $scope.providerProfile.$promise.then(function(profile){
+      		// 	$scope.consultationFee = profile.feeStruc.regularFee + profile.feeStruc.platformFee;
+      		// 	$scope.discount = - 0;
+      		// 	$scope.totalFee = $scope.consultationFee + $scope.discount;
+      		// });
+			setupFees($scope.freshWf.paymentWF);
+      		
+    	});
+	}
+
+	function setupFees(paymentWf){
+		if(paymentWf){
+			$scope.consultationFee = paymentWf.ttlExpAmt;
+			$scope.discount = - 0;
+			$scope.totalFee = $scope.consultationFee + $scope.discount;
+		}else{
+
+		}
+		// get the user subscriber detail to pre-fill email/address etc on checkout form
+		$scope.userSubscriber = Subscriber.getUserSubscriber({userSubscriberId:HMPUser.getId()});
+		$scope.userSubscriber.$promise.then(function(){
+			console.log('usersubscriber object is ',$scope.userSubscriber );
+		});
+		
+	}
+
+	
+
+	
+	// var wf = new Consultation();
+	// wf.reference = wfcref;
+	// wf.cref = wfcref;
+	// $scope.wf = wf;
+	
+ //    $scope.patientQ = function () {
+ //    	wf.$patient_q({}, function(){
+ //    		debug('patient questions are saved !');
+ //    		$state.go('userLanding');
+ //    	})
+ //    };
+    
 }).
 controller('PatientQCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation){
 

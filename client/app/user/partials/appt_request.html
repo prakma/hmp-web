@@ -33,7 +33,7 @@
 			<span>Feedback</span>
 		</div>
 	</div> -->
-	<div class="row">
+	<!-- <div class="row">
 		<ul class="nav nav-pills">
 		  <li role="presentation" class="active"><a ui-sref="consult_wf.appt({ cref: wf._id })"><span class="glyphicon glyphicon-tag" aria-hidden="true">Appt  </span> </a> </li>
 		  <li role="presentation"><a href="#" disabled="disabled"><span class="glyphicon glyphicon-eur" aria-hidden="true">Payment  </span> </a></li>
@@ -42,16 +42,16 @@
 		  <li role="presentation"><a href="#" class="disabled"><span class="glyphicon glyphicon-th-list" aria-hidden="true">Prescription</span></a></li>
 		  <li role="presentation"><a href="#" class="disabled"><span class="glyphicon glyphicon-comment" aria-hidden="true">Feedback</span></a></li>
 		</ul>
-	</div>
+	</div> -->
 	<hr class="featurette-divider">
 	<div class="row">
 		<div class="col-lg-3">
 			<h5>Reference No</h5>
-			<a href="#">{{wf.reference}}</a>
+			<span class="text-primary">{{wf.reference}}</span>
 		</div>
 		<div class="col-lg-6">
 	        <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;"> -->
-	        <h3>Step 1: Appointment</h3>
+	        <h3>Appointment</h3>
 	        <p/>
 	        <p>Select your preferred appointment time-window, and provide short information</p>
 	        <div>
@@ -71,18 +71,27 @@
 
 	                </div> -->
 	                <div class="form-group">
-	                	<label>Doctor's Timing for reference</label>
+	                	<label>Doctor's <span class="text-primary" data-animation="am-flip-x" bs-tooltip title="{{prettyPrintedDocTiming}}">Timing</span> for reference</label>
 	                	<div>{{provider.timing}}</div>
+	                </div>
 	                <div class="form-group">
 	                    <label class="control-label"><i class="fa fa-calendar"></i>When</label><br>
-	                    <div class="form-group">
+	                    <!-- <div class="form-group">
 	                      <input type="text" size="10" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
-	                      data-min-date="today" placeholder="Date" bs-datepicker>
+	                      data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker>
 	                    </div>
 	                    <div class="form-group">
 	                      <input type="text" size="8" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
 	                      placeholder="Time" bs-timepicker>
-	                    </div>
+	                    </div> -->
+	                    <div class="form-group">
+		                  <input type="text" size="10" class="form-control" ng-model="wf.requestedD" data-autoclose="1" 
+		                  data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker>
+		                </div>
+		                <div class="form-group">
+		                  <input type="text" size="8" class="form-control" ng-model="wf.requestedT" data-autoclose="1" 
+		                  placeholder="Time" bs-timepicker>
+		                </div>
 	                </div>
 	                <div class="form-group">
 	                    <label for="exampleInputName">Name</label>
@@ -104,6 +113,7 @@
 	                            Female
 	                            </label>
 	                        </div>
+	                    </div>
 	                    
 	                </div>
 	                <!-- <div class="form-group radio">
@@ -116,6 +126,10 @@
 	                    Female
 	                    </label>
 	                </div> -->
+	                <div class="form-group">
+	                    <label for="exampleInputName">Contact Phone</label>
+	                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientPhone" placeholder="Your reachable contact number">
+	                </div>
 	                <div class="form-group">
 	                    <label for="problemDesc">Describe your problem</label>
 	                    <textarea class="form-control" id="problemDesc" rows="4" ng-model="wf.problemSummary" ></textarea>

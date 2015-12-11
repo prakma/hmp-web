@@ -76,6 +76,19 @@ def getProviderByKey(providerId):
 		}
 		return rs
 
+def getSubscriberByKey(subscriberId):
+	subscriberObj = queryAPI.findSubscriberById(subscriberId)
+	if(subscriberObj != None):
+		return ndb_json.dumps(subscriberObj)
+	else:
+		rs = {
+		"result" : "Failure",
+		"code" : 'S4002',
+		"message" : 'Unknown Subscriber '+subscriberId
+		}
+		return rs
+
+
 
 
 

@@ -31,8 +31,11 @@ def findDefaultProviders():
 		).order(Subscriber.lastUpdatedTS).fetch(5)
 
 def findProviderById(providerId):
-	providerKey = ndb.Key('Subscriber', providerId)
-	return providerKey.get()
+	return findProviderById(providerId)
+
+def findSubscriberById(subscriberId):
+	subscriberKey = ndb.Key('Subscriber', subscriberId)
+	return subscriberKey.get()
 
 def findConsultationWFById(cwfRef):
 	cwfKey = ndb.Key('ConsultationWF', cwfRef)

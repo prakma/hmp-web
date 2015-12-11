@@ -1,6 +1,6 @@
 <div ng-controller="CRoomCtrl">
     <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
+        <!-- <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <li class="active"><a href="#">Waiting Room Queue <span class="sr-only">(current)</span></a>
                 </li>
@@ -12,14 +12,21 @@
                 </li>
             </ul>
             
-        </div>
+        </div> -->
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Doctor {{doctorShort}} - will call you soon</h1>
-
+            <h1 class="page-header">Consultation Room of {{appt.providerName}}</h1>
+            <p>
+                
+                <h3>Confirmed Appointment at {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</h3>
+                <br/>
+                <small>Payment</small> <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong>
+                <br/>
+                Doctor is <span class="label label-success">Online</span>, will call you soon. Please wait here and do not go to other page.
+            </p>
             <div class="row placeholders">
                 
                 <div class="pane" id="pane_1">
-                    <input type="button" value="Call Dr {{doctorShort}} " id="call" class="btn btn-info btn-default btn-block">
+                    <input type="button" value="Call {{appt.providerName}} " id="call" class="btn btn-info btn-default btn-block">
                 </div>
                 <div class="pane" id="pane_2">
                     <div id="video_container"></div>
@@ -38,7 +45,7 @@
                     </div>
                   </div>
                   <div class="panel-footer">
-                    <button class="btn btn-primary" type="submit">Call Patient A</button>
+                    <!-- <button class="btn btn-primary" type="submit">Call Patient</button> -->
                     <button class="btn btn-danger" type="submit">Disconnect Call</button>
                   </div>
                 </div>

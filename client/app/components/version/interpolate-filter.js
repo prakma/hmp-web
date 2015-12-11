@@ -85,6 +85,7 @@ angular.module('providerApp.version.interpolate-filter', [])
       apptConfirmByProvider: true,
       apptCancelByUser: true,
       apptCancelByProvider: true,
+      cwfGoToAdditionalQuestionsByUser: true,
       cwfGoToMeetingRoomByUser: true,
       cwfGoToMeetingRoomByProvider: true,
       cwfPrescriptionUploadByProvider: true,
@@ -94,7 +95,7 @@ angular.module('providerApp.version.interpolate-filter', [])
       cwfDoneByProvider:true
     };
 
-    console.log(userActionName, 'checking if this user Action is allowed', cwf);
+    //console.log(userActionName, 'checking if this user Action is allowed', cwf);
     switch(userActionName){
       
       case 'apptCreateByUser':
@@ -146,15 +147,34 @@ angular.module('providerApp.version.interpolate-filter', [])
         }
         return false;
 
+      case 'cwfGoToAdditionalQuestionsByUser':
+        return cwf.paymentWF && cwf.paymentWF.paymentStatus == 3;
       case 'cwfGoToMeetingRoomByUser':
-      break;
+        if(cwf.overallStatus < 3){
+          if(cwf.paymentWF && cwf.paymentWF.paymentStatus == 3){
+            if(cwf.apptWF.apptStatus == 3){
+              if(cwf.apptWF.confirmedTS){
+                var within4HrTimeWindow = moment(cwf.apptWF.confirmedTS)
+                  .isBetween(
+                    moment().subtract(4,'hour'), 
+                    moment().add(4,'hour'), 
+                  'hour');
+                if(within4HrTimeWindow){
+                  return true;
+                }
+              }
+            }
+          }
+          
+        }
+        return false;
 
       case 'cwfGoToMeetingRoomByProvider':
         // check if appt is not canceled and is not in a terminal state
         // check if the appt time is confirmed.
         // check if the appt time is within +/- 4 hours 
         if(cwf.overallStatus < 3){
-          if(cwf.apptWF.apptStatus == 3){
+          if(cwf.apptWF && cwf.apptWF.apptStatus == 3){
             if(cwf.apptWF.confirmedTS){
               var within4HrTimeWindow = moment(cwf.apptWF.confirmedTS)
                 .isBetween(
@@ -170,6 +190,9 @@ angular.module('providerApp.version.interpolate-filter', [])
         return false;
 
       case 'cwfPrescriptionUploadByProvider':
+      break;
+
+      case 'cwfGoToPrescriptionByUser':
       break;
 
       case 'cwfFeedbackByUser':

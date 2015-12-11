@@ -16,14 +16,18 @@ angular.module('userApp.croom', [
   'ui.router','ngResource','providerApp.version','myApp.services'
 ])
 .controller('CRoomCtrl', ['$scope','$window','$stateParams','HMPUser',function($scope, $window, $stateParams, HMPUser) {
-	$window.onBistriConferenceReady = function () {
-
-    debug('bistri onBistriConferenceReady invoked for user', $stateParams);
     userId = 'U'+HMPUser.getId();
     debug('this user', userId);
     userName = HMPUser.getName();
     remoteUserId = 'D'+$stateParams.appt.provider[0][1];
     $scope.doctorShort = remoteUserId;
+    $scope.appt = $stateParams.appt;
+    console.log('doctor ',$scope.doctorShort,'appt obj - ', $scope.appt);
+
+	$window.onBistriConferenceReady = function () {
+
+    debug('bistri onBistriConferenceReady invoked for user', $stateParams);
+    
 
 	var localStream;
 

@@ -32,6 +32,13 @@ angular.module('myApp.services', [])
 					providerId: '@providerId'
 				}
 			},
+			getUserSubscriber: {
+				method: 'GET',
+				url: '/s/subscriber/user/:userSubscriberId',
+				params:{
+					userSubscriberId: '@userSubscriberId'
+				}
+			},
 			login: {
 				method: 'POST',
 				url: '/s/login/',
@@ -82,6 +89,7 @@ angular.module('myApp.services', [])
 			}
 			
 		};
+
 
 		user.getId = function (){
 			if (user.loggedUser) {
