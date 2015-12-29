@@ -72,6 +72,13 @@
         <div class="container-fluid">
             <div ui-view> </div>
         </div>
+
+        <div class="container-fluid">
+            <hr/>
+            <p ng-if="authFlag && actionEventText"> <code>({{actionEventMomentText}}) {{actionEventText}}</code> </p>
+        </div>
+      
+
     </div>
 
     <!-- <footer>

@@ -45,12 +45,17 @@ angular.module('myApp.services', [])
 				params:{
 					email: '@givenEmail',
 					passwd: '@givenPassword',
+					/* pf = provider flag */
 					pf: '@pf'
 				}
 			},
 			logout: {
 				method: 'POST',
 				url: '/s/logout/'
+			},
+			chpass: {
+				method: 'POST',
+				url: '/s/subscriber/credentials'
 			}
 		});
 

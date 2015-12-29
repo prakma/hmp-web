@@ -4,11 +4,11 @@
 		<div>
 	     
 	        <h3>Payment</h3>
-	        <span>New Appointment Flow: {{newApptFlow}}</span>
+	        <!-- <span>New Appointment Flow: {{newApptFlow}}</span> -->
 	        <div ng-if="newApptFlow">
 	        	<div class="alert alert-info" role="alert">Your appointment is not confirmed yet by Doctor. We advise you to pay now, but you can come back to this page later to complete your payment</div>
 	        </div>
-	        <div ng-if="newApptFlow == false">
+	        <div ng-if="!newApptFlow">
 	        	<strong>Status - {{wf.paymentWF.paymentStatus | cwfFilter:'payment'}} on {{wf.paymentWF.paymentConfirmTS[0] | date:'MMM d, y h:mm:ss a'}} </strong>
 	        </div>
 	        <div class="table-responsive">

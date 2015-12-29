@@ -41,14 +41,16 @@
                     <div class="row">
                         <div class="col-sm-8">
                             
-                            <img id="video_local_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
-                            <div id="video_container_local">
-
+                            
+                            <div id="video_container_remote">
+                                <img id="video_remote_holder" my-holder="holder.js/640x480/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
                             </div>
                             <br/>
                             <button class="btn btn-primary" type="submit" ng-click="callUser()">Call This Patient</button>
                             <button class="btn btn-danger" type="submit" ng-click="stopCall()">Disconnect Call</button>
-                            <br/>
+                            <div/>
+                            
+                            
                         </div>
                         <div class="col-sm-4">
                             <div class="panel panel-default">
@@ -63,6 +65,10 @@
                                       </span>
                                     </div>                                  
                               </div>
+                            </div>
+                            <hr/>
+                            <div id="video_container_local">
+                                <img id="video_local_holder" my-holder="holder.js/320x240/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
                             </div>                    
                         </div>
                     </div>
@@ -75,7 +81,7 @@
                   </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-sm-6">
                 
                     <img id="video_local_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
@@ -89,7 +95,7 @@
                     <img id="video_remote_holder" my-holder="holder.js/300x300/auto/black" class="img-responsive" alt="Generic placeholder thumbnail"/>
                     <div id="video_container_remote"></div>
                 </div>
-            </div>
+            </div> -->
 
         </div>
     </div>

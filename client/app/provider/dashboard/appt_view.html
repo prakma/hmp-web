@@ -44,7 +44,7 @@
                     <button type="button" class="btn btn-default" ng-show="appt | cwfStateTransitionAllowed : 'apptConfirmByUser' ">Confirm</button>
                     <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptRescheduleByProvider' ">Reschedule</button>
                     <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptCancelByProvider' ">Cancel</button>
-                    <button type="button" class="btn btn-primary" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
+                    <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
                 </div>
             </div>
         </div>

@@ -84,19 +84,40 @@ config(function($stateProvider, $urlRouterProvider){
 			url: '/user/help',
 			templateUrl: '/user/partials/help.html'
 		});
-}).controller('MenuContainerCtrl', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser){
-	debug('MenuContainerCtrl called');
-
+}).controller('MenuContainerCtrl', function($scope, $window, $timeout, $interval, $state, ipCookie, Subscriber, HMPUser, fmoment){
+	//debug('MenuContainerCtrl called');
+	$scope.actionEventTime = fmoment();
 	$scope.$on('loginEvent', function(event, args) {
-		debug('Menubar ctrl received login event');
+		// debug('Menubar ctrl received login event');
 		initializeUser ();
 	});
+	$scope.$on('actionEvent', function(event, args) {
+		// debug('Menubar ctrl received login event');
+		$scope.actionEventTime = fmoment();
+		$scope.actionEventText = args;
+	});
+
+	
+
+	$interval(function refreshStatus(){
+		var currTime = fmoment();
+		var diffInSeconds = currTime.diff($scope.actionEventTime, 'seconds');
+		$scope.hourDiff = diffInSeconds/3600|0;
+		$scope.minDiff = ((diffInSeconds%3600)/60) | 0;
+		$scope.secondsDiff = (diffInSeconds%3600)%60;
+		//console.log('refresh status',$scope.hourDiff, $scope.minDiff, $scope.secondsDiff );
+		$scope.actionEventMomentText = $scope.hourDiff+'h: '+ $scope.minDiff+'m: '+ $scope.secondsDiff+' seconds ago';
+		
+
+	}, 5000);
+
+
 
 	function initializeUser(){
-		debug('initializeUser from menubar invoked. hmpuser ', HMPUser);
+		//debug('initializeUser from menubar invoked. hmpuser ', HMPUser);
 		$scope.authFlag = HMPUser.isLoggedId();
 		$scope.userName = HMPUser.getName();
-		debug('is user logged in', HMPUser.isLoggedId(), $scope.authFlag,'name',HMPUser.getName() );
+		//debug('is user logged in', HMPUser.isLoggedId(), $scope.authFlag,'name',HMPUser.getName() );
 	}
 
 	initializeUser();
@@ -128,7 +149,7 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 	// $scope.givenName = "blah";
 	// $scope.givenEmail = "";
 	// $scope.givenPassword = "";
-	debug('UserMainCtrl called');
+	//debug('UserMainCtrl called');
 	$scope.register = function (givenName, givenEmail, givenPassword) {
 		debug('register func called ', givenName, givenEmail, givenPassword);
 		var newUser = new Subscriber();
@@ -158,7 +179,7 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 			if(value.result=='Success'){
 				HMPUser.login(value);
 				$scope.$emit('loginEvent', 'some junk');
-				debug('main controller emitted login event');
+				//debug('main controller emitted login event');
 				//$window.location.href = '/user/index.html';
 				$state.go('userLanding');
 			} else{
@@ -258,12 +279,14 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 
 	$scope.removeUnfinishedAppt = function (apptObj) {
 		debug('removing this appt', apptObj);
+
 		apptObj.$set_apptWFState({
 	            cref: apptObj._id,
 	            aptWFCd: 6
 	        },
 	        function(value, responseHeaders) {
 	            console.log('appt deleted', value);
+	            $scope.$emit('actionEvent', 'Unfinished Appointment Deleted');
 	            newUnfinishedList = $scope.unfinishedApptList.filter(function(oneApptObj){
 					//console.log('will remove it later');
 					return apptObj._id != oneApptObj._id;
@@ -359,6 +382,7 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 
 	console.log('cwfctrl invoked');
 	var cref = $stateParams.cref;
+	var newApptFlow = $stateParams.new_appt_flow;
 	var providerId = $stateParams.docId;
 	var cwf;
 	if(cref){
@@ -366,6 +390,7 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 		cwf = Consultation.get_cwf({cref:cref});
 		// debug('consultation object fetched', cwf);
 		$scope.wf = cwf;
+		$scope.newApptFlow = newApptFlow;
 		$scope.wf.$promise.then(function(){
 			$scope.wf.requestedTS = fmoment().add(1, 'days').format();
 		});
@@ -396,8 +421,10 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	$scope.saveCwfState = function(){
 		console.log('saving cwf state');
 		if(cwf){
+			$scope.$emit('actionEvent', 'Saving Appointment details changes');
 			cwf.$save(function(wf){
 				console.log('cwf state saved', cwf);
+				$scope.$emit('actionEvent', 'Appointment changes saved');
 			});
 		} else{
 			// this is 
@@ -417,9 +444,15 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	$scope.patientQ = function () {
     	cwf.$patient_q({}, function(){
     		console.log('patient questions are saved !');
+    		$scope.$emit('actionEvent', 'Questionnaire Responses Saved');
     		// $state.go('userLanding');
     	})
     };
+
+    $scope.gotoCRoom = function (apptObj) {
+		// debug('appt obj for gotoCRoom', apptObj);
+		$state.go('croom', {appt:apptObj});
+	}
 
 	
 
@@ -432,6 +465,7 @@ controller('CwfPaymentReturnCtrl', function($scope, $window, $timeout, $state, $
 	// first create a consultation WF instance for reference
 	var cref = $stateParams.cref;
 	debug('CwfPaymentReturnCtrl called with cref', cref);
+	$scope.$emit('actionEvent', 'Appointment '+cref+' payment completed. Proceed to questionnaire.');
 
     
 }).
@@ -441,6 +475,7 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
 	var providerId = $stateParams.docId;
 	$scope.providerId = providerId;
 	$scope.provider = HMPUser.selectedProvider();
+	$scope.$emit('actionEvent', 'New Appointment');
 
 
 	function docTimingPrettyPrint(calStruc){
@@ -488,6 +523,8 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
 	var wf = new Consultation();
 	wf.$begin({'providerId':providerId});
 
+	//$scope.$emit('actionEvent', 'New Appointment Ref '+wf.reference);
+
 	//debug("wf object", wf);
 	$scope.wf = wf;
 	$scope.eventSources = [];
@@ -507,12 +544,13 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
 
     // max date on the datepicker
     var currTime = fmoment();
-    var oneDay2HourFuture = fmoment().add(1,'days').add(2,'hours');    
+    var oneDay2HourFuture = fmoment().add(1,'days').add(2,'hours').minute(0);    
     var threeMonthsFuture = fmoment().add(3, 'months');
     $scope.untilDate = threeMonthsFuture.format();
     $scope.wf.requestedTS = oneDay2HourFuture.toJSON();
     $scope.wf.requestedT = oneDay2HourFuture.toJSON();
     $scope.wf.requestedD = oneDay2HourFuture.toJSON();
+    
 
 
     $scope.requestAppt = function () {
@@ -524,14 +562,16 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     	$scope.wf.requestedTS = requestedDate;
     	console.log('composed requstedTS ',requestedDate.toJSON() );
     	console.log('scopewf', $scope.wf, wf);
+    	$scope.$emit('actionEvent', 'Creating new appointment');
     	wf.$request_appt({}, function(){
-    		debug('patient details saved !');
+    		// debug('patient details saved !');
     		wf.cref = wf.reference;
     		HMPUser.setConsultationWF(wf.cwf);
     		//$state.go('patient_question',{'cref':wf.cref});
     		var mapVal = {'cref':wf.cref,
     			'new_appt_flow':true};
     		console.log('passing the params to consult_wf.payment page', mapVal);
+    		$scope.$emit('actionEvent', 'Appointment '+wf.cref+' Created. Proceed to Payment');
     		$state.go('consult_wf.payment',mapVal);
     		
     	});
@@ -620,8 +660,10 @@ controller('PatientQCtrl', function($scope, $window, $timeout, $state, $statePar
 	$scope.wf = wf;
 	
     $scope.patientQ = function () {
+    	// $scope.$emit('actionEvent', 'Saving Questionnaire Responses');
     	wf.$patient_q({}, function(){
-    		debug('patient questions are saved !');
+    		// debug('patient questions are saved !');
+    		// $scope.$emit('actionEvent', 'Saving Questionnaire Responses');
     		$state.go('userLanding');
     	})
     };

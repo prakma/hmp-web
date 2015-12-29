@@ -6,7 +6,7 @@
 		  <li role="presentation" ui-sref-active="active"><a ui-sref="consult_wf.appt({ cref: wf._id })"><i class="fa fa-calendar-check-o fa-2x"></i>Appt</a></li>
 		  <li role="presentation" ui-sref-active="active"><a ui-sref="consult_wf.payment({ cref: wf._id })"><i class="fa fa-inr fa-2x"></i>Payment</a></li>
 		  <li role="presentation" ui-sref-active="active"><a ui-sref="consult_wf.questions({ cref: wf._id })" ng-show="(wf | cwfStateTransitionAllowed : 'cwfGoToAdditionalQuestionsByUser') "><i class="fa fa-question-circle fa-2x"></i>Questions</a></li>
-		  <li role="presentation" ui-sref-active="active"><a href="#" ng-show="(wf | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' ) "><i class="fa fa-television fa-2x"></i>Meeting</a></li>
+		  <li role="presentation" ui-sref-active="active"><a ng-click="gotoCRoom(wf)" ng-show="(wf | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' ) "><i class="fa fa-television fa-2x"></i>Meeting</a></li>
 		  <li role="presentation" ui-sref-active="active"><a ui-sref="consult_wf.prescription({ cref: wf._id })" ng-show="(wf | cwfStateTransitionAllowed : 'cwfGoToPrescriptionByUser' ) "><i class="fa fa-file-text fa-2x"></i>Prescription</a></li>
 		  <li role="presentation" ui-sref-active="active"><a href="#" ng-show="(wf | cwfStateTransitionAllowed : 'cwfFeedbackByUser' ) "><i class="fa fa-comment fa-2x"></i>Feedback</a></li>
 		</ul>

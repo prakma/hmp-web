@@ -42,6 +42,7 @@ def ensureLogin(func):
 subscriber_args = {
 	'name': Arg(str),
     'email': Arg(str),
+    'phone': Arg(str),
     'passwd': Arg(str),
     'providerFlag': Arg(bool),
     'primaryLocationStr': Arg(str)
@@ -65,6 +66,22 @@ def register(args):
 		resultJson['token'] = subscSession.sessionToken
 		response.set_cookie("hmp_account", subscSession.sessionToken, secret=cookie_secret, path='/')
 	return resultJson
+	#print request.body
+
+credential_args = {
+	'oldPassword': Arg(str),
+    'newPassword': Arg(str),
+}
+@bottle.route('/s/subscriber/credentials', method='POST')
+@use_args(credential_args)
+def register(args):
+	print "subscriber credentials called with post", args
+	user = ensureLogin(None)
+	if(user == None):
+		return {'result':'Failure', 'message':'Unauthenticated'}
+	args['user'] = user
+	return subscriberAPI.chpassForSubscriber(args);
+	#return {'result':'Failure', 'message':'credential change not implemented'}
 	#print request.body
 
 

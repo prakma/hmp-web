@@ -88,6 +88,31 @@ def getSubscriberByKey(subscriberId):
 		}
 		return rs
 
+def chpassForSubscriber(chPassJSON):
+	rs = {
+		"result" : "Failure",
+		"code" : 'S4002',
+		"message" : ' '
+		}
+	subscriberObj = chPassJSON['user'];
+
+	# subscriberObj = queryAPI.findSubscriberById(subscriberId)
+	if(subscriberObj != None):
+		if ( subscriberObj.checkPassword(chPassJSON['oldPassword']) ):
+			subscriberObj.passwd = chPassJSON['newPassword'];
+			subscriberObj.put()
+			rs['code'] = 'S200'
+			rs['result'] = 'Success'
+			rs['message'] = 'Password change completed.'
+			return rs;
+		else:
+			rs['message'] = 'Current password did not match'
+			return rs;
+	else:
+		rs['message'] = 'Cannot change password - unknown subscriber'
+		return rs;
+
+
 
 
 

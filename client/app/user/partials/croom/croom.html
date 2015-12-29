@@ -21,32 +21,32 @@
                 <br/>
                 <small>Payment</small> <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong>
                 <br/>
-                Doctor is <span class="label label-success">Online</span>, will call you soon. Please wait here and do not go to other page.
+                Doctor is <span class="label label-success">{{doctorOnlineStatus}}</span> <i class="fa fa-refresh" ng-click="checkDoctorStatus()"></i>, will call you soon. Please wait here and do not go to other page.
             </p>
             <div class="row placeholders">
                 
-                <div class="pane" id="pane_1">
+                <!-- <div class="pane" id="pane_1">
                     <input type="button" value="Call {{appt.providerName}} " id="call" class="btn btn-info btn-default btn-block">
                 </div>
                 <div class="pane" id="pane_2">
                     <div id="video_container"></div>
                     <input type="button" value="Stop Call" id="quit" class="btn btn-danger btn-default btn-block">
-                </div>
+                </div> -->
                 <div class="panel panel-default">
 
                   <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <img my-holder="holder.js/300x300/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail"/>
+                        <div class="col-sm-6" id="remote_video_container">
+                            <img my-holder="holder.js/640x480/auto/black" class="img-responsive center-block" alt="Generic placeholder thumbnail" id="remote_video_holder"/>
                         </div>
-                        <div class="col-sm-6">
-                            <img my-holder="holder.js/300x300/auto/black" class="img-responsive" alt="Generic placeholder thumbnail"/>
+                        <div class="col-sm-6" id="local_video_container">
+                            <img my-holder="holder.js/320x240/auto/black" class="img-responsive" alt="Generic placeholder thumbnail" id="local_video_holder"/>
                         </div>
                     </div>
                   </div>
                   <div class="panel-footer">
-                    <!-- <button class="btn btn-primary" type="submit">Call Patient</button> -->
-                    <button class="btn btn-danger" type="submit">Disconnect Call</button>
+                    <button class="btn btn-primary" ng-click="checkDoctorStatus()">Check Doctor's Status</button>
+                    <button class="btn btn-danger" ng-click="stopCall()">Disconnect Call</button>
                   </div>
                 </div>
             </div>

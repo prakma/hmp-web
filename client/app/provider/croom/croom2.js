@@ -1,9 +1,7 @@
 'use strict';
 
 
-var userId; // = "bistri_user_002";
-var userName; // = "Jane Smith";
-var remoteUserId; // = "bistri_user_001";
+
 
 angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
 
@@ -23,6 +21,11 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
 
 
 .controller('CRoomCtrl', ['$scope', '$window', '$stateParams', 'HMPUser', 'Consultation', 'fPatientQBank','fmoment', function($scope, $window, $stateParams, hUser, Consultation, fPatientQBank, fmoment) {
+
+    var userId; // = "bistri_user_002";
+    var userName; // = "Jane Smith";
+    var remoteUserId; // = "bistri_user_001";
+    var myroom;
 
     console.log('croom controller for provider called !', $stateParams);
     userId = 'D'+$stateParams.appt.provider[0][1];
@@ -49,7 +52,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
     userName = hUser.getName();
     userId = 'D'+hUser.getId();
     $scope.patientDesc = $stateParams.appt.patientDetailsWF.patientName;
-    var myroom;
+    
 
 
     $window.onBistriConferenceReady = function() {
@@ -73,10 +76,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         bc.init({
             appId: "0ba2e6fb",
             appKey: "167e53147b24c7d417a8ad6a29b37297",
-            /*appId: "fad043e2",
-            appKey: "1800fcdadc9aabb4f7bb87a9d2f03776",*/
-            /*appId: "38077edb",
-            appKey: "4f304359baa6d0fd1f9106aaeb116f33",*/
+
             userId: userId,
             userName: userName,
             debug: true
@@ -120,7 +120,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         // when the local user has quitted the room
         bc.signaling.bind("onQuittedRoom", function(room) {
             // reset the current room name
-            room = undefined;
+            //room = undefined;
             myroom = undefined;
             // show pane with id "pane_1"
             showPanel("pane_1");
@@ -128,11 +128,18 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
             bc.stopStream(bc.getLocalStreams()[0], function(stream) {
                 // remove the local stream from the page
                 bc.detachStream(stream);
+
+                // show the remote and local holders again
+                showOrHideHolder("#video_local_holder", true);
+                showOrHideHolder("#video_remote_holder", true);
             });
         });
 
         // when a new remote stream is received
         bc.streams.bind("onStreamAdded", function(remoteStream) {
+            // hide the local holder
+            showOrHideHolder("#video_remote_holder", false);
+
             // insert the new remote stream into div#video_container node
             bc.attachStream(remoteStream, q("#video_container_remote"));
         });
@@ -144,20 +151,24 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
             // if room has not been quitted yet
             if (myroom) { // was room
                 // quit room
-                bc.quitRoom(room);
+                bc.quitRoom(myroom);
                 myroom = undefined;
             }
         });
 
         // when a remote user presence status is received
         bc.signaling.bind("onPresence", function(result) {
+            console.log('remote user presence detected',result, userId, userName, remoteUserId);
             if (result.presence != "offline") {
                 // ask the user to access to his webcam and set the resolution to 640x480
                 bc.startStream("320x240:12", function(stream) {
                     // when webcam access has been granted
                     // show pane with id "pane_2"
                     showPanel("pane_2");
+                    // hide the local holder
+                    showOrHideHolder("#video_local_holder", false);
                     // insert the local webcam stream into the page body, mirror option invert the display
+
                     bc.attachStream(stream, q("#video_container_local"), {
                         mirror: true
                     });
@@ -213,6 +224,39 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         // quit the current conference room
         if(myroom)
             bc.quitRoom(myroom);
+    };
+    function getRandomRoomName() {
+        var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+        var randomId = "";
+        for (var i = 0; i < 20; i++) {
+            randomId += chars.charAt(Math.random() * 63);
+        }
+        // return a random room name
+        return randomId;
+    }
+
+    function showPanel(id) {
+        // var panes = document.querySelectorAll(".pane");
+        // // for all nodes matching the query ".pane"
+        // for (var i = 0, max = panes.length; i < max; i++) {
+        //     // hide all nodes except the one to show
+        //     panes[i].style.display = panes[i].id == id ? "block" : "none";
+        // };
+    }
+
+    function showOrHideHolder(id, showFlag) {
+        var holder = document.querySelector(id);
+        holder.style.display = showFlag ? "block" : "none";
+
+        // for (var i = 0, max = panes.length; i < max; i++) {
+        //     // hide all nodes except the one to show
+        //     panes[i].style.display = panes[i].id == id ? "block" : "none";
+        // };
+    }
+
+    function q(query) {
+        // return the DOM node matching the query
+        return document.querySelector(query);
     }
 
 }]);
@@ -229,26 +273,3 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
 //     bc.quitRoom(room);
 // }
 
-function getRandomRoomName() {
-    var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-    var randomId = "";
-    for (var i = 0; i < 20; i++) {
-        randomId += chars.charAt(Math.random() * 63);
-    }
-    // return a random room name
-    return randomId;
-}
-
-function showPanel(id) {
-    // var panes = document.querySelectorAll(".pane");
-    // // for all nodes matching the query ".pane"
-    // for (var i = 0, max = panes.length; i < max; i++) {
-    //     // hide all nodes except the one to show
-    //     panes[i].style.display = panes[i].id == id ? "block" : "none";
-    // };
-}
-
-function q(query) {
-    // return the DOM node matching the query
-    return document.querySelector(query);
-}

@@ -35,6 +35,10 @@ config(function($stateProvider, $urlRouterProvider) {
         url: '/provider/login',
         templateUrl: '/provider/session/login.html'
     }).
+    state('chgpass', {
+        url: '/provider/chgpass',
+        templateUrl: '/provider/session/chgpass.html'
+    }).
     state('feedback', {
         url: '/provider/acctreq',
         templateUrl: '/provider/feedback/feedback.html'
