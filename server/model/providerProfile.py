@@ -94,14 +94,14 @@ class PbProfile(ndb.Model):
 	def updateWithJSONInput(self, argsJSON):
 		self.lastUpdatedTS = datetime.datetime.now()
 		self.name = argsJSON['name']
-		self.degree = argsJSON['degree']
+		# self.degree = argsJSON['degree']
 		self.oneLiner = argsJSON['oneLiner']
 		self.profileDesc = argsJSON['profileDesc']
 		self.specialty = argsJSON['specialty']
 		self.genLocation = argsJSON['genLocation']
-		self.timing = argsJSON['timing']
+		# self.timing = argsJSON['timing']
 		self.servicesOffered = argsJSON['servicesOffered']
-		self.feeStructure = argsJSON['feeStructure']
+		# self.feeStructure = argsJSON['feeStructure']
 
 		# calendar structure
 		if('calStruc' in argsJSON):

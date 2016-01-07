@@ -238,6 +238,13 @@ angular.module('providerApp.dashboard', ['ngRoute'])
             });
         };
 
+        $scope.gotoAudioRoom = function(apptObj) {
+            //console.log('goto consulting room', cid, uid, pid);
+            $state.go('croom_audio', {
+                appt: apptObj
+            });
+        };
+
         $scope.gotoApptDetails = function(apptObj) {
             console.log('show patient details info');
             $state.go('dashboard.appt_view', {

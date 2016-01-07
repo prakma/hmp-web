@@ -73,6 +73,11 @@ config(function($stateProvider, $urlRouterProvider) {
         /*url: '/provider/croom',*/
         templateUrl: '/provider/croom/croom.html',
         params: {appt:{}}
+    }).
+    state('croom_audio', {
+        /*url: '/provider/croom',*/
+        templateUrl: '/provider/croom/croom_audio.html',
+        params: {appt:{}}
     })
 
 }).

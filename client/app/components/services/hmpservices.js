@@ -248,6 +248,10 @@ angular.module('myApp.services', [])
 		});
 
 	}])
+.factory('TwilioToken', [
+	'$resource', function($resource){
+		return $resource('/s/voicetoken',{});
+	}])
 .factory('fmoment', [
 	function(){
 		return moment;

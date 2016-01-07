@@ -248,10 +248,6 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         var holder = document.querySelector(id);
         holder.style.display = showFlag ? "block" : "none";
 
-        // for (var i = 0, max = panes.length; i < max; i++) {
-        //     // hide all nodes except the one to show
-        //     panes[i].style.display = panes[i].id == id ? "block" : "none";
-        // };
     }
 
     function q(query) {
@@ -259,17 +255,88 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         return document.querySelector(query);
     }
 
+}])
+.controller('CRoomAudioCtrl', ['$scope', '$interval', '$stateParams', 'HMPUser', 'Consultation', 'fPatientQBank','fmoment','TwilioToken', 
+    function($scope, $interval, $stateParams, hUser, Consultation, fPatientQBank, fmoment, TwilioToken) {
+
+    
+
+    console.log('croom audio controller for provider called !', $stateParams);
+
+    
+    var twilioCheckHandle; // handle of the continuous checker that checks if twilio is now available
+    // var twilioSvc; // Twilio object
+
+    twilioCheckHandle = $interval(function(){
+        console.log('twilio load checker running');
+        if(Twilio){
+            // twilioSvc = Twilio;
+            // twilio loaded, stop the checks.
+            $interval.cancel(twilioCheckHandle);
+            console.log('twilio load checker stopped');
+
+            // notify that twilio is ready
+            onTwilioReady();
+        }
+    },2000, 60);
+
+
+
+    var onTwilioReady = function(){
+        var twilioTok = TwilioToken.get();
+        TwilioToken.get().$promise.then(function(ttokenObj){
+            console.log('twilio token is ', ttokenObj);
+            twilioTok = ttokenObj.token;
+            Twilio.Device.setup(twilioTok);
+        });
+        
+ 
+        Twilio.Device.ready(function (device) {
+            console.log("Twilio device is Ready");
+        });
+
+        Twilio.Device.error(function (error) {
+            console.log("Twilio Error: " + error.message);
+        });
+
+        Twilio.Device.connect(function (conn) {
+            console.log("Twilio: Successfully established call", conn);
+        });
+
+        Twilio.Device.disconnect(function (conn) {
+            console.log("Twilio: Call ended");
+        });
+
+        Twilio.Device.incoming(function (conn) {
+            console.log("Twilio: Incoming connection from " + conn.parameters.From);
+            // accept the incoming connection and start two-way audio
+            conn.accept();
+        });
+
+        $scope.callUserByPhone = function(){
+            console.log('call the patient by phone');
+            // get the phone number to connect the call to
+            var params = {"PhoneNumber": "+14254401176"};
+            Twilio.Device.connect(params);
+        };
+
+        $scope.stopPhoneCall = function(){
+            console.log('stop the phone call');
+            Twilio.Device.disconnectAll();
+        };
+
+        
+    }
+
+
+    
+
+    
+
+    
+    
+
 }]);
 
-// // when button "Call XXX" has been clicked
-// function callUser() {
-//     // check remote user presence
-//     bc.getPresence(remoteUserId);
-// }
 
-// // when button "Stop Call" has been clicked
-// function stopCall() {
-//     // quit the current conference room
-//     bc.quitRoom(room);
-// }
 

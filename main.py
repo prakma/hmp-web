@@ -4,6 +4,8 @@
 from bottle import Bottle, template, static_file, request, response, redirect
 from webargs import Arg
 from webargs.bottleparser import use_args
+from twilio.util import TwilioCapability
+import twilio.twiml
 
 from sapi import subscriberAPI, sessionAPI, consultAPI, profileAPI, feedbackAPI
 
@@ -383,6 +385,41 @@ def create_feedback(feedback_json):
 	
 	print 'create new feedback', feedback_json
 	return feedbackAPI.createFeedbackEntry(feedback_json)
+
+
+@bottle.route('/s/voicecall', method='POST')
+def whenTwilioCalls():
+	caller_id = "+14175992671"
+	dest_number = request.params.get('PhoneNumber', None)
+	print 'dest_number from twilio is', dest_number
+	resp = twilio.twiml.Response()
+	with resp.dial(callerId=caller_id) as r:
+		r.number(dest_number)
+	respxml = str(resp)
+	print 'respxml', respxml
+	return respxml
+	# return 'hello twilio and ngrok'
+
+@bottle.route('/s/voicetoken')
+def get_twilio_token():
+	user = ensureLogin(None)
+	if(user == None):
+		return {'result':'Failure', 'message':'Unauthenticated'}
+	# account_sid = "ACf40068b9df96262b672261f481ec2e0e"
+	# auth_token = "89ecbff11b9754fb84985a4e9c20dd53"
+
+	account_sid = "AC3c6446cabf093a6d43eb5743bb067734"
+	auth_token = "81ce4d34613c2d8cc6c4492abc01fa14"
+ 
+	# This is a special Quickstart application sid - or configure your own
+	# at twilio.com/user/account/apps
+	application_sid = "AP1f6c103b3e8f4db78b85d6b6c78a10c4"
+ 
+	capability = TwilioCapability(account_sid, auth_token)
+	capability.allow_client_outgoing(application_sid)
+	token = capability.generate()
+	return {'result':'Success', 'message':token,'token':token} 
+
 
 
 

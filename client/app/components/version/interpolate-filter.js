@@ -45,8 +45,12 @@ angular.module('providerApp.version.interpolate-filter', [])
   					return 'Payment Status - Unknown';
   			}
   		break;
-  		
       case 'meeting':
+        switch(status){
+          default:
+            return 'Not started';
+        }
+
   		break;
       
       case 'fullfillment':
