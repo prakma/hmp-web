@@ -248,6 +248,20 @@ angular.module('myApp.services', [])
 		});
 
 	}])
+.factory('CwfEvent', [
+	'$resource', function($resource){
+		return $resource('/s/consult/cwf/event',{}/*,{
+			newEvent: {
+				method: 'PUT',
+				params:{
+					cref: '@cref',
+					eventName:'@eventName',
+					eventBody:'@eventBody'
+				}
+			}
+		}*/);
+
+	}])
 .factory('TwilioToken', [
 	'$resource', function($resource){
 		return $resource('/s/voicetoken',{});

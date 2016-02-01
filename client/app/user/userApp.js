@@ -158,7 +158,11 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 		newUser.passwd = givenPassword;
 		newUser.$register({}, function(value, responseHeaders){
 			//debug('value from register', value);
-			$scope.subscriptionStatus = "Thank you. We are glad to get your attention and can't wait to let you know as soon as this is ready !";
+			if(value.result != "Success"){
+				$scope.subscriptionStatus = "Registration Failed - " + value.message + ". Please fix the problem and try again.";
+				return;
+			}
+			$scope.subscriptionStatus = "Registration is successful. Please wait as we do auto-login for you!";
 			HMPUser.login(value);
 			$scope.$emit('loginEvent', {});
 			$timeout(function(){
@@ -168,7 +172,7 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 				$state.go('userLanding');
 			},3000);
 		}, function(responseHeaders){
-			$scope.subscriptionStatus = "Thank you for your interest. Something went wrong and we could not safely store your information. Could you please try again ?"
+			$scope.subscriptionStatus = "We are sorry. Something went wrong. Could you please try again ?";
 		});
 	};
 
@@ -194,7 +198,7 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 	};
 
 }).
-controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser, Consultation, fmoment){
+controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCookie, Subscriber, HMPUser, Consultation, CwfEvent, fmoment){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
 	// debug('HomeCtrlDefault invoked');
@@ -217,7 +221,14 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 		// 	});
 		// 	console.log('unfinished appt list', $scope.unfinishedApptList);
 		// });
+		
+		refreshDashboard();
 
+		
+		
+	}
+
+	function refreshDashboard(){
 		$scope.apptList = Consultation.user_appts(function(){
 			$scope.lastRefreshedTS = fmoment().format("[today] ddd, h:mm:ss A"); ;
 			$scope.unfinishedApptList = $scope.apptList.filter(function(apptObj){
@@ -230,7 +241,6 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 			});
 			// console.log('unfinished appt list', $scope.unfinishedApptList);
 		});
-		
 	}
 
 	$scope.currApptFilterFn = function(apptObj){
@@ -248,13 +258,21 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 	                if ( fmoment(tmpApptTime).isBetween(oneDayPast, oneDayFuture, 'd') ){
 	                    return true;
 	                }
-	                // console.log('currtime wasnt between +/- 1 day');
+
+	                // if payment is not complete, we should try to show in main page
+	                if(!apptObj.paymentWF || apptObj.paymentWF.paymentStatus != 3){
+
+	                	// see if it is very recent old or in future then show. don't show if it is older than 2 days
+	                	if(fmoment(tmpApptTime).isAfter(oneDayPast)) return true;
+
+	                } 
+
+	                // otherwise don't show
 	                return false;
 				} else{
 					return false;
 				}
 				
-
 			} else{
 				return false;
 			}
@@ -275,6 +293,31 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 	$scope.gotoCRoom = function (apptObj) {
 		debug('appt obj for gotoCRoom', apptObj);
 		$state.go('croom', {appt:apptObj});
+	}
+
+	$scope.confirmApptAtProposedTime = function (apptObj) {
+		console.log("appt will be confirmed at proposed time");
+			var newCwfEvent = new CwfEvent();
+            newCwfEvent.cref = apptObj._id;
+            newCwfEvent.eventName = 'ConfirmByUser';
+            
+
+            newCwfEvent.$save(function(result){
+                console.log('event saved', result);
+                $scope.$emit('actionEvent', 'Confirming changed appointment time');
+                //apptObj.apptWF.apptStatus = 3;
+                if(result.result=="Success"){
+                	console.log('refreshing the dashboard after confirming');
+	                setTimeout(function(){
+	                    refreshDashboard();
+	                },2000);
+                } else {
+                	console.log("Failed");
+                	$scope.$emit('actionEvent', 'Could not confirm appointment. Please try again.');
+                }
+                
+                
+            });
 	}
 
 	$scope.removeUnfinishedAppt = function (apptObj) {
@@ -378,7 +421,7 @@ controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 	
 	
 }).
-controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation, fmoment){
+controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation, CwfEvent, fmoment){
 
 	console.log('cwfctrl invoked');
 	var cref = $stateParams.cref;
@@ -409,6 +452,12 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	
 	console.log('new appt flow stateparams',$stateParams, $state );
 
+	function refresh(){
+		cwf = Consultation.get_cwf({cref:cref});
+		// debug('consultation object fetched', cwf);
+		$scope.wf = cwf;
+	}
+
 	// max date on the datepicker
     
     var threeMonthsFuture = fmoment().add(3, 'months');
@@ -430,7 +479,66 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 			// this is 
 		}
 		
-	}
+	};
+
+	$scope.confirmCwf = function(thisWf){
+		console.log("appt will be confirmed at proposed time");
+		var newCwfEvent = new CwfEvent();
+        newCwfEvent.cref = thisWf._id;
+        newCwfEvent.eventName = 'ConfirmByUser';
+        newCwfEvent.$save(function(result){
+            console.log('confirm appt event saved', result);
+            $scope.$emit('actionEvent', 'Confirming changed appointment time');
+            //apptObj.apptWF.apptStatus = 3;
+            if(result.result=="Success"){
+            	console.log('refreshing the consultation');
+                setTimeout(function(){
+                    refresh();
+                },2000);
+            } else {
+            	console.log("Failed");
+            	$scope.$emit('actionEvent', 'Could not confirm appointment. Please try again.');
+            }
+        });
+
+	};
+
+	$scope.cancelCwf = function(){
+
+		console.log(" implement appt cancel later");
+
+
+	};
+	
+	$scope.rescheduleCwf = function(thisWf){
+		console.log("appt will be rescheduled to ", thisWf.apptWF.requestedTS);
+		// var newCwfEvent = new CwfEvent();
+  //       newCwfEvent.cref = thisWf._id;
+        //var rescheduledDate = fmoment(thisWf.apptWf.requestedTS);
+        //var rescheduledTime = fmoment(thisWf.apptWf.requestedTS);
+        //rescheduledDate.hours(rescheduledTime.hours()).minutes(rescheduledTime.minutes());
+        var newCwfEvent = new CwfEvent();
+        newCwfEvent.cref = thisWf._id;
+        newCwfEvent.reschedDT = thisWf.apptWF.confirmedTS;
+        newCwfEvent.reschedMsg = "No Reason Provided";
+        newCwfEvent.eventName = 'RescheduleByUser';
+        console.log("Rescheduling...");
+        newCwfEvent.$save(function(result){
+            console.log('reschedule appt event saved', result);
+            
+            //apptObj.apptWF.apptStatus = 3;
+            if(result.result=="Success"){
+            	console.log('Rescheduling was successful.');
+            	$scope.$emit('actionEvent', 'Changed appointment time');
+                setTimeout(function(){
+                    refresh();
+                },2000);
+            } else {
+            	console.log("Rescheduling Failed");
+            	$scope.$emit('actionEvent', 'Could not reschedule appointment. Please try again.');
+            }
+        });
+	};
 
 	$scope.setActiveStep = function(){
 		$scope.apptStepState = "active";
@@ -439,7 +547,7 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 		$scope.meetStepState = "inactive";
 		$scope.prescStepState = "inactive";
 		$scope.feedbStepState = "inactive";
-	}
+	};
 
 	$scope.patientQ = function () {
     	cwf.$patient_q({}, function(){
@@ -452,7 +560,7 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
     $scope.gotoCRoom = function (apptObj) {
 		// debug('appt obj for gotoCRoom', apptObj);
 		$state.go('croom', {appt:apptObj});
-	}
+	};
 
 	
 
@@ -550,18 +658,30 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     $scope.wf.requestedTS = oneDay2HourFuture.toJSON();
     $scope.wf.requestedT = oneDay2HourFuture.toJSON();
     $scope.wf.requestedD = oneDay2HourFuture.toJSON();
+    // $scope.wf.requestedTS = oneDay2HourFuture;
+    // $scope.wf.requestedT = oneDay2HourFuture.format("h:mm A");
+    // $scope.wf.requestedD = oneDay2HourFuture;
+    console.log("wf.requestedT is ", $scope.wf.requestedT);
     
 
 
     $scope.requestAppt = function () {
     	wf.cref = wf.reference;
-    	console.log('request appt d and t', $scope.wf.requestedD, $scope.wf.requestedT );
+    	console.log('request appt d and t', $scope.wf.requestedD, $scope.wf.requestedT,'consultation mode',$scope.wf.consult_mode_pref );
     	var requestedDate = fmoment($scope.wf.requestedD);
     	var requestedTime = fmoment($scope.wf.requestedT);
     	requestedDate.hours(requestedTime.hours()).minutes(requestedTime.minutes());
     	$scope.wf.requestedTS = requestedDate;
     	console.log('composed requstedTS ',requestedDate.toJSON() );
     	console.log('scopewf', $scope.wf, wf);
+    	if( !$scope.wf.patientName 
+    		|| !$scope.wf.patientPhone 
+    		|| !$scope.wf.age 
+    		|| !$scope.wf.sex 
+    		|| !$scope.wf.problemSummary ){
+    		console.log("Appointment Form is not valid. Please provide all information");
+    		return;
+    	}
     	$scope.$emit('actionEvent', 'Creating new appointment');
     	wf.$request_appt({}, function(){
     		// debug('patient details saved !');

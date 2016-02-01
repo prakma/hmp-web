@@ -40,12 +40,42 @@
                 <small>Payment</small> <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong>
             </div>
             <div class="panel-body">
-                <div class="btn-group btn-group-xs" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" ng-show="appt | cwfStateTransitionAllowed : 'apptConfirmByUser' ">Confirm</button>
-                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptRescheduleByProvider' ">Reschedule</button>
-                    <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptCancelByProvider' ">Cancel</button>
-                    <button type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" ng-show="appt | cwfStateTransitionAllowed : 'apptConfirmByProvider' ">Confirm</button>
+                        
+                        <button type="button" class="btn btn-danger" ng-show="appt | cwfStateTransitionAllowed : 'apptRescheduleByProvider' " data-animation="am-fade-and-slide-top" data-template="reschedule3.html" data-title="Suggest Reschedule to another time" data-content="{'title':'blah blah'}" bs-modal="appt">Reschedule2</button>
+
+                    </div>
+                    <div class="btn-group btn-group-xs pull-right" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptCancelByProvider' ">Cancel</button>
+                    </div>
                 </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Meeting</h3>
+            </div>
+            <div class="panel-body">
+                
+                <p>Consultation Mode Preference <strong>{{appt.meetingWF.meetingType}}</strong></p>
+                <p>Patient Contact No <strong>{{appt.patientDetailsWF.patientPhone}}</strong></p>
+                <!-- <div class="form-group">
+                    <label for="consultationMode">Consultation Preference</label>
+                    <span id="consultationMode"><strong>{{appt.meetingWF.meetingType}}</strong></span>
+                </div> -->
+                <!-- <div class="form-group">
+                    <label for="consultationMode">Patient Contact No</label>
+                    <span id="consultationMode"><strong>{{appt.patientDetailsWF.patientPhone}}</strong></span>
+                </div> -->
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
+                    <!-- <a ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</a> -->
+                </div>
+                
+                
             </div>
         </div>
         <div class="panel panel-default">

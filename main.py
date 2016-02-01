@@ -180,6 +180,7 @@ consult_args = {
     'age': Arg(str),
     'sex': Arg(str),
     'patientPhone': Arg(str),
+    'consult_mode_pref': Arg(str),
     'requestedTS': Arg(str),
     'problemSummary': Arg(str)
 }
@@ -259,7 +260,7 @@ def consultWF_setApptWF(args, cref):
 	args['user'] = user
 	args['cref'] = cref
 	return consultAPI.consultWF_setApptState(args)
-	return {'result': 'Success', 'message':'Todo - State not implemented'}
+	#return {'result': 'Success', 'message':'Todo - State not implemented'}
 
 
 @bottle.route('/s/consult/provider_appts', method='GET')
@@ -371,6 +372,29 @@ def prescription_download(cref, blobKey):
 	response.set_header('content-disposition', 'attachment; filename=prescription_'+cref+'.pdf')
 	return response;
 
+
+# cwfEventArgs = {
+# 	'cref': Arg(str),
+# 	'eventName': Arg(str),
+# 	'eventBody': Arg(str),
+	
+# }
+@bottle.route('/s/consult/cwf/event', method='POST')
+# @use_args(cwfEventArgs)
+def process_cwf_event():
+	# print args # args['cref'], args['eventName'], args['eventBody']
+	args = request.json
+	user = ensureLogin(None)
+	if(user == None):
+		return {'result':'Failure', 'message':'Unauthenticated'}
+	args['user'] = user
+	# args['cref'] = cref
+	print args
+	return consultAPI.processCwfEvent(args)
+	#return {'result':'Success', 'message':'Event Processed'}
+
+
+
 feedback_args = {
 	'name': Arg(str),
 	'subject': Arg(str),
@@ -389,7 +413,9 @@ def create_feedback(feedback_json):
 
 @bottle.route('/s/voicecall', method='POST')
 def whenTwilioCalls():
-	caller_id = "+14175992671"
+	# caller_id = "+14175992671"
+	# caller_id = "+14254401176"
+	caller_id = "+919845378632"
 	dest_number = request.params.get('PhoneNumber', None)
 	print 'dest_number from twilio is', dest_number
 	resp = twilio.twiml.Response()

@@ -316,7 +316,7 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
         $scope.callUserByPhone = function(){
             console.log('call the patient by phone');
             // get the phone number to connect the call to
-            var params = {"PhoneNumber": "+14254401176"};
+            var params = {"PhoneNumber": "+918041260289"};
             Twilio.Device.connect(params);
         };
 

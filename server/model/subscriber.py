@@ -27,7 +27,8 @@ class Subscriber(ndb.Model):
 		if (name == 'email'):
 				self.email.append(value)
 		elif (name == 'phone'):
-				self.phone.append(value)
+				if(value != None):
+					self.phone.append(value)
 		else:
 			super(Subscriber, self).__setattr__(name,value)
 
@@ -96,14 +97,15 @@ class ApptWF(ndb.Model):
 		self.apptStatusChain.append(3)
 
 	def rescheduleTimeByUser(self, reason, dt):
-		self.requestedTS = self.dt
+		self.requestedTS = dt
+		self.confirmedTS = dt
 		self.apptStatus = 4
 		self.apptStatusChain.append(4)
 		self.reasonChain.append('U: ' + reason)
 
 
 	def rescheduleTimeByProvider(self, reason, dt):
-		self.proposedTS = self.dt
+		self.proposedTS = dt
 		self.apptStatus = 5
 		self.apptStatusChain.append(5)
 		self.reasonChain.append('P: ' + reason)
@@ -173,12 +175,13 @@ class MeetingWF(ndb.Model):
 	meetingType = ndb.StringProperty()
 	userDevice = ndb.StringProperty()
 	providerDevice = ndb.StringProperty()
-	meetingStatus = ndb.IntegerProperty()
+	# meeting_pending, meeting_in_progress, completed, abandoned, no_show, disconnected
+	meetingStatus = ndb.IntegerProperty(default=1)
 	meetingDelayMinutes = ndb.IntegerProperty()
 	meetingDurationMinutes = ndb.IntegerProperty()
 	meetingInterruptionMinutes = ndb.IntegerProperty()
 	meetingStatusChain = ndb.IntegerProperty(repeated=True)
-	meetingStatus = ndb.IntegerProperty()
+	
 
 # prescription_sent, prescription_received
 class FulfillmentWF(ndb.Model):

@@ -100,12 +100,21 @@ angular.module('providerApp.version.interpolate-filter', [])
     };
 
     //console.log(userActionName, 'checking if this user Action is allowed', cwf);
+    if(! cwf ) return false; // if cwf object is not resolved yet, don't show any action buttons
     switch(userActionName){
       
       case 'apptCreateByUser':
         return true;
 
       case 'apptRescheduleByUser':
+        if(cwf.overallStatus < 3){
+          if(cwf.meetingWF && cwf.meetingWF.meetingStatus){
+            if(cwf.meetingWF.meetingStatus == 1 || cwf.meetingWF.meetingStatus > 3)
+              return true;
+          }else{
+            return true;
+          }
+        }
         return false;
       
       case 'apptRescheduleByProvider':
@@ -115,7 +124,7 @@ angular.module('providerApp.version.interpolate-filter', [])
         if(cwf.overallStatus < 3){
           if(cwf.apptWF.apptStatus == 2 || cwf.apptWF.apptStatus == 3 || cwf.apptWF.apptStatus == 4){
             if(cwf.apptWF.requestedTS){
-              var notOlderThanOneDay = moment().subtract(1,'day').isAfter(moment(cwf.apptWF.requestedTS), 'day')
+              var notOlderThanOneDay = moment(cwf.apptWF.requestedTS).isAfter(moment().subtract(1,'day'), 'day')
               if(notOlderThanOneDay)
                 return true;
             }
@@ -124,6 +133,17 @@ angular.module('providerApp.version.interpolate-filter', [])
         return false;
       
       case 'apptConfirmByUser':
+
+        if(cwf.overallStatus < 3){
+          if(cwf.apptWF.apptStatus == 5){
+            // console.log('aptconfirmby user', cwf);
+            if(cwf.apptWF.proposedTS){
+              var notOlderThanOneDay = moment(cwf.apptWF.proposedTS).isAfter(moment().subtract(1,'day'), 'day')
+              if(notOlderThanOneDay)
+                return true;
+            }
+          }
+        }
         return false;
 
       case 'apptConfirmByProvider':
@@ -138,6 +158,12 @@ angular.module('providerApp.version.interpolate-filter', [])
         return false;
 
       case 'apptCancelByUser':
+        if(cwf.overallStatus < 3){
+          if(cwf.apptWF.apptStatus <= 5){
+            return true;
+          }
+        }
+        return false;
       break;
 
       case 'apptCancelByProvider':

@@ -31,6 +31,52 @@
                 </div> -->
             </div>
         </div>
+        <script type="text/ng-template" id="reschedule3.html">
+            <div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header" ng-show="title">
+                    <button type="button" class="close" aria-label="Close" ng-click="$hide()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" ng-bind="title"></h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label for="patientName" class="control-label">Patient</label>
+                        <span id="patientName">{{appt.patientDetailsWF.patientName}}</span>
+                        <span>{{patientDetailsWF.patientName}}</span>
+                    </div>
+                    <form name="rescheduleapptform">
+                        <div class="form-group required">
+                            <label for="exampleInputName" class="control-label">Requested time</label>
+                            <span type="text" id="exampleInputName">{{apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}}</span>
+                        </div>
+                        <div class="form-inline">
+                            <div class="form-group required">
+                                <label class="control-label">Suggest Different Date/Time</label>
+                            </div>
+                            <div class="form-group">
+                              <input type="text" class="form-control" ng-model="reschedD" data-autoclose="1" 
+                              data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker required>
+                            </div>
+                            <div class="form-group">
+                              <input type="text" class="form-control" ng-model="reschedT" data-autoclose="1" 
+                              placeholder="Time" bs-timepicker required>
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="problemDesc" class="control-label">Short Message</label>
+                            <textarea class="form-control" id="problemDesc" rows="4" ng-model="reschedMsg" placeholder="Suggest some other alternate times" required></textarea>
+                        </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="rescheduleAppt(appt, reschedD, reschedT, reschedMsg, refreshAction);$hide()">Update</button>
+                    <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </script>
         <div class="row placeholders">
             <!-- <div class="placeholder" ng-repeat="appt in apptList">
                     <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
@@ -74,6 +120,7 @@
                 </thead>
                 <tbody>
                     <!-- <tr ng-repeat="appt in pendingApptList | filter: pendingApptFilter"> -->
+                    
                     <tr ng-repeat="appt in pendingApptList">
                         <!-- <td><a href ng-click="gotoApptDetails(appt)">{{appt._id}}</a></td> -->
                         <td>{{appt.patientDetailsWF.patientName}}, {{appt.patientDetailsWF.patientSex}}, {{appt.patientDetailsWF.patientAge}} </td>
@@ -82,7 +129,8 @@
                             <a class="btn btn-warning" href ng-disabled="1">Reschedule</a>{{feedbackStr}} -->
                             <div class="btn-group btn-group-xs" role="group" aria-label="...">
                                 <button type="button" class="btn btn-primary" ng-click="confirmAppt(appt)">Confirm</button>
-                                <button type="button" class="btn btn-warning" ng-click="gotoCRoom(appt)" ng-disabled="1">Reschedule</button>
+                                <button type="button" class="btn btn-lg btn-danger" data-animation="am-fade-and-slide-top" data-template="reschedule3.html" data-title="Suggest Reschedule to another time" data-content="{'title':'blah blah'}" bs-modal="appt">Reschedule
+                                </button>
                             </div>
                         </td>
                             

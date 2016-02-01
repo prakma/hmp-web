@@ -55,84 +55,86 @@
 	        <p/>
 	        <p>Select your preferred appointment time-window, and provide short information</p>
 	        <div>
-	            <form>
-	                <!-- <div class="form-group">
-	                    <label for="exampleApptTS">Appointment Time</label>
-	                    <div class="row">
-	                        <div class="col-xs-6">
-	                            <input type="text" class="form-control" id="exampleApptTS" ng-model="wf.requestedTS" placeholder="Select Appointment Day/Time from Calendar"/>
-	                        </div>
-	                        <div class="col-xs-4">
-	                            <button type="button" class="btn btn-primary btn-sm btn-sm" data-toggle="modal" data-target="#myModal">
-	                              Select available time-window
-	                            </button>
-	                        </div>
-	                    </div>
+	            <form name="newapptform">
+	                <div class="form-inline">
+	                	<div class="form-group">
+						    <label for="appt-mode">Choose your consultation mode</label>
+						    <div class="radio">
+							  <label>
+							    <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="wf.consult_mode_pref" value="video">
+							    By Video <small><small>( Remember, you need to be online at the time of appointment)</small></small>
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+							    <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="wf.consult_mode_pref" value="phone">
+							    By Phone <small><small>( Remember, doctor will call you)</small></small>
+							  </label>
+							</div>
+							<div class="radio">
+							  <label>
+							    <input type="radio" name="optionsRadios" id="optionsRadios3" ng-model="wf.consult_mode_pref" value="anything" checked>
+							    Try by video first, if not then by Phone
+							  </label>
+							</div>
 
-	                </div> -->
-	                <!-- <div class="form-group">
-	                	<label>Doctor's <span class="text-primary" data-animation="am-flip-x" bs-tooltip title="{{prettyPrintedDocTiming}}">Timing</span> for reference</label>
-	                	<div>{{provider.timing}}</div>
-	                </div> -->
-	                <div class="form-group">
-	                    <label class="control-label"><i class="fa fa-calendar"></i>When</label> <small> ( See Doctor's <span class="text-primary" data-animation="am-flip-x" bs-tooltip title="{{prettyPrintedDocTiming}}">Timing</span> )</small><br>
-	                    <!-- <div class="form-group">
-	                      <input type="text" size="10" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
-	                      data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker>
-	                    </div>
-	                    <div class="form-group">
-	                      <input type="text" size="8" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
-	                      placeholder="Time" bs-timepicker>
-	                    </div> -->
-	                    <div class="form-group">
-		                  <input type="text" size="10" class="form-control" ng-model="wf.requestedD" data-autoclose="1" 
-		                  data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker>
+						</div>
+	                </div>
+	                <div class="form-group"></div>
+	                <div class="form-inline">
+		                <div class="form-group required">
+		                    <label class="control-label"><i class="fa fa-calendar"></i>When</label> <small> ( See Doctor's <span class="text-primary" data-animation="am-flip-x" bs-tooltip title="{{prettyPrintedDocTiming}}">Timing</span> )</small><br>
+		                    <!-- <div class="form-group">
+		                      <input type="text" size="10" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
+		                      data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker>
+		                    </div>
+		                    <div class="form-group">
+		                      <input type="text" size="8" class="form-control" ng-model="wf.requestedTS" data-autoclose="1" 
+		                      placeholder="Time" bs-timepicker>
+		                    </div> -->
+		                    <div class="form-group">
+			                  <input type="text" class="form-control" ng-model="wf.requestedD" data-autoclose="1" 
+			                  data-min-date="today" data-max-date="{{untilDate}}" placeholder="Date" bs-datepicker required>
+			                </div>
+			                <div class="form-group">
+			                  <input type="text" class="form-control" ng-model="wf.requestedT" data-autoclose="1" bs-timepicker required>
+			                </div>
 		                </div>
-		                <div class="form-group">
-		                  <input type="text" size="8" class="form-control" ng-model="wf.requestedT" data-autoclose="1" 
-		                  placeholder="Time" bs-timepicker>
+	            	</div>
+	            	<div class="form-group"></div>
+	            	<div class="form-inline">
+		            	<div class="form-group required">
+		                    <label for="exampleInputName" class="control-label">Name</label>
+		                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientName" placeholder="Enter Your Name" required>
+		                </div>
+		                <div class="form-group required">
+		                    <label for="exampleContactPhone" class="control-label">Phone</label>
+		                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientPhone" placeholder="Your reachable contact number" required>
+		                </div>
+	            	</div>
+	            	<div class="form-group"></div>
+	            	<div class="form-inline">
+		                <div class="form-group required">
+		                	<label for="exampleInputAge" class="control-label">Age</label>
+	                            <input type="text" class="form-control" id="exampleInputAge" ng-model="wf.age" placeholder="Your Age" required>
+	                    </div>
+		                <div class="form-group required">
+		                	<label for="exampleInputSex" class="control-label">Sex</label>
+                            <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="wf.sex" value="M" checked />
+                            Male
+                            </label>
+                            <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="wf.sex" value="F"/>
+                            Female
+                            </label>
 		                </div>
 	                </div>
-	                <div class="form-group">
-	                    <label for="exampleInputName">Name</label>
-	                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientName" placeholder="Enter Your Name">
-	                </div>
-	                <div class="form-group">
-	                    <div class="row">
-	                        <div class="col-xs-4">
-	                            <label for="exampleInputAge">Age</label>
-	                            <input type="text" class="form-control" id="exampleInputAge" ng-model="wf.age" placeholder="Your Age">
-	                        </div>
-	                        <div class="col-xs-8">
-	                            <label>
-	                            <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="wf.sex" value="M" checked/>
-	                            Male
-	                            </label>
-	                            <label>
-	                            <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="wf.sex" value="F"/>
-	                            Female
-	                            </label>
-	                        </div>
-	                    </div>
-	                    
-	                </div>
-	                <!-- <div class="form-group radio">
-	                    <label>
-	                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-	                    Male
-	                    </label>
-	                    <label>
-	                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-	                    Female
-	                    </label>
-	                </div> -->
-	                <div class="form-group">
-	                    <label for="exampleInputName">Contact Phone</label>
-	                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientPhone" placeholder="Your reachable contact number">
-	                </div>
-	                <div class="form-group">
-	                    <label for="problemDesc">Describe your problem</label>
-	                    <textarea class="form-control" id="problemDesc" rows="4" ng-model="wf.problemSummary" ></textarea>
+	                <div class="form-group"></div>
+	                
+	                <div class="form-group required">
+	                    <label for="problemDesc" class="control-label">Reason for your appointment ( in short )</label>
+	                    <textarea class="form-control" id="problemDesc" rows="4" ng-model="wf.problemSummary" required></textarea>
 	                </div>
 
 	                <!-- <button type="submit" class="btn btn-primary" ng-click="gotoPayment()">Pay Rs. 200</button> -->

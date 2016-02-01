@@ -13,7 +13,7 @@
                                 <div class="col-xs-6" ng-repeat="appt in apptList | filter: currApptFilterFn">
                                     <h4><!-- <span class="glyphicon glyphicon-minus" aria-hidden="true"> </span> -->&rsaquo; With <a href="#">{{appt.providerName}} </a></h4>
                                     <p><span class="text-muted">On {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </span><br/>
-                                    <span class="text-muted">Appointment Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong></span><br/>
+                                    <span class="text-muted">Appointment Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong></span><small><span ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">Doctor proposed new time - {{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}<a type="button" class="btn btn-primary btn-xs" ng-click="confirmApptAtProposedTime(appt)" >Confirm</a></span></small><br/>
                                     <span class="text-muted">Payment Status - <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong></span><br/>
                                     <span class="text-muted">Meeting Status - <strong>{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</strong></span><br/>
 

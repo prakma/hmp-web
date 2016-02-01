@@ -37,6 +37,8 @@ consult_args = {
     'patientName': '',
     'age': '',
     'sex': '',
+    'patientPhone': '',
+    'consult_mode_pref': '',
     'requestedTS': '',
     'problemSummary': ''
 }
@@ -48,6 +50,7 @@ def apptRequestWF (args):
 	patientSex = args['sex']
 	patientPhone = args['patientPhone']
 	requestTSStr = args['requestedTS']
+	consultationModePreference = args['consult_mode_pref']
 	print 'requestTSStr received', requestTSStr
 	problemSummary = args['problemSummary']
 	user = args['user']
@@ -107,6 +110,11 @@ def apptRequestWF (args):
 	cwf.paymentWF.deriveTotalExpectedAmount()
 	cwf.paymentWF.paymentStatus = 1
 	cwf.paymentWF.paymentStatusChain = [1]
+
+	# create meetingWF and set the meeting type to consultation_mode_preference[phone, video or anything]
+	cwf.meetingWF = subscriber.MeetingWF()
+	cwf.meetingWF.meetingType = consultationModePreference
+
 	
 	
 
@@ -278,14 +286,17 @@ def consultWF_setApptState(args):
 	# 	cwf.apptWF.rescheduleTimeByProvider(rescheduleDt, reason)
 
 
-	stateMap = {3:"confirmTimeByProvider", 4: "rescheduleByUser", 5: "rescheduleTimeByProvider", 6: "cancelByUser", 7: "cancelByProvider"}
+	stateMap = {3:"confirmTimeByProvider",30:"confirmTimeByUser", 4: "rescheduleTimeByUser", 5: "rescheduleTimeByProvider", 6: "cancelByUser", 7: "cancelByProvider"}
 
 	if(aptWFCd not in stateMap):
 		failureResult['message'] = 'Invalid workflow state - '+ str(aptWFCd)
 		return failureResult
 
-	rescheduleDtIfProvided = args['rescheduledDt'] 
-	reasonIfProvided = args['reason']
+	# rescheduleDtIfProvided = args['rescheduledDt'] 
+	# reasonIfProvided = args['reason']
+	rescheduleDtIfProvided = args.get('rescheduledDt', None) 
+	reasonIfProvided = args.get('reason', None)
+
 	print 'statemap/aptWFCd', aptWFCd, stateMap[aptWFCd], cwf
 
 	if(cwf.apptWF == None):
@@ -425,7 +436,32 @@ def handlePrescriptionOnUpload(args):
 	cwf.put()
 	
 	successResult['reference'] = cref
-	return successResult	
+	return successResult
+
+def processCwfEvent(args):
+	eventName = args['eventName']
+	# eventBody = args['eventBody']
+	user = args['user']
+
+	if(eventName == 'RescheduleByProvider'):
+		args['rescheduledDt'] = dateutil.parser.parse(args['reschedDT']).replace(tzinfo=None)
+		args['reason'] = args['reschedMsg']
+		args['aptWFCd'] = 5
+		consultWF_setApptState(args)
+		return { 'result' : 'Success', 'message' : 'Reschedule request completed ', 'cref' : args['cref'] }
+	elif(eventName == 'RescheduleByUser'):
+		args['rescheduledDt'] = dateutil.parser.parse(args['reschedDT']).replace(tzinfo=None)
+		args['reason'] = args['reschedMsg']
+		args['aptWFCd'] = 4
+		consultWF_setApptState(args)
+		return { 'result' : 'Success', 'message' : 'Reschedule request completed ', 'cref' : args['cref'] }
+	elif(eventName == 'ConfirmByUser'):
+		args['aptWFCd'] = 30
+		consultWF_setApptState(args)
+		return { 'result' : 'Success', 'message' : 'Appointment Confirmation completed ', 'cref' : args['cref'] }
+
+
+	return { 'result' : 'Failure', 'message' : 'Unknown Event - '+eventName }	
 
 
 

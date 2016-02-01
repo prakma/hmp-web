@@ -9,7 +9,7 @@ angular.module('providerApp.dashboard', ['ngRoute'])
 //   });
 // }])
 
-.controller('DashboardCtrl', ['$scope', '$state', 'Consultation', 'fmoment', function($scope, $state, Consultation, fmoment) {
+.controller('DashboardCtrl', ['$scope', '$state', 'Consultation', 'CwfEvent','fmoment', function($scope, $state, Consultation, CwfEvent, fmoment) {
         console.log('dashboard controller called !');
         var currTime = fmoment();
         var fourHrBefore = fmoment().subtract(4, 'h');
@@ -38,7 +38,7 @@ angular.module('providerApp.dashboard', ['ngRoute'])
 
         }
         var pendingApptFilter = function(apptObj, index) {
-            if (apptObj.apptWF.apptStatus == 2)
+            if (apptObj.apptWF.apptStatus == 2 || apptObj.apptWF.apptStatus == 4)
                 return true;
             else
                 return false;
@@ -233,6 +233,16 @@ angular.module('providerApp.dashboard', ['ngRoute'])
         //refreshData();
         $scope.gotoCRoom = function(apptObj) {
             //console.log('goto consulting room', cid, uid, pid);
+            if(apptObj.meetingWF && apptObj.meetingWF.meetingType){
+                if(apptObj.meetingWF.meetingType == 'phone'){
+                    $state.go('croom_audio', {
+                        appt: apptObj
+                    });
+                    return;
+                }
+            }
+
+            // default is video mode of consultation
             $state.go('croom', {
                 appt: apptObj
             });
@@ -282,13 +292,41 @@ angular.module('providerApp.dashboard', ['ngRoute'])
             });
         };
 
-        $scope.rescheduleAppt = function(apptObj) {
-            console.log('reschedule appointment clicked');
-            setTimeout(function() {
+        $scope.rescheduleAppt = function(apptObj, reschedD, reschedT, reschedMsg, successCallbkFn) {
+            console.log('reschedule appointment clicked', apptObj, reschedD, reschedT, reschedMsg );
+            var rescheduledDate = fmoment(reschedD);
+            var rescheduledTime = fmoment(reschedT);
+            rescheduledDate.hours(rescheduledTime.hours()).minutes(rescheduledTime.minutes());
+            var newCwfEvent = new CwfEvent();
+            newCwfEvent.cref = apptObj._id;
+            newCwfEvent.eventName = 'RescheduleByProvider';
+            newCwfEvent.reschedDT = rescheduledDate;
+            newCwfEvent.reschedMsg = reschedMsg;
 
+            newCwfEvent.$save(function(result){
+                console.log('event saved', result);
+                //apptObj.apptWF.apptStatus = 5;
+                console.log('refreshing the dashboard after rescheduling');
+                setTimeout(function(){
+                    if(successCallbkFn){
+                        console.log('calling callback after rescheduling');
+                        successCallbkFn();
+                    } else{
+                        console.log('refreshing the dashboard after rescheduling');
+                        refreshData(function(){
+                            console.log('refreshing the pending appt list');
+                            // on success
+                            // $scope.fullApptList is already set by refreshData so we can directly use it now
+                            $scope.pendingApptList = $scope.fullApptList.filter(pendingApptFilter);
+                            $scope.dashboardApptList = $scope.fullApptList.filter(dashboardApptFilter);
+                        });
+                    }
+                    
+                },2000);
+                
             });
+            
         };
-
 
     }])
     .controller('PatientApptCtrl', ['$scope', '$state', '$stateParams', '$q', 'Consultation', 'fPatientQBank', 'Prescription',
@@ -297,51 +335,58 @@ angular.module('providerApp.dashboard', ['ngRoute'])
             //$scope.appt = $stateParams.appt;
             console.log('cref in appt detail view', $stateParams.cref);
 
-            var promise = (function() {
-                return $q(function(resolve, reject) {
+            function refreshCwfDetails(){
+                var promise = (function() {
+                    return $q(function(resolve, reject) {
+                        if (false/*$stateParams.appt*/) {
+                          setTimeout(function(){
+                            resolve($stateParams.appt);
+                          });
+                        } else if ($stateParams.cref){
+                          // fetch appt details of this appt
+                          var freshCwfObj = Consultation.get_cwf({
+                              'cref': $stateParams.cref
+                          });
+                          freshCwfObj.$promise.then(function(){
+                            resolve(freshCwfObj);
+                          }, function(){
+                            reject($stateParams.cref);
+                          });
+                        } else {
+                          setTimeout(function(){
+                            reject('Unknown cref');
+                          });
+                        }
+                            
+                    });
+                })();
 
-                    if (false/*$stateParams.appt*/ ) {
-                      setTimeout(function(){
-                        resolve($stateParams.appt);
-                      });
-                    } else if ($stateParams.cref){
-                      // fetch appt details of this appt
-                      var freshCwfObj = Consultation.get_cwf({
-                          'cref': $stateParams.cref
-                      });
-                      freshCwfObj.$promise.then(function(){
-                        resolve(freshCwfObj);
-                      }, function(){
-                        reject($stateParams.cref);
-                      });
-                    } else {
-                      setTimeout(function(){
-                        reject('Unknown cref');
-                      });
+                promise.then(function(cwf) {
+                  console.log(' promise fulfilled ! cwf is', cwf);
+                    $scope.appt = cwf;
+                    var questionSize, questionSizeArray = [];
+                    questionSize = 0 || $scope.appt.patientDetailsWF.questionId.length;
+                    for (var i = 0; i < questionSize; i++) {
+                        questionSizeArray.push(i);
                     }
-                        
+
+                    $scope.qLoopHelper = questionSizeArray;
+                    // console.log('question size array', questionSizeArray);
+                    // console.log('qid 1', $stateParams.appt.patientDetailsWF.questionId[0]);
+                    $scope.qbank = fPatientQBank;
+                }, function(failedCref) {
+                    console.log('appt with cref', failedCref, ' could not be loaded');
                 });
-            })();
-
-            promise.then(function(cwf) {
-              console.log(' promise fulfilled ! cwf is', cwf);
-                $scope.appt = cwf;
-                var questionSize, questionSizeArray = [];
-                questionSize = 0 || $scope.appt.patientDetailsWF.questionId.length;
-                for (var i = 0; i < questionSize; i++) {
-                    questionSizeArray.push(i);
-                }
-
-                $scope.qLoopHelper = questionSizeArray;
-                // console.log('question size array', questionSizeArray);
-                // console.log('qid 1', $stateParams.appt.patientDetailsWF.questionId[0]);
-                $scope.qbank = fPatientQBank;
-            }, function(failedCref) {
-                console.log('appt with cref', failedCref, ' could not be loaded');
-            });
 
 
+            }
 
+            $scope.refreshAction = refreshCwfDetails;
+
+            $scope.refreshAction();
+            
+
+            
 
             $scope.generateUploadURL = function() {
                 setTimeout(function() {
@@ -358,6 +403,8 @@ angular.module('providerApp.dashboard', ['ngRoute'])
                         });
                 });
             }
+
+            console.log('PatientApptCtrl controller finished !');
 
         }
     ]);
