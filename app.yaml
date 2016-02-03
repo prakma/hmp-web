@@ -40,13 +40,16 @@ handlers:
 # where <wsgi_application> is a WSGI application object.
 - url: /s/.*  # This regex directs all routes to main.bottle
   script: main.bottle
+  secure: always
 
 - url: /$
   static_files: client/app/index.html
   upload: client/app/index.html
+  secure: always
 
 - url: /*
   static_dir: client/app
+  secure: always
 
 
 # Third party libraries that are included in the App Engine SDK must be listed

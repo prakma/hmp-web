@@ -550,9 +550,18 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	};
 
 	$scope.patientQ = function () {
-    	cwf.$patient_q({}, function(){
+    	cwf.$patient_q({}, function(updatedCwfMsg){
     		console.log('patient questions are saved !');
-    		$scope.$emit('actionEvent', 'Questionnaire Responses Saved');
+    		if(updatedCwfMsg.result=="Success"){
+    			$scope.$emit('actionEvent', 'Questionnaire Responses Saved');
+    			setTimeout(function(){
+                    refresh();
+                },2000);
+    			//$scope.wf = updatedCwfMsg.cwf;
+    		}else{
+    			$scope.$emit('actionEvent', 'Failed to save questionnaire responses. Please try again');
+    		}
+    		
     		// $state.go('userLanding');
     	})
     };

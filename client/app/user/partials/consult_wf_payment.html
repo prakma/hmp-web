@@ -54,7 +54,8 @@
 	            </form>
 
 	            <form action='https://sandbox.2checkout.com/checkout/purchase' method='post'>
-	              <input type='hidden' name='sid' value='901274976' />
+	              <!-- <input type='hidden' name='sid' value='901274976' /> -->
+	              <input type='hidden' name='sid' value='901307406' />
 	              <input type='hidden' name='mode' value='2CO' />
 	              <input type='hidden' name='li_0_type' value='Remote Consultation' />
 	              <input type='hidden' name='li_0_product_id' value='{{wf._id}}' />
@@ -70,7 +71,7 @@
 	              
 	              <input type='hidden' name='x_receipt_link_url' value='http://SANDBOX:8080/user/index.html#/user/cwf/{{wf._id}}/payment/return' />
 	              <!-- <input name='submit' type='submit' value='Checkout' /> -->
-	              <button type="submit" class="btn btn-primary" ng-click="patientQ()">Pay {{wf.paymentWF.expCurr}} {{totalFee}}</button>
+	              <button type="submit" class="btn btn-primary">Pay {{wf.paymentWF.expCurr}} {{totalFee}}</button>
 	            </form>
 
 	        </div>

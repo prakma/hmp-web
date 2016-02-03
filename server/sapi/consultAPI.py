@@ -320,8 +320,10 @@ def consultWF_setApptState(args):
 	return successResult
 
 def consultWF_updatePayment(args):
-	secretWord = 'MjRiZmYxZjQtZjcwZi00NDE3LWIzOWEtODUwMGFmOWFkYWJj'
-	accountNo = '901274976'
+	# secretWord = 'MjRiZmYxZjQtZjcwZi00NDE3LWIzOWEtODUwMGFmOWFkYWJj'
+	secretWord = 'MDdlOWJlZmYtOTUzMS00OTRhLTgzOGMtYmIzZDFiMzlkZjU1'
+	# accountNo = '901274976'
+	accountNo = '901307406'
 	key = args['key']
 	order_number = args['order_number']
 	demo_order_no =  '1'
@@ -337,12 +339,17 @@ def consultWF_updatePayment(args):
 	m.update(demo_order_no)
 	m.update(total)
 
-	calculatedKey = m.digest()
+	# calculatedKey = m.digest()
+	calculatedKey2 = m.hexdigest().upper()
 
-	print 'payment key', key, 'calculatedKey', calculatedKey
+	print 'payment key', key, 'calculatedKey as digest', calculatedKey2
 
 	failureResult = { 'result' : 'Failure', 'message' : '' }
 	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	if(key != calculatedKey2):
+		failureResult['message'] = 'Invalid payment update for cref ' + str(cref) +', order no '+ str(order_number)+ ', invoice_id '+ str(invoice_id)
+		return failureResult
 
 	#
 	try:
