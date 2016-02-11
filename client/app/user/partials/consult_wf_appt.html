@@ -68,6 +68,24 @@
             </div>
             <div class="panel-body">
                 <form>
+
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label for="appt-mode">Consultation mode</label>
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="optionsRadiosCMode" id="optionsRadiosCModeV" ng-model="wf.meetingWF.meetingType" value="video">
+                                By Video 
+                              </label>
+                            </div>
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="optionsRadiosCMode" id="optionsRadiosCModeP" ng-model="wf.meetingWF.meetingType" value="phone">
+                                By Phone
+                              </label>
+                            </div>
+                        </div>
+                    </div>
             
                     <div class="form-group">
                         <label for="exampleInputName">Name</label>
@@ -90,6 +108,10 @@
                                 </label>
                             </div>
                         
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPhone">Phone</label>
+                        <input type="text" class="form-control" id="exampleInputPhone" ng-model="wf.patientDetailsWF.patientPhone" placeholder="+919885566778">
                     </div>
 
                     <div class="form-group">

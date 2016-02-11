@@ -46,13 +46,13 @@ def querySubscriberByEmail(queryJSON):
 		return rs
 
 def x_querySubscriberByToken(token):
-	print 'token received for authentication check', token
+	#print 'token received for authentication check', token
 	sessionCursor = queryAPI.findSubscriberSessionByToken(token)
-	print 'authentication check result', sessionCursor
+	#print 'authentication check result', sessionCursor
 	if ( len (sessionCursor) > 0 ):
-		print 'authenticated user found'
+		#print 'authenticated user found'
 		subscriberKey = sessionCursor[0].subscriber
-		print 'subscriber key', subscriberKey
+		#print 'subscriber key', subscriberKey
 		user = subscriberKey.get()
 		if(user == None):
 			raise ValueError('session exists but could not get subscriber', token, user)

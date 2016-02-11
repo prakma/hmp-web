@@ -3,7 +3,7 @@
 
 
 
-angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
+angular.module('providerApp.croom', ['ngRoute'])
 
 // .config(['$routeProvider', function($routeProvider) {
 //   $routeProvider.when('/croom', {
@@ -313,10 +313,14 @@ angular.module('providerApp.croom', ['ngRoute', 'myApp.services'])
             conn.accept();
         });
 
-        $scope.callUserByPhone = function(){
-            console.log('call the patient by phone');
+        $scope.callUserByPhone = function(userPhone){
+            console.log('call the patient on phone ',userPhone);
             // get the phone number to connect the call to
-            var params = {"PhoneNumber": "+918041260289"};
+            //var params = {"PhoneNumber": "+918041260289"};
+            // santize the user phone number
+            // if it does not start with +country code, prepend country code for india.
+            
+            var params = {"PhoneNumber": userPhone};
             Twilio.Device.connect(params);
         };
 

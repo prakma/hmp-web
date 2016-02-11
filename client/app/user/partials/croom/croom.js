@@ -9,7 +9,7 @@
 
 
 angular.module('userApp.croom', [
-  'ui.router','ngResource','providerApp.version','myApp.services'
+  'ui.router','ngResource','providerApp.version','hmp.hmpservices','hmp.cwfservices'
 ])
 .controller('CRoomCtrl', ['$scope','$window','$stateParams','HMPUser',function($scope, $window, $stateParams, HMPUser) {
     var room;

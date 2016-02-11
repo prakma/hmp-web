@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.services', [])
+angular.module('hmp.hmpservices', [])
 .factory('Subscriber', [
 	'$resource', function($resource){
 		return $resource('/s/subscriber/',{},{
@@ -142,52 +142,6 @@ angular.module('myApp.services', [])
 		return user;
 
 	}])
-.factory('Consultation', [
-	'$resource', function($resource){
-		return $resource('/s/consult/',{},{
-			begin: {
-				method: 'PUT',
-				params:{
-					providerId: '@providerId'
-				}
-			},
-			request_appt: {
-				method: 'POST',
-				url: '/s/consult/appt'
-			},
-			patient_q: {
-				method: 'POST',
-				url: '/s/consult/patientq'
-			},
-			user_appts: {
-				method: 'GET',
-				url: '/s/consult/user_appts',
-				isArray:true
-
-			},
-			get_cwf: {
-				method: 'GET',
-				url: '/s/consult/cwf/:cref'
-			},
-			provider_appts: {
-				method: 'GET',
-				url: '/s/consult/provider_appts',
-				isArray:true
-
-			},
-			user_appts: {
-				method: 'GET',
-				url: '/s/consult/user_appts',
-				isArray:true
-
-			},
-			set_apptWFState: {
-				method: 'POST',
-				url: '/s/consult/cwf/:cref/apptwf'
-			}
-		});
-
-	}])
 .factory('fPatientQBank', [
 	function(){
 		return function (qKeyVar){
@@ -246,20 +200,6 @@ angular.module('myApp.services', [])
 				}
 			}
 		});
-
-	}])
-.factory('CwfEvent', [
-	'$resource', function($resource){
-		return $resource('/s/consult/cwf/event',{}/*,{
-			newEvent: {
-				method: 'PUT',
-				params:{
-					cref: '@cref',
-					eventName:'@eventName',
-					eventBody:'@eventBody'
-				}
-			}
-		}*/);
 
 	}])
 .factory('TwilioToken', [

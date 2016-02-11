@@ -3,7 +3,7 @@ function debug () {
 }
 
 angular.module('userApp', [
-  'ui.router','ngResource','providerApp.version','myApp.services',/*'ui.calendar'*/'mgcrea.ngStrap','ipCookie',
+  'ui.router','ngResource','providerApp.version','hmp.hmpservices','hmp.cwfservices',/*'ui.calendar'*/'mgcrea.ngStrap','ipCookie',
   'userApp.croom'
 ]).
 config(function($stateProvider, $urlRouterProvider){
@@ -467,19 +467,19 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	// debug('CwfCtrl called with cref', cref);
 	
 
-	$scope.saveCwfState = function(){
-		console.log('saving cwf state');
-		if(cwf){
-			$scope.$emit('actionEvent', 'Saving Appointment details changes');
-			cwf.$save(function(wf){
-				console.log('cwf state saved', cwf);
-				$scope.$emit('actionEvent', 'Appointment changes saved');
-			});
-		} else{
-			// this is 
-		}
+	// $scope.saveCwfState = function(){
+	// 	console.log('saving cwf state');
+	// 	if(cwf){
+	// 		$scope.$emit('actionEvent', 'Saving Appointment details changes');
+	// 		cwf.$save(function(wf){
+	// 			console.log('cwf state saved', cwf);
+	// 			$scope.$emit('actionEvent', 'Appointment changes saved');
+	// 		});
+	// 	} else{
+	// 		// this is 
+	// 	}
 		
-	};
+	// };
 
 	$scope.confirmCwf = function(thisWf){
 		console.log("appt will be confirmed at proposed time");
@@ -538,6 +538,36 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
             	$scope.$emit('actionEvent', 'Could not reschedule appointment. Please try again.');
             }
         });
+	};
+
+	$scope.changeOtherInfo = function(thisWf){
+		console.log('saving other patient information');
+		var newCwfEvent = new CwfEvent();
+        newCwfEvent.cref = thisWf._id;
+        newCwfEvent.consult_mode_pref = thisWf.meetingWF.meetingType;
+        newCwfEvent.patientName = thisWf.patientDetailsWF.patientName;
+        newCwfEvent.patientAge = thisWf.patientDetailsWF.patientAge;
+        newCwfEvent.patientSex = thisWf.patientDetailsWF.patientSex;
+        newCwfEvent.patientPhone = thisWf.patientDetailsWF.patientPhone;
+        newCwfEvent.problemSummary = thisWf.patientDetailsWF.answerText[0];
+        newCwfEvent.eventName = 'changePatientInfo';
+        // console.log("Rescheduling...");
+        newCwfEvent.$save(function(result){
+            console.log('Patient Info Change sent to server', result);
+            
+            //apptObj.apptWF.apptStatus = 3;
+            if(result.result=="Success"){
+            	console.log('Patient Info change was successful.');
+            	$scope.$emit('actionEvent', 'Changed patient information');
+                setTimeout(function(){
+                    refresh();
+                },2000);
+            } else {
+            	console.log("Patient Info change Failed");
+            	$scope.$emit('actionEvent', 'Could not change patient information. Please try again.');
+            }
+        });
+		
 	};
 
 	$scope.setActiveStep = function(){
@@ -605,10 +635,10 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
 		    var dayTiming = calStruc[entry]; // for ex, '8AM to 5 PM'
 		    var daysWithSameTiming = timingVsDays[dayTiming]; // for ex, ['mon', 'tue']
 		    if(!daysWithSameTiming){
-		    	console.log('new entry', dayTiming);
+		    	// console.log('new entry', dayTiming);
 				timingVsDays[dayTiming] = [entry]; // first entry,'8 Am to 5 pm': ['mon']
 			} else{
-				console.log('existing entry push', dayTiming, entry, timingVsDays[dayTiming]);
+				// console.log('existing entry push', dayTiming, entry, timingVsDays[dayTiming]);
 				timingVsDays[dayTiming].push(entry);
 			}
 
@@ -625,7 +655,7 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
 		    }
 		}
 
-		console.log('prettyPrintedStr = ', prettyPrintedStr);
+		// console.log('prettyPrintedStr = ', prettyPrintedStr);
 
 		$scope.prettyPrintedDocTiming = prettyPrintedStr;
 		    
@@ -670,6 +700,8 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     // $scope.wf.requestedTS = oneDay2HourFuture;
     // $scope.wf.requestedT = oneDay2HourFuture.format("h:mm A");
     // $scope.wf.requestedD = oneDay2HourFuture;
+
+    $scope.wf.consult_mode_pref = 'video';
     console.log("wf.requestedT is ", $scope.wf.requestedT);
     
 
@@ -681,16 +713,28 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     	var requestedTime = fmoment($scope.wf.requestedT);
     	requestedDate.hours(requestedTime.hours()).minutes(requestedTime.minutes());
     	$scope.wf.requestedTS = requestedDate;
-    	console.log('composed requstedTS ',requestedDate.toJSON() );
-    	console.log('scopewf', $scope.wf, wf);
+    	//console.log('composed requstedTS ',requestedDate.toJSON() );
+    	//console.log('scopewf', $scope.wf, wf);
+
     	if( !$scope.wf.patientName 
     		|| !$scope.wf.patientPhone 
+    		|| !$scope.wf.consult_mode_pref
     		|| !$scope.wf.age 
     		|| !$scope.wf.sex 
     		|| !$scope.wf.problemSummary ){
+    		$scope.errMsg = "Appointment Form is not valid. Please provide all information";
     		console.log("Appointment Form is not valid. Please provide all information");
     		return;
     	}
+    	// check that patient's phone number is in correct format
+
+    	PHONE_REGEX = /^\+\d\d?\d{10}?$/; // +, followed by first one or two digit for country code and rest 10 digits for the phone number
+    	//PHONE_REGEX.test($scope.wf.patientPhone);
+    	if(! PHONE_REGEX.test($scope.wf.patientPhone)){
+    		$scope.errMsg = "PhoneNumber must be in this format: +CountryCode 10DigitPhoneNumber. Example +919885566778";
+    		return;
+    	}
+
     	$scope.$emit('actionEvent', 'Creating new appointment');
     	wf.$request_appt({}, function(){
     		// debug('patient details saved !');

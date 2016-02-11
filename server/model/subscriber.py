@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 import datetime
+import hashlib
 
 class Subscriber(ndb.Model):
 	email = ndb.StringProperty(repeated=True)
@@ -29,11 +30,17 @@ class Subscriber(ndb.Model):
 		elif (name == 'phone'):
 				if(value != None):
 					self.phone.append(value)
+		elif (name == 'passwd'):
+			m = hashlib.sha1()
+			m.update(value)
+			super(Subscriber, self).__setattr__(name, m.hexdigest().upper())
 		else:
 			super(Subscriber, self).__setattr__(name,value)
 
 	def checkPassword (self, p):
-		return (self.passwd == p )
+		m = hashlib.sha1()
+		m.update(p)
+		return (self.passwd == m.hexdigest().upper() )
 
 	def isProvider(self):
 		return self.providerFlag != None and self.providerFlag== True

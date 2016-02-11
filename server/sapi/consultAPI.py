@@ -1,10 +1,12 @@
 from model import subscriber, queryAPI, ndb_json, providerProfile
+from tasks import dispatcher
 import platformAPI
 import dateutil.parser
 import datetime
 import hashlib
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+import sys
 
 def beginConsultWF (args):
 	providerId = args['providerId']
@@ -122,6 +124,8 @@ def apptRequestWF (args):
 	cwf.overallStatus = 2
 
 	cwf.put()
+
+	dispatcher.sendSMSToProvider(cref, 2)
 	successResult['message'] = 'Consultation request sent to Doctor. Waiting for his confirmation'
 	successResult['reference'] = cwf.key.id()
 	successResult['cwf'] = ndb_json.dumps(cwf)
@@ -178,6 +182,7 @@ def patientQuestionWF (args):
 	# cwf.overallStatus = 2
 
 	cwf.put()
+
 	successResult['message'] = 'Patient Questionnaire Information Stored'
 	successResult['reference'] = cwf.key.id()
 	successResult['cwf'] = ndb_json.dumps(cwf)
@@ -315,6 +320,12 @@ def consultWF_setApptState(args):
 		pass
 	cwf.put()
 
+	if(aptWFCd == 3 or aptWFCd == 5):
+		dispatcher.sendSMSToUser(cref, aptWFCd)
+	elif(aptWFCd == 4):
+		dispatcher.sendSMSToProvider(cref, aptWFCd)
+
+
 	successResult = ndb_json.dumps(cwf)
 	#successResult['result'] = 'Success'
 	return successResult
@@ -450,6 +461,8 @@ def processCwfEvent(args):
 	# eventBody = args['eventBody']
 	user = args['user']
 
+
+
 	if(eventName == 'RescheduleByProvider'):
 		args['rescheduledDt'] = dateutil.parser.parse(args['reschedDT']).replace(tzinfo=None)
 		args['reason'] = args['reschedMsg']
@@ -466,9 +479,76 @@ def processCwfEvent(args):
 		args['aptWFCd'] = 30
 		consultWF_setApptState(args)
 		return { 'result' : 'Success', 'message' : 'Appointment Confirmation completed ', 'cref' : args['cref'] }
+	else:
+		# see if we have a method in this module matching the eventName. if yes, invoke it
+		handlerFn = getattr(sys.modules[__name__], eventName, None)
+		if(handlerFn):
+			return handlerFn(args)
+		else:
+			return { 'result' : 'Failure', 'message' : 'Unknown Event - '+eventName }
+
+	return { 'result' : 'Failure', 'message' : 'Unknown Event - '+eventName }
 
 
-	return { 'result' : 'Failure', 'message' : 'Unknown Event - '+eventName }	
+def changePatientInfo(args):
+	# print 'todo - implement change patient info'
+	# return { 'result' : 'Failure', 'message' : 'implementing change patient info shortly' }	
+
+	cref = args['cref'];
+	patientName = args['patientName']
+	patientAge = args['patientAge']
+	patientSex = args['patientSex']
+	patientPhone = args['patientPhone']
+	consultationModePreference = args['consult_mode_pref']
+	problemSummary = args['problemSummary']
+	user = args['user']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(cref)
+	except:
+		failureResult['message'] = 'Invalid Reference - ' + str(cref)
+		return failureResult
+
+	# check that cwf was initiated by this same user
+	if(cwf.user.id() != user.key.id()):
+		failureResult['message'] = 'Invalid Appointment Request. C-Ref belongs to another user'
+		return failureResult
+
+	# allow the patient info change only before the meeting, not after the meeting
+	if(cwf.meetingWF == None):
+		failureResult['message'] = 'Invalid CWF/Meeting State '+str(cref)
+		return failureResult
+
+	if(cwf.patientDetailsWF == None):
+		failureResult['message'] = 'Invalid CWF/PatientDetails State '+str(cref)
+		return failureResult
+
+	if(cwf.meetingWF.meetingStatus >= 3):
+		failureResult['message'] = 'Cannot change patient details after the meeting '+str(cref)
+		return failureResult
+
+	if(cwf.overallStatus >= 3):
+		failureResult['message'] = 'Cannot change patient details after the consultation is complete '+str(cref)
+		return failureResult
+
+
+	
+	cwf.patientDetailsWF.patientName = patientName
+	cwf.patientDetailsWF.patientAge = patientAge
+	cwf.patientDetailsWF.patientSex = patientSex
+	cwf.patientDetailsWF.patientPhone = patientPhone
+	cwf.patientDetailsWF.answerText[0] = problemSummary
+
+	cwf.meetingWF.meetingType = consultationModePreference
+	cwf.put()
+	return { 'result' : 'Success', 'message' : 'Patient info change completed ', 'cref' : cref }
+
+
+		
 
 
 

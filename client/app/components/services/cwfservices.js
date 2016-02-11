@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.services', [])
+angular.module('hmp.cwfservices', [])
 .factory('Consultation', [
 	'$resource', function($resource){
 		return $resource('/s/consult/',{},{

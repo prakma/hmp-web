@@ -46,7 +46,7 @@ from google.appengine.ext import ndb
  
 def encode_model(obj):
   """Encode objects like ndb.Model which have a `.to_dict()` method."""
-  obj_dict = obj.to_dict()
+  obj_dict = obj.to_dict(exclude=['email','passwd','phone'])
   for key, val in obj_dict.iteritems():
     if isinstance(val, types.StringType):
       try:

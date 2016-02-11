@@ -44,6 +44,7 @@
 		</ul>
 	</div> -->
 	<hr class="featurette-divider">
+	<!-- <link rel="stylesheet" property="stylesheet" href="css/path/to/intlTelInput.css"> -->
 	<div class="row">
 		<div class="col-lg-3">
 			<h5>Reference No</h5>
@@ -61,22 +62,22 @@
 						    <label for="appt-mode">Choose your consultation mode</label>
 						    <div class="radio">
 							  <label>
-							    <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="wf.consult_mode_pref" value="video">
-							    By Video <small><small>( Remember, you need to be online at the time of appointment)</small></small>
+							    <input type="radio" name="optionsRadiosCMode" id="optionsRadiosV" ng-model="wf.consult_mode_pref" value="video" ng-checked="wf.consult_mode_pref=='video' ">
+							    By Video <small><small>( Doctor will call on your computer at the time of appt consultation )</small></small>
 							  </label>
 							</div>
 							<div class="radio">
 							  <label>
-							    <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="wf.consult_mode_pref" value="phone">
-							    By Phone <small><small>( Remember, doctor will call you)</small></small>
+							    <input type="radio" name="optionsRadiosCMode" id="optionsRadiosP" ng-model="wf.consult_mode_pref"  value="phone">
+							    By Phone <small><small>( Doctor will call on your phone )</small></small>
 							  </label>
 							</div>
-							<div class="radio">
+							<!-- <div class="radio">
 							  <label>
-							    <input type="radio" name="optionsRadios" id="optionsRadios3" ng-model="wf.consult_mode_pref" value="anything" checked>
+							    <input type="radio" name="optionsRadios" id="optionsRadios3" ng-model="wf.consult_mode_pref" value="anything">
 							    Try by video first, if not then by Phone
 							  </label>
-							</div>
+							</div> -->
 
 						</div>
 	                </div>
@@ -109,7 +110,8 @@
 		                </div>
 		                <div class="form-group required">
 		                    <label for="exampleContactPhone" class="control-label">Phone</label>
-		                    <input type="text" class="form-control" id="exampleInputName" ng-model="wf.patientPhone" placeholder="Your reachable contact number" required>
+		                    <input type="text" class="form-control" id="exampleInputPhone" name="e362Phone" data-phone ng-model="wf.patientPhone" placeholder="+919885566778" required ng-patternxx="/^\+\d{11}\d{1}?$/">
+		                    <span ng-show="newapptform.e362Phone.$error.phoneField">Please enter phone number in this format: +919885566778</span>
 		                </div>
 	            	</div>
 	            	<div class="form-group"></div>
@@ -121,11 +123,11 @@
 		                <div class="form-group required">
 		                	<label for="exampleInputSex" class="control-label">Sex</label>
                             <label>
-                            <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="wf.sex" value="M" checked />
+                            <input type="radio" name="optionsRadiosSex" id="optionsRadiosM" ng-model="wf.sex" value="M" checked />
                             Male
                             </label>
                             <label>
-                            <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="wf.sex" value="F"/>
+                            <input type="radio" name="optionsRadiosSex" id="optionsRadiosF" ng-model="wf.sex" value="F"/>
                             Female
                             </label>
 		                </div>
@@ -139,6 +141,7 @@
 
 	                <!-- <button type="submit" class="btn btn-primary" ng-click="gotoPayment()">Pay Rs. 200</button> -->
 	                <a class="btn btn-primary" ng-click="requestAppt()">Next Step</a>
+	                <p class="text-warning">{{errMsg}}</p>
 	            </form>
 	            <!-- Modal -->
 	            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -8,6 +8,7 @@ from twilio.util import TwilioCapability
 import twilio.twiml
 
 from sapi import subscriberAPI, sessionAPI, consultAPI, profileAPI, feedbackAPI
+import hmpconstants
 
 import os, base64
 
@@ -431,15 +432,32 @@ def get_twilio_token():
 	user = ensureLogin(None)
 	if(user == None):
 		return {'result':'Failure', 'message':'Unauthenticated'}
-	# account_sid = "ACf40068b9df96262b672261f481ec2e0e"
-	# auth_token = "89ecbff11b9754fb84985a4e9c20dd53"
+	
+	# from trial account of manoj.prakash@gmail.com
+	# account_sid = "AC3c6446cabf093a6d43eb5743bb067734"
+	# auth_token = "81ce4d34613c2d8cc6c4492abc01fa14"
+	# application_sid = "AP1f6c103b3e8f4db78b85d6b6c78a10c4"
+	# application_sid = "AP2dc65dfde4f16248498ade72fa759cc9"
 
-	account_sid = "AC3c6446cabf093a6d43eb5743bb067734"
-	auth_token = "81ce4d34613c2d8cc6c4492abc01fa14"
+	# from real account of manoj.prakash+7@gmail.com
+	# account_sid = "ACd7492f73100e1169b076b734253b85d9"
+	# auth_token = "e52b5cca6cc4295337838ac9fcb13421"
+
+	account_sid = hmpconstants.TwilioSetup.account_sid
+	auth_token = hmpconstants.TwilioSetup.auth_token
  
 	# This is a special Quickstart application sid - or configure your own
 	# at twilio.com/user/account/apps
-	application_sid = "AP1f6c103b3e8f4db78b85d6b6c78a10c4"
+
+	# application_sid pointing to manoj's local dev
+	# application_sid = "AP6cf341f0c8d65f51cb7a908ae944cbf1"
+
+	# application_sid pointing to remedysquare prod
+	# application_sid = "APcc1d73bf14b7f0b998a0f86a96a8e552"
+
+	application_sid = hmpconstants.TwilioSetup.application_sid
+	
+	
  
 	capability = TwilioCapability(account_sid, auth_token)
 	capability.allow_client_outgoing(application_sid)
