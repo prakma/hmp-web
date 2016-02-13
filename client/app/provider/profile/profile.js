@@ -39,6 +39,22 @@ angular.module('providerApp.profile', ['ngRoute'])
 	$scope.userIsProvider = true;
 	$scope.provider = ProviderProfile.get({providerId:$state.params.docId});
 	
+	$scope.showMoreFlag = false,$scope.more_less_text = "More..."; // default
+	console.log('current more/less text is',$scope.more_less_text);
+	$scope.showMoreOrLess = function (){
+		// toggle the div ... if current val is "more", show the div now, but toggle the text to "less"
+		console.log('toggle more or less');
+		if($scope.showMoreFlag){
+			$scope.showMoreFlag = false;
+			$scope.more_less_text = "More...";
+
+		} else{
+			$scope.showMoreFlag = true;
+			$scope.more_less_text = "Less...";
+		}
+
+	}
+	
 	
 }])
 ;

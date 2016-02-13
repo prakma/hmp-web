@@ -45,6 +45,9 @@ class Subscriber(ndb.Model):
 	def isProvider(self):
 		return self.providerFlag != None and self.providerFlag== True
 
+	def clearAllPhoneValues(self):
+		super(Subscriber, self).__setattr__('phone', [])
+
 
 class SubscriberSession(ndb.Model):
 	subscriber = ndb.KeyProperty(kind=Subscriber)

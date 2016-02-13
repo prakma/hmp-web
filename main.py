@@ -77,7 +77,7 @@ credential_args = {
 }
 @bottle.route('/s/subscriber/credentials', method='POST')
 @use_args(credential_args)
-def register(args):
+def subscriberChpass(args):
 	print "subscriber credentials called with post", args
 	user = ensureLogin(None)
 	if(user == None):
@@ -86,6 +86,18 @@ def register(args):
 	return subscriberAPI.chpassForSubscriber(args);
 	#return {'result':'Failure', 'message':'credential change not implemented'}
 	#print request.body
+
+
+phoneChg_args = {
+	'email': Arg(str),
+    'phone': Arg(str),
+}
+@bottle.route('/s/subscriber/chphone', method='POST')
+@use_args(phoneChg_args)
+def subscriberChPhone(args):
+	print "subscriber chphone called with post", args
+	return subscriberAPI.chPhoneForSubscriber(args);
+	
 
 
 

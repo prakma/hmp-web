@@ -112,6 +112,36 @@ def chpassForSubscriber(chPassJSON):
 		rs['message'] = 'Cannot change password - unknown subscriber'
 		return rs;
 
+def chPhoneForSubscriber(chPhoneJSON):
+	rs = {
+		"result" : "Failure",
+		"code" : 'S4002',
+		"message" : ' '
+		}
+	email = chPhoneJSON['email']
+	phone = chPhoneJSON['phone']
+
+	subscrList = queryAPI.findSubscriberByEmail ( email )
+	if ( len(subscrList) == 0 ):
+		rs['message'] = "No subscriber with email "+str(email)+" found"
+		return rs
+	else:
+		subscriberObj = subscrList[0]
+
+	# subscriberObj = queryAPI.findSubscriberById(subscriberId)
+	if(subscriberObj != None):
+		subscriberObj.clearAllPhoneValues()
+		subscriberObj.phone = phone;
+		subscriberObj.put()
+		rs['code'] = 'S200'
+		rs['result'] = 'Success'
+		rs['message'] = 'Phone value changed.'
+		return rs;
+		
+	else:
+		rs['message'] = 'Cannot change phone - unknown subscriber'
+		return rs;
+
 
 
 
