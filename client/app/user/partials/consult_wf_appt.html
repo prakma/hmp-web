@@ -2,10 +2,20 @@
 		
 <div>
     <h3>Appointment</h3>
-    <strong><a href="#">Status - {{wf.apptWF.apptStatus | cwfFilter:'appt'}}</a> for {{wf.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </strong>
-    <div class="form-group">
-        <a class="btn btn-primary btn-xs" ng-show="(wf | cwfStateTransitionAllowed : 'apptConfirmByUser' )" ng-click="confirmCwf(wf)">Confirm Proposed Time</a>
-        <a class="btn btn-danger btn-xs" ng-show="(wf | cwfStateTransitionAllowed : 'apptCancelByUser' )" ng-click="cancelCwf(wf)">Cancel Appointment</a>
+    <strong><span class="text-primary">Status - {{wf.apptWF.apptStatus | cwfFilter:'appt'}}</span> for {{wf.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </strong>
+    <div class="form-inline">
+        <div class="form-group" ng-show="(wf | cwfStateTransitionAllowed : 'apptConfirmByUser' )">
+            <label for="apptStatus">Doctor <span class="text-info" data-animation="am-flip-x" bs-tooltip title="{{wf.apptWF.reasonChain.slice(-1).pop()}}">suggested</span> a different time - </label>
+            <p class="form-control-static">{{wf.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}</p>
+            <button class="btn btn-info btn-xs" ng-click="confirmCwf(wf)">Confirm</button>
+        </div>
+        <div class="form-group">
+            <!-- <a class="btn btn-primary btn-xs" ng-show="(wf | cwfStateTransitionAllowed : 'apptConfirmByUser' )" ng-click="confirmCwf(wf)">Confirm Proposed Time</a> -->
+            <a class="btn btn-danger btn-xs" ng-show="(wf | cwfStateTransitionAllowed : 'apptCancelByUser' )" ng-click="cancelCwf(wf)">Cancel Appointment</a>
+        </div>
+        <div class="form-group" ng-show="(wf | cwfStateTransitionAllowed : 'apptConfirmByUser' )">
+            <label for="apptStatus">or, Reschedule your appointment </label>
+        </div>
     </div>
 
     

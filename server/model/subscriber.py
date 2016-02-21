@@ -167,6 +167,12 @@ class PaymemtWF(ndb.Model):
 		self.ttlExpAmt = self.prExpAmt + self.plExpAmt + self.txExpAmt
 
 
+class SubscriberDoc(ndb.Model):
+	fileName = ndb.StringProperty()
+	fileSummary = ndb.StringProperty()
+	fileBlobKey = ndb.StringProperty()
+
+
 ## no_info, partial_info, nearly_complete, complete
 class PatientDetailsWF(ndb.Model):
 	patientName = ndb.StringProperty()
@@ -177,6 +183,17 @@ class PatientDetailsWF(ndb.Model):
 	questionId = ndb.StringProperty(repeated=True)
 	answerText = ndb.StringProperty(repeated=True)
 	userDetailsStatus = ndb.IntegerProperty()
+
+	# references of documents uploaded by patients
+	patientDocuments = ndb.StructuredProperty(SubscriberDoc, repeated=True)
+
+	def getDocument(self, blobKey):
+		if (self.patientDocuments == None):
+			return None
+		for doc in self.patientDocuments:
+			if(blobKey == doc.fileBlobKey):
+				return doc
+		return None
 
 
 # checkin, waiting_for_connection, connected, meeting_in_progress, completed, abandoned, no_show, disconnected 

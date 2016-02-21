@@ -14,6 +14,14 @@
             </div>
         </div>
         <p></p>
+        <div class="row">
+            <li class="list-group-item" ng-if="appt.patientDetailsWF.patientDocuments"><strong>Patient Reports, Documents, etc.</strong></li>
+            <ol class="list-group">
+                <li class="list-group-item" ng-repeat="aDocument in appt.patientDetailsWF.patientDocuments">
+                    <a target="_blank" href="/s/consult/cwf/{{appt._id}}/document/{{aDocument.fileBlobKey}}"><span>{{aDocument.fileName}}</span></a>
+                </li>
+            </ol>
+        </div>
         <div class="row" ng-repeat="aQuestionIndex in qLoopHelper">
             <p class="bg-info"><strong>{{qbank(appt.patientDetailsWF.questionId[aQuestionIndex])}}</strong></p>
             <p class="text-muted">{{appt.patientDetailsWF.answerText[aQuestionIndex]}}</p>

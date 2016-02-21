@@ -150,6 +150,9 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 	// $scope.givenEmail = "";
 	// $scope.givenPassword = "";
 	//debug('UserMainCtrl called');
+	if (HMPUser.isLoggedId()){
+		$state.go('userLanding');
+	}
 	$scope.register = function (givenName, givenEmail, givenPassword) {
 		debug('register func called ', givenName, givenEmail, givenPassword);
 		var newUser = new Subscriber();
@@ -421,7 +424,7 @@ controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 	
 	
 }).
-controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, Consultation, CwfEvent, fmoment){
+controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, SubscriberDoc, Consultation, CwfEvent, fmoment){
 
 	console.log('cwfctrl invoked');
 	var cref = $stateParams.cref;
@@ -506,6 +509,9 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	$scope.cancelCwf = function(){
 
 		console.log(" implement appt cancel later");
+		$timeout(function(){
+	       $window.alert("Cancel Appointment feature is coming soon");
+	    });
 
 
 	};
@@ -594,6 +600,24 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
     		
     		// $state.go('userLanding');
     	})
+    };
+
+    $scope.generateUploadURL = function() {
+        setTimeout(function() {
+            console.log('generateUploadURL called ! generating upload url....');
+            SubscriberDoc.getUploadURL({
+                    cref: cwf._id,
+                    documentNo:1
+                },
+                null,
+                function(value, responseHeaders) {
+                	console.log("upload url for patient doc", value.upload_url);
+                    $scope.uploadURL = value.upload_url;
+                },
+                function(errorHttpResponse) {
+                    console.log('error in preparing the file upload');
+                });
+        });
     };
 
     $scope.gotoCRoom = function (apptObj) {

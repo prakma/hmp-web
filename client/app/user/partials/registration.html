@@ -2,10 +2,10 @@
 <div class="row">
 	<div class="col-lg-3"/>
 	<div class="col-lg-6" ng-controller="UserMainCtrl">
-		<h2> Register/Create your account/Signup</h2>
+		<h2> Create your account</h2>
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-			    <h3 class="panel-title">Register/Create your account/Signup</h3>
+			    <h3 class="panel-title">Signup</h3>
 			</div>
 			<div class="panel-body">
 		    	<form ng-submit="register(givenName,givenEmail,givenPassword)">
@@ -21,7 +21,15 @@
 				    <label for="inputPassword">Password</label>
 				    <input type="password" class="form-control" id="inputPassword" ng-model="givenPassword" placeholder="Password">
 				  </div>
-			  
+			  		
+			  		<div class="form-group">
+					    <div class="checkbox">
+						  <label>
+						    <input type="checkbox" value="">
+						    I agree to the <a target="_blank" href="/policy/utc.html">RemedySquare Terms</a> and <a target="_blank" href="/policy/privacy.html">Privacy</a>.
+						  </label>
+						</div>
+					</div>
 			  		<button type="submit" class="btn btn-primary">Register</button>
 			  		<div ng-show="subscriptionStatus">
 			  			<p> <span class="text-warning">{{subscriptionStatus}}</span></p>

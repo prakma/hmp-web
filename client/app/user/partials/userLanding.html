@@ -10,11 +10,49 @@
                         </div>
                         <div class="panel-body">
                             <div ng-if="apptList.length>0">
-                                <div class="col-xs-6" ng-repeat="appt in apptList | filter: currApptFilterFn">
+                                <div class="col-xs-12" ng-repeat="appt in apptList | filter: currApptFilterFn">
                                     <h4><!-- <span class="glyphicon glyphicon-minus" aria-hidden="true"> </span> -->&rsaquo; With <a href="#">{{appt.providerName}} </a></h4>
                                     <p><span class="text-muted">On {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </span><br/>
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label for="apptStatus">Appointment Status</label>
+                                                <p class="form-control-static"><a ui-sref="consult_wf.appt({ cref: appt._id })">{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</a></p>
+                                            </div>
+                                            <div class="form-group" ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">
+                                                <label for="apptStatus">Doctor <span class="text-primary" data-animation="am-flip-x" bs-tooltip title="{{appt.apptWF.reasonChain.slice(-1).pop()}}">suggested</span> a different time - </label>
+                                                <p class="form-control-static">{{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}</p>
+                                                
+                                                <button class="btn btn-info btn-xs" ng-click="confirmApptAtProposedTime(appt)">Confirm</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label for="apptStatus">Payment Status</label>
+                                                <p class="form-control-static">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</p>
+                                            </div>
+                                            <div class="form-group" ng-show="(appt | cwfStateTransitionAllowed : 'cwfPaymentByUser' )">
+                                                <a class="btn btn-primary btn-xs" ui-sref="consult_wf.payment({ cref: appt._id })">Pay Now</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label for="apptStatus">Meeting Status</label>
+                                                <p class="form-control-static">{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</p>
+                                            </div>
+                                            <div class="form-group" ng-show="(appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' )">
+                                                <a type="button" class="btn btn-primary btn-xs" ng-click="gotoCRoom(appt)" ng-show="(appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' )">Goto Consultation Room</a>
+                                            </div>
+                                        </div>
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <label for="apptStatus">Reference</label>
+                                                <p class="form-control-static"><a ui-sref="consult_wf.appt({ cref: appt._id })">{{appt._id}}</a></p>
+                                            </div>
+                                            
+                                        </div>
                                     <span class="text-muted">Appointment Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong></span><small><span ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">Doctor proposed new time - {{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}<a type="button" class="btn btn-primary btn-xs" ng-click="confirmApptAtProposedTime(appt)" >Confirm</a></span></small><br/>
-                                    <span class="text-muted">Payment Status - <strong>{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</strong></span><br/>
+                                    <span class="text-muted">Payment Status - <strong><a ui-sref="consult_wf.payment({ cref: appt._id })">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</a></strong></span><br/>
                                     <span class="text-muted">Meeting Status - <strong>{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</strong></span><br/>
 
                                     <span class="text-muted">Reference : {{appt._id}} </span></p>

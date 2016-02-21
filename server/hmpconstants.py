@@ -28,4 +28,7 @@ class BistriSetup:
 	app_id = "0ba2e6fb"
 	app_key = "167e53147b24c7d417a8ad6a29b37297"
 
+class AdminSetup:
+	admin_api_key = "dfe3bsn454st.23$26c"
+
 

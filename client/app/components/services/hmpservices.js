@@ -187,6 +187,19 @@ angular.module('hmp.hmpservices', [])
 		});
 
 	}])
+.factory('SubscriberDoc', [
+	'$resource', function($resource){
+		return $resource('/s/consult/cwf/:cref/createDocument2URL/:documentNo',{},{
+			getUploadURL: {
+				method: 'POST',
+				params:{
+					cref: '@cref',
+					documentNo: '@documentNo'
+				}
+			}
+		});
+
+	}])
 .factory('Feedback', [
 	'$resource', function($resource){
 		return $resource('/s/feedback/',{},{

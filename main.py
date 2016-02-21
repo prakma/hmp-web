@@ -1,7 +1,7 @@
 """`main` is the top level module for your Bottle application."""
 
 # import the Bottle framework
-from bottle import Bottle, template, static_file, request, response, redirect
+from bottle import Bottle, template, static_file, request, response, redirect, route
 from webargs import Arg
 from webargs.bottleparser import use_args
 from twilio.util import TwilioCapability
@@ -9,6 +9,7 @@ import twilio.twiml
 
 from sapi import subscriberAPI, sessionAPI, consultAPI, profileAPI, feedbackAPI
 import hmpconstants
+from handlers import documenthandler
 
 import os, base64
 
@@ -16,6 +17,7 @@ import os, base64
 bottle = Bottle(catchall=False)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
+bottle.merge(documenthandler.docHandlerApp)
 
 # secret used for writing and reading session token cookie
 cookie_secret = 'baltibloombuttonberg'
@@ -347,9 +349,18 @@ def payment_processed_cb(paymentReturn_args):
 def create_upload_url(cref):
 	args = {}
 	args['cref'] = cref
-	args['prescription_url'] = '/s/consult/cwf/'+cref+'/prescription'
+	args['upload_callback_url'] = '/s/consult/cwf/'+cref+'/prescription'
 	print 'create upload url for prescription', cref
 	return consultAPI.create_upload_url(args)
+
+# @route('/s/consult/cwf/<cref>/createDocument2URL/<docnumber>', method='POST')
+# def create_uploaddoc_url(cref, docnumber):
+# 	print 'create upload url for document', cref, docnumber
+# 	args = {}
+# 	args['cref'] = cref
+# 	args['document_url'] = '/s/consult/cwf/'+cref+'/document'
+# 	print 'create upload url for prescription', cref, docnumber
+# 	return {'result':'Success'}
 
 @bottle.route('/s/consult/cwf/<cref>/prescription', method='POST')
 def prescription_uploaded(cref):
@@ -397,12 +408,20 @@ def prescription_download(cref, blobKey):
 def process_cwf_event():
 	# print args # args['cref'], args['eventName'], args['eventBody']
 	args = request.json
+	print args
 	user = ensureLogin(None)
 	if(user == None):
-		return {'result':'Failure', 'message':'Unauthenticated'}
+		# check if it is an admin override
+		adminAPIKey = args.get('adminAPIKey', None)
+		if(adminAPIKey == None):
+			return {'result':'Failure', 'message':'Unauthenticated'}
+		else:
+			if(adminAPIKey != hmpconstants.AdminSetup.admin_api_key):
+				return {'result':'Failure', 'message':'Admin Unauthenticated'}
+
 	args['user'] = user
 	# args['cref'] = cref
-	print args
+	# print args
 	return consultAPI.processCwfEvent(args)
 	#return {'result':'Success', 'message':'Event Processed'}
 

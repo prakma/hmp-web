@@ -404,11 +404,11 @@ def consultWF_updatePayment(args):
 	return successResult
 
 def create_upload_url(args):
-	prescription_url = args['prescription_url']
+	upload_callback_url = args['upload_callback_url']
 	if not args:
 		return {'result': 'Failure', 'message': 'Could not create upload url. Required parameters unavailable'}
 	cref = args['cref']	
-	upload_url = blobstore.create_upload_url(prescription_url)
+	upload_url = blobstore.create_upload_url(upload_callback_url)
 	return {'result' : 'Success', 'message' : 'Upload Url Created','upload_url': upload_url } 
 
 
@@ -455,6 +455,63 @@ def handlePrescriptionOnUpload(args):
 	
 	successResult['reference'] = cref
 	return successResult
+
+def handleSubscriberDocumentOnUpload(args):
+	print 'handle subscriber on upload', args
+	cref = args['cref']
+	blobKey = args['blob_key']
+	documentNo = args['documentNo']
+	filename = args['filename']
+	filesummary = args['filesummary']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref - ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference in prescription upload - ' + str(cref)
+		return failureResult
+
+	patientDocument = subscriber.SubscriberDoc()
+	patientDocument.fileBlobKey = blobKey
+	patientDocument.fileName = filename
+	patientDocument.fileSummary = filesummary
+	if not cwf.patientDetailsWF.patientDocuments:
+		cwf.patientDetailsWF.patientDocuments = [patientDocument]
+	else:
+		cwf.patientDetailsWF.patientDocuments.append(patientDocument)	
+	
+	cwf.put()
+	
+	successResult['reference'] = cref
+	return successResult
+
+def getSubscriptionDocByBlobKey(cref, blobkey):
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref - ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference in prescription upload - ' + str(cref)
+		return failureResult
+
+	return cwf.patientDetailsWF.getDocument(blobkey)
+
+
 
 def processCwfEvent(args):
 	eventName = args['eventName']
@@ -546,6 +603,51 @@ def changePatientInfo(args):
 	cwf.meetingWF.meetingType = consultationModePreference
 	cwf.put()
 	return { 'result' : 'Success', 'message' : 'Patient info change completed ', 'cref' : cref }
+
+
+def forcePaymentComplete(args):
+	cref = args['cref'];
+	paidAmount = args['paidAmount']
+	paymentRef = args['paymentRef']
+
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref to force payment - ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference in force payment processing - ' + str(cref)
+		return failureResult
+
+
+	if not cwf.paymentWF:
+		cwf.paymentWF = subscriber.PaymemtWF()	
+
+	cwf.paymentWF.totalPaidAmount = float(paidAmount)
+
+	if not cwf.paymentWF.paymentConfirmToken:
+		cwf.paymentWF.paymentConfirmToken = [paymentRef]
+	else:
+		cwf.paymentWF.paymentConfirmToken.append(paymentRef)
+
+	if cwf.paymentWF.paymentConfirmTS:
+		cwf.paymentWF.paymentConfirmTS.append( datetime.datetime.now() )
+	else:
+		cwf.paymentWF.paymentConfirmTS = [datetime.datetime.now()]
+
+	# 3 = payment_successful, #4 = payment_rejected	
+	cwf.paymentWF.paymentStatus = 3 
+	if cwf.paymentWF.paymentStatusChain:
+		cwf.paymentWF.paymentStatusChain.append( cwf.paymentWF.paymentStatus )
+	else:
+		cwf.paymentWF.paymentStatusChain = [cwf.paymentWF.paymentStatus]
+
+	cwf.put()
+	return { 'result' : 'Success', 'message' : 'Payment force completed', 'cref' : cref }
+
+
 
 
 		

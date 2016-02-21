@@ -89,6 +89,7 @@ angular.module('providerApp.version.interpolate-filter', [])
       apptConfirmByProvider: true,
       apptCancelByUser: true,
       apptCancelByProvider: true,
+      cwfPaymentByUser:true,
       cwfGoToAdditionalQuestionsByUser: true,
       cwfGoToMeetingRoomByUser: true,
       cwfGoToMeetingRoomByProvider: true,
@@ -176,6 +177,9 @@ angular.module('providerApp.version.interpolate-filter', [])
           }
         }
         return false;
+
+      case 'cwfPaymentByUser':
+        return cwf.paymentWF || cwf.paymentWF.paymentStatus != 3
 
       case 'cwfGoToAdditionalQuestionsByUser':
         return cwf.paymentWF && cwf.paymentWF.paymentStatus == 3;

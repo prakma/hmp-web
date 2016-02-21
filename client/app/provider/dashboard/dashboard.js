@@ -386,8 +386,6 @@ angular.module('providerApp.dashboard', ['ngRoute'])
             $scope.refreshAction();
             
 
-            
-
             $scope.generateUploadURL = function() {
                 setTimeout(function() {
                     console.log('generateUploadURL called ! generating upload url....');
