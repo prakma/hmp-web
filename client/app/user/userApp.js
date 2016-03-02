@@ -530,17 +530,20 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
         newCwfEvent.eventName = 'RescheduleByUser';
         console.log("Rescheduling...");
         newCwfEvent.$save(function(result){
+
             console.log('reschedule appt event saved', result);
             
             //apptObj.apptWF.apptStatus = 3;
             if(result.result=="Success"){
             	console.log('Rescheduling was successful.');
+            	$scope.statusMsg="Reschedule Completed. Screen will refresh automatically";
             	$scope.$emit('actionEvent', 'Changed appointment time');
                 setTimeout(function(){
                     refresh();
                 },2000);
             } else {
             	console.log("Rescheduling Failed");
+            	$scope.statusMsg="Rescheduling Failed. Please try later".
             	$scope.$emit('actionEvent', 'Could not reschedule appointment. Please try again.');
             }
         });
@@ -564,12 +567,14 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
             //apptObj.apptWF.apptStatus = 3;
             if(result.result=="Success"){
             	console.log('Patient Info change was successful.');
+            	$scope.statusMsg="Patient Information Updated";
             	$scope.$emit('actionEvent', 'Changed patient information');
                 setTimeout(function(){
                     refresh();
                 },2000);
             } else {
             	console.log("Patient Info change Failed");
+            	$scope.statusMsg="Could not update patient information. Please try later";
             	$scope.$emit('actionEvent', 'Could not change patient information. Please try again.');
             }
         });
@@ -589,12 +594,14 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
     	cwf.$patient_q({}, function(updatedCwfMsg){
     		console.log('patient questions are saved !');
     		if(updatedCwfMsg.result=="Success"){
+    			$scope.statusMsg="Questionnaire Responses Saved";
     			$scope.$emit('actionEvent', 'Questionnaire Responses Saved');
     			setTimeout(function(){
                     refresh();
                 },2000);
     			//$scope.wf = updatedCwfMsg.cwf;
     		}else{
+    			$scope.statusMsg="Failed to save questionnaire responses. Please try again";
     			$scope.$emit('actionEvent', 'Failed to save questionnaire responses. Please try again');
     		}
     		
@@ -624,6 +631,11 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 		// debug('appt obj for gotoCRoom', apptObj);
 		$state.go('croom', {appt:apptObj});
 	};
+
+	$scope.closeStatusDisplay = function(){
+		console.log("Close status display called");
+		$scope.statusMsg = "";
+	}
 
 	
 

@@ -4,6 +4,7 @@
 	<div class="row">
 		<div>
 			<h3>Upload your reports and answer questionnaire</h3>
+			
 			<form action="{{uploadURL}}" enctype="multipart/form-data" method="post">
                     Scans of lab reports, x-rays, previous prescriptions and other documents<br>
                    
@@ -15,7 +16,7 @@
             </form>
             
             <ul class="list-group">
-                <li class="list-group-item" ng-if=" ! wf.patientDetailsWF.patientDocuments">If you have any previous reports or prescriptions that you want doctor to see, you can upload them here</li>
+                <li class="list-group-item" ng-if=" ! wf.patientDetailsWF.patientDocuments">If you have any previous reports or prescriptions that you want doctor to see, please upload them here</li>
                 <li class="list-group-item" ng-repeat="aDocument in wf.patientDetailsWF.patientDocuments">
     				<a target="_blank" href="/s/consult/cwf/{{wf._id}}/document/{{aDocument.fileBlobKey}}"><span>{{aDocument.fileName}}</span></a>
                 </li>

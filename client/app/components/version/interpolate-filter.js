@@ -179,7 +179,7 @@ angular.module('providerApp.version.interpolate-filter', [])
         return false;
 
       case 'cwfPaymentByUser':
-        return cwf.paymentWF || cwf.paymentWF.paymentStatus != 3
+        return cwf.paymentWF && cwf.paymentWF.paymentStatus != 3
 
       case 'cwfGoToAdditionalQuestionsByUser':
         return cwf.paymentWF && cwf.paymentWF.paymentStatus == 3;

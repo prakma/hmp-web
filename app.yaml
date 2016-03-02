@@ -48,8 +48,8 @@ handlers:
   secure: always
 
 - url: /$
-  static_files: client/app/index.html
-  upload: client/app/index.html
+  static_files: client/app/pgm/default_landing/index.html
+  upload: client/app/pgm/default_landing/index.html
   secure: always
 
 - url: /*

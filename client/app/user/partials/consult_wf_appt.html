@@ -2,6 +2,7 @@
 		
 <div>
     <h3>Appointment</h3>
+    
     <strong><span class="text-primary">Status - {{wf.apptWF.apptStatus | cwfFilter:'appt'}}</span> for {{wf.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </strong>
     <div class="form-inline">
         <div class="form-group" ng-show="(wf | cwfStateTransitionAllowed : 'apptConfirmByUser' )">
