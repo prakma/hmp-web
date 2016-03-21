@@ -9,7 +9,7 @@ import twilio.twiml
 
 from sapi import subscriberAPI, sessionAPI, consultAPI, profileAPI, feedbackAPI
 import hmpconstants
-from handlers import documenthandler
+from handlers import authenticator, documenthandler
 
 import os, base64
 

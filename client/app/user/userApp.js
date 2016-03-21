@@ -389,6 +389,10 @@ controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
 	// console.log('ConsultationListCtrl invoked');
+
+	var currTime = fmoment();
+	var sevenDayPast = fmoment().subtract(7, 'd');
+	var oneDayFuture = fmoment().add(1, 'd');
 	var sortByApptTime = function(apptObjX, apptObjY){
 		if(! apptObjX.apptWF ){
 			// when apptWF object is not yet set, for ex, when user did not save the first page of appointment
@@ -414,11 +418,120 @@ controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
         } else
             return -1;
     }
+
+    var pastApptFilterFn = function(apptObj, index){
+
+    	// check for confirmed appointments of future ie, scheduled tomorrow or after
+        console.log('filtering for past  appointments');
+        if(!apptObj.apptWF)
+    		return false;
+        
+        if (apptObj.apptWF.apptStatus){
+            var tmpApptTime = apptObj.apptWF.confirmedTS;
+     
+            if ( fmoment(tmpApptTime).isBefore(currTime, 'day') ){
+                return true;
+            }
+            return false;
+        }
+        else
+            return false;
+    };
+
+    var recentApptFilterFn = function(apptObj, index){
+    	if(!apptObj.apptWF)
+    		return false;
+
+    	if (apptObj.apptWF.apptStatus){
+
+            var tmpApptTime = apptObj.apptWF.confirmedTS;
+            
+            if ( fmoment(tmpApptTime).isBetween(sevenDayPast, oneDayFuture, 'day') ){
+                return true;
+            }
+            return false;
+        }
+        else
+            return false;
+    };
+
+    var futureApptFilterFn = function(apptObj, index){
+    	// check for confirmed appointments of future ie, scheduled tomorrow or after
+        console.log('filtering for future  appointments');
+
+        if(!apptObj.apptWF)
+    		return false;
+
+        if (apptObj.apptWF.apptStatus){
+
+            var tmpApptTime = apptObj.apptWF.confirmedTS;
+            if(!tmpApptTime){
+                // may be it was never confirmed so check for requested time
+                return false;
+            } 
+            if ( fmoment(tmpApptTime).isAfter(currTime, 'day') ){
+                return true;
+            }
+            return false;
+        }
+        else
+            return false;
+
+    };
+    var maybeHalfwayApptFilterFn = function(apptObj, index){
+
+    	if (! apptObj.apptWF){
+    		return true;
+    	} else{
+    		if (! apptObj.apptWF.apptStatus){
+	    		return true;
+	    	}	
+    	}
+
+    	return false;
+
+    	
+
+    };
 	$scope.apptList = Consultation.user_appts(function(){
 			$scope.lastRefreshedTS = fmoment();
-			$scope.timeSortedApptList = $scope.apptList.sort(sortByApptTime);
+			//$scope.timeSortedApptList = $scope.apptList.sort(sortByApptTime);
+			$scope.defaultTimeTab = "Recent";
+			$scope.timeSortedApptList = $scope.apptList.filter(recentApptFilterFn);
+
 			// console.log('all consultation appt list', $scope.timeSortedApptList);
 		});
+
+	
+
+	$scope.showPastConsultations = function(){
+		console.log('showing past consultation');
+		$scope.defaultTimeTab = "Past";
+		$scope.timeSortedApptList = $scope.apptList.filter(pastApptFilterFn);
+	}
+
+	$scope.showRecentConsultations = function(){
+		$scope.defaultTimeTab = "Recent";
+		console.log('showing recent consultation');	
+		$scope.timeSortedApptList = $scope.apptList.filter(recentApptFilterFn);
+	}
+
+	$scope.showFutureConsultations = function(){
+		$scope.defaultTimeTab = "Future";
+		console.log('showing future consultation');
+		$scope.timeSortedApptList = $scope.apptList.filter(futureApptFilterFn);
+	}
+
+	$scope.showMaybeHalfwayCreatedConsultations = function(){
+		$scope.defaultTimeTab = "HalfwayApptCreated";
+		console.log('showing maybe halfway consultation');
+		$scope.timeSortedApptList = $scope.apptList.filter(maybeHalfwayApptFilterFn);
+	}
+	$scope.showAllConsultations = function(){
+		$scope.defaultTimeTab = "All";
+		console.log('showing all consultation');
+		$scope.timeSortedApptList = $scope.apptList.sort(sortByApptTime);
+	}
 	
 
 	
@@ -580,6 +693,48 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
         });
 		
 	};
+
+	$scope.applyCouponCode = function(thisWf, couponCode){
+
+		console.log('applying coupon for this consultation');
+		var newCwfEvent = new CwfEvent();
+        newCwfEvent.cref = thisWf._id;
+        newCwfEvent.couponCode = couponCode;
+        newCwfEvent.eventName = 'applyPaymentCoupon';
+        
+        newCwfEvent.$save(function(result){
+            console.log('Coupon Info sent to server', result);
+            
+            //apptObj.apptWF.apptStatus = 3;
+            if(result.result=="Success"){
+            	console.log('Coupon was successful.');
+            	$scope.statusMsg="Coupon applied towards payment";
+            	$scope.$emit('actionEvent', 'Coupon applied towards payment');
+
+            	if(result.expected_payment > 0){
+            		// keep the user on the same page to complete payment
+            		setTimeout(function(){
+	                    refresh();
+	                },2000);
+            	} else{
+            		// redirect the user to questionnaire
+            		$state.go('consult_wf.questions', { cref: thisWf._id });
+            		return;
+
+            	}
+
+                
+
+            } else {
+            	console.log("Coupon apply failed");
+            	$scope.statusMsg="Could not apply coupon. Please try later or proceed to payment";
+            	$scope.$emit('actionEvent', 'Invalid Coupon. Please proceed to payment');
+            }
+        });
+
+	};
+
+	
 
 	$scope.setActiveStep = function(){
 		$scope.apptStepState = "active";
@@ -825,7 +980,12 @@ controller('CwfPaymentCtrl', function($scope, $window, $timeout, $state, $stateP
 	function setupFees(paymentWf){
 		if(paymentWf){
 			$scope.consultationFee = paymentWf.ttlExpAmt;
-			$scope.discount = - 0;
+			if(paymentWf.paymentCoupon && paymentWf.paymentCoupon.couponValue){
+				$scope.discount = - 1 * paymentWf.paymentCoupon.couponValue;
+			} else{
+				$scope.discount = - 0;
+			}
+			
 			$scope.totalFee = $scope.consultationFee + $scope.discount;
 		}else{
 
@@ -837,6 +997,8 @@ controller('CwfPaymentCtrl', function($scope, $window, $timeout, $state, $stateP
 		});
 		
 	}
+
+
 
 	
 

@@ -51,11 +51,11 @@
                                             </div>
                                             
                                         </div>
-                                    <span class="text-muted">Appointment Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong></span><small><span ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">Doctor proposed new time - {{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}<a type="button" class="btn btn-primary btn-xs" ng-click="confirmApptAtProposedTime(appt)" >Confirm</a></span></small><br/>
+                                    <!-- <span class="text-muted">Appointment Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong></span><small><span ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">Doctor proposed new time - {{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}<a type="button" class="btn btn-primary btn-xs" ng-click="confirmApptAtProposedTime(appt)" >Confirm</a></span></small><br/>
                                     <span class="text-muted">Payment Status - <strong><a ui-sref="consult_wf.payment({ cref: appt._id })">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</a></strong></span><br/>
                                     <span class="text-muted">Meeting Status - <strong>{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</strong></span><br/>
 
-                                    <span class="text-muted">Reference : {{appt._id}} </span></p>
+                                    <span class="text-muted">Reference : {{appt._id}} </span></p> -->
                                     
                                     <div class="btn-group" role="group" aria-label="...">
                                         <a type="button" class="btn btn-success" ui-sref="consult_wf.appt({ cref: appt._id })">See Details</a>

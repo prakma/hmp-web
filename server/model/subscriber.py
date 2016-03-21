@@ -130,6 +130,13 @@ class ApptWF(ndb.Model):
 		self.apptStatusChain.append(7)
 		self.reasonChain.append('P: ' + reason)
 
+class PaymentCouponStruc(ndb.Model):
+	couponProvider = ndb.StringProperty()
+	couponCode = ndb.StringProperty()
+	couponValue = ndb.FloatProperty()
+	couponValidUntil = ndb.DateTimeProperty()
+
+	
 ## payment_info_provided, sent_to_bank, bank_confirmed
 class PaymemtWF(ndb.Model):
 	# provider expected amount
@@ -145,6 +152,10 @@ class PaymemtWF(ndb.Model):
 	ttlExpAmt = ndb.FloatProperty()
 	additionalPendingCharges = ndb.FloatProperty(repeated=True)
 
+	# coupon code and value
+	paymentCoupon = ndb.StructuredProperty(PaymentCouponStruc)
+
+
 	# expected currency
 	expCurr = ndb.StringProperty(default="INR")
 
@@ -154,6 +165,7 @@ class PaymemtWF(ndb.Model):
 	# paid in currency
 	paidCurrency = ndb.StringProperty(default="INR")
 
+	paymentProviderId = ndb.StringProperty()
 	paymentToken = ndb.StringProperty(repeated=True)
 	paymentBeginTS = ndb.DateTimeProperty(repeated=True)
 	paymentConfirmToken = ndb.StringProperty(repeated=True)
@@ -166,11 +178,21 @@ class PaymemtWF(ndb.Model):
 	def deriveTotalExpectedAmount(self):
 		self.ttlExpAmt = self.prExpAmt + self.plExpAmt + self.txExpAmt
 
+	def applyCoupon(self, couponObj):
+		self.paymentCoupon = couponObj
+		adjustedTotalAmount = self.ttlExpAmt - couponObj.couponValue
+		if(adjustedTotalAmount <= 0):
+			adjustedTotalAmount = 0
+		return adjustedTotalAmount
+
+		# self.ttlExpAmt = adjustedTotalAmount
+
 
 class SubscriberDoc(ndb.Model):
 	fileName = ndb.StringProperty()
 	fileSummary = ndb.StringProperty()
 	fileBlobKey = ndb.StringProperty()
+
 
 
 ## no_info, partial_info, nearly_complete, complete

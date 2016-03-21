@@ -8,6 +8,9 @@ from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 import sys
 
+import hmpconstants
+
+
 def beginConsultWF (args):
 	providerId = args['providerId']
 	user = args['user']
@@ -646,6 +649,88 @@ def forcePaymentComplete(args):
 
 	cwf.put()
 	return { 'result' : 'Success', 'message' : 'Payment force completed', 'cref' : cref }
+
+
+def applyPaymentCoupon(args):
+	cref = args['cref'];
+	couponCode = args['couponCode']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref. Unable to apply coupon. ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference. Cannot apply coupon - ' + str(cref)
+		return failureResult
+
+	# for now, I am hardcoding the payment to be completed on any coupon value, but...
+	# todo - first fetch the coupon object
+	# check that the coupon is valid and has not expired
+	# also fetch what is the value of the coupon
+	# now subtract the expected money with the coupon value
+	# if the expected money is now zero or less than zero, update the 
+	# payment status as successful and return appropriate response
+	# so that the browser can take the user past the payment page
+	# 
+	couponObj = subscriber.PaymentCouponStruc()
+	couponObj.couponProvider = "RemedySquare"
+	couponObj.couponCode = "PRE-LAUNCH"
+	couponObj.couponValue = 500.0
+	until30Days = datetime.timedelta(days=30)
+	couponObj.couponValidUntil = datetime.datetime.now() + until30Days
+	
+	if not couponCode=='PRE-LAUNCH':
+		failureResult['message'] = 'Invalid Coupon Code. Cannot apply coupon - ' + str(couponCode)
+		return failureResult
+
+
+
+	if not cwf.paymentWF:
+		cwf.paymentWF = subscriber.PaymemtWF()	
+
+	adjustedExpectedAmount = cwf.paymentWF.applyCoupon(couponObj)
+	# check the expected amount now, after applying coupon
+	if(adjustedExpectedAmount > 0.0):
+		pass
+	else:
+		cwf.paymentWF.paymentProviderId = hmpconstants.PaymentProvider.REMEDY_SQUARE
+		cwf.paymentWF.totalPaidAmount = 0.0
+		if not cwf.paymentWF.paymentConfirmToken:
+			cwf.paymentWF.paymentConfirmToken = [couponObj.couponCode]
+		else:
+			cwf.paymentWF.paymentConfirmToken.append(couponObj.couponCode)
+
+		if cwf.paymentWF.paymentConfirmTS:
+			cwf.paymentWF.paymentConfirmTS.append( datetime.datetime.now() )
+		else:
+			cwf.paymentWF.paymentConfirmTS = [datetime.datetime.now()]
+
+		# 3 = payment_successful, #4 = payment_rejected	
+		cwf.paymentWF.paymentStatus = 3 
+		if cwf.paymentWF.paymentStatusChain:
+			cwf.paymentWF.paymentStatusChain.append( cwf.paymentWF.paymentStatus )
+		else:
+			cwf.paymentWF.paymentStatusChain = [cwf.paymentWF.paymentStatus]
+
+	cwf.put()
+	return { 'result' : 'Success', 'message' : 'Coupon applied', 'cref' : cref, 'expected_payment' : cwf.paymentWF.ttlExpAmt }
+
+			
+	
+
+
+
+	
+
+	
+
+	
+
 
 
 

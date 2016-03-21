@@ -136,6 +136,9 @@ angular.module('providerApp.version.interpolate-filter', [])
       case 'apptConfirmByUser':
 
         if(cwf.overallStatus < 3){
+          if(! cwf.apptWF){
+            return false;
+          }
           if(cwf.apptWF.apptStatus == 5){
             // console.log('aptconfirmby user', cwf);
             if(cwf.apptWF.proposedTS){

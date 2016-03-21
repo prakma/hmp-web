@@ -6,7 +6,7 @@
 	        <h3>Payment</h3>
 	        <!-- <span>New Appointment Flow: {{newApptFlow}}</span> -->
 	        <div ng-if="newApptFlow">
-	        	<div class="alert alert-info" role="alert">Your appointment is not confirmed yet by Doctor. We advise you to pay now, but you can come back to this page later to complete your payment</div>
+	        	<div class="alert alert-info" role="alert">Your appointment has been sent to Doctor for confirmation. We advise you to pay now, but you can come back to this page later to complete your payment</div>
 	        </div>
 	        <div ng-if="!newApptFlow">
 	        	<strong>Status - {{wf.paymentWF.paymentStatus | cwfFilter:'payment'}} on {{wf.paymentWF.paymentConfirmTS[0] | date:'MMM d, y h:mm:ss a'}} </strong>
@@ -29,11 +29,11 @@
 			        	<!-- <tr>
 			        		<td> Discount Code by Doctor</td>
 			        		<td class="text-right">- 60.00</td>
-			        	</tr>
-			        	<tr>
-			        		<td> Discount Code by R7</td>
-			        		<td class="text-right">- 40.00</td>
 			        	</tr> -->
+			        	<tr ng-if="wf.paymentWF.paymentCoupon">
+			        		<td> Coupon Code</td>
+			        		<td class="text-right">- {{wf.paymentWF.paymentCoupon.couponValue}}</td>
+			        	</tr>
 			        	<tr class="success">
 			        		<td class="text-capitalize">Total</td>
 			        		<td class="text-right">{{totalFee}}</td>
@@ -45,12 +45,18 @@
 	        
 	        <div ng-if="wf.paymentWF.paymentStatus != 3">
 	            <form>
-	                  
+	                <div class="form-group">
+	                    <div class="input-group">
+					      <input type="text" class="form-control" placeholder="Enter Coupon Code, if any" ng-model="couponCode">
+					      <span class="input-group-btn">
+					        <button class="btn btn-default" type="button" ng-click="applyCouponCode(wf, couponCode)">Apply!</button>
+					      </span>
+					    </div>
+	                </div>
 	                <div class="form-group">
 	                    <label for="consultationCost">Online Consultation Cost</label>
 	                    <span class="label label-default">{{wf.paymentWF.expCurr}} {{totalFee}}</span>
 	                </div>
-	                
 	            </form>
 
 	            <form action='https://sandbox.2checkout.com/checkout/purchase' method='post'>
