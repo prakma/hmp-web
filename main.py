@@ -345,56 +345,56 @@ def payment_processed_cb(paymentReturn_args):
 	redirect("/user/index.html#/user/cwf/"+cref+"/payment/return")
 	# return static_file('index.html', root='client/static/user/cwf/:cref/payment/return')
 
-@bottle.route('/s/consult/cwf/<cref>/createPrescriptionURL', method='POST')
-def create_upload_url(cref):
-	args = {}
-	args['cref'] = cref
-	args['upload_callback_url'] = '/s/consult/cwf/'+cref+'/prescription'
-	print 'create upload url for prescription', cref
-	return consultAPI.create_upload_url(args)
-
-# @route('/s/consult/cwf/<cref>/createDocument2URL/<docnumber>', method='POST')
-# def create_uploaddoc_url(cref, docnumber):
-# 	print 'create upload url for document', cref, docnumber
+# @bottle.route('/s/consult/cwf/<cref>/createPrescriptionURL', method='POST')
+# def create_upload_url(cref):
 # 	args = {}
 # 	args['cref'] = cref
-# 	args['document_url'] = '/s/consult/cwf/'+cref+'/document'
-# 	print 'create upload url for prescription', cref, docnumber
-# 	return {'result':'Success'}
+# 	args['upload_callback_url'] = '/s/consult/cwf/'+cref+'/prescription'
+# 	print 'create upload url for prescription', cref
+# 	return consultAPI.create_upload_url(args)
 
-@bottle.route('/s/consult/cwf/<cref>/prescription', method='POST')
-def prescription_uploaded(cref):
-	print 'prescription uploaded for cref', cref, request.forms, request.files
-	f = request.files['uploaded_files']
-	print 'uploaded files data', f.name
-	print 'raw_filename', f.raw_filename
-	print 'filename', f.filename
-	print 'content_type', f.content_type
-	print 'content_length', f.content_length
+# # @route('/s/consult/cwf/<cref>/createDocument2URL/<docnumber>', method='POST')
+# # def create_uploaddoc_url(cref, docnumber):
+# # 	print 'create upload url for document', cref, docnumber
+# # 	args = {}
+# # 	args['cref'] = cref
+# # 	args['document_url'] = '/s/consult/cwf/'+cref+'/document'
+# # 	print 'create upload url for prescription', cref, docnumber
+# # 	return {'result':'Success'}
+
+# @bottle.route('/s/consult/cwf/<cref>/prescription', method='POST')
+# def prescription_uploaded(cref):
+# 	print 'prescription uploaded for cref', cref, request.forms, request.files
+# 	f = request.files['uploaded_files']
+# 	print 'uploaded files data', f.name
+# 	print 'raw_filename', f.raw_filename
+# 	print 'filename', f.filename
+# 	print 'content_type', f.content_type
+# 	print 'content_length', f.content_length
 
 
-	def parse_gae_blobkey(content_type_val):
-		blob_key_and_val = content_type_val.split(';')[1]
-		print 'blob_key_and_val', blob_key_and_val
-		blobKey = blob_key_and_val.split('=',1)[1][1:-1]
-		print 'blobKey', blobKey
-		return blobKey
+# 	def parse_gae_blobkey(content_type_val):
+# 		blob_key_and_val = content_type_val.split(';')[1]
+# 		print 'blob_key_and_val', blob_key_and_val
+# 		blobKey = blob_key_and_val.split('=',1)[1][1:-1]
+# 		print 'blobKey', blobKey
+# 		return blobKey
 
-	print 'blobkey', parse_gae_blobkey(f.content_type)
-	args = {}
-	args['cref'] = cref;
-	args['blob_key'] = parse_gae_blobkey(f.content_type)
+# 	print 'blobkey', parse_gae_blobkey(f.content_type)
+# 	args = {}
+# 	args['cref'] = cref;
+# 	args['blob_key'] = parse_gae_blobkey(f.content_type)
 
-	consultAPI.handlePrescriptionOnUpload(args)
+# 	consultAPI.handlePrescriptionOnUpload(args)
 
-	redirect('/provider/provider_index.html#/provider/dashboard/'+cref+'/appt_view.html')
+# 	redirect('/provider/provider_index.html#/provider/dashboard/'+cref+'/appt_view.html')
 
-@bottle.route('/s/consult/cwf/<cref>/prescription/<blobKey>', method='GET')
-def prescription_download(cref, blobKey):
-	print 'prescription uploaded for cref, blobkey', cref, blobKey[1:-1]
-	response.set_header('X-AppEngine-BlobKey', blobKey) #base64.b64decode(blobKey[1:-1] ) )
-	response.set_header('content-disposition', 'attachment; filename=prescription_'+cref+'.pdf')
-	return response;
+# @bottle.route('/s/consult/cwf/<cref>/prescription/<blobKey>', method='GET')
+# def prescription_download(cref, blobKey):
+# 	print 'prescription uploaded for cref, blobkey', cref, blobKey[1:-1]
+# 	response.set_header('X-AppEngine-BlobKey', blobKey) #base64.b64decode(blobKey[1:-1] ) )
+# 	response.set_header('content-disposition', 'attachment; filename=prescription_'+cref+'.pdf')
+# 	return response;
 
 
 # cwfEventArgs = {
