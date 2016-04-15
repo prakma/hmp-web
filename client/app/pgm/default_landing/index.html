@@ -7,306 +7,645 @@
 <!--<![endif]-->
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<meta charset="UTF-8">
+	<title>Home  || RemedySquare </title>
+
+	<!-- responsive meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- master stylesheet -->
+	<link rel="stylesheet" href="css/style.css">
+	<!-- responsive stylesheet -->
+	<link rel="stylesheet" href="css/responsive.css">
     <link rel="icon" href="../../favicon.ico">
-    <link rel="stylesheet" href="/bower_components/html5-boilerplate/css/normalize.css">
-    <link rel="stylesheet" href="/bower_components/html5-boilerplate/css/main.css">
-    <!-- <link rel="stylesheet" href="app.css"> -->
-    <script src="/bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
-    <title>Repeat Consultation Online</title>
-    <!-- Bootstrap core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/carousel.css" rel="stylesheet">
+    <title>Remedy Square</title> 
+  
 </head>
 
 <body>
-    <div class="navbar-wrapper">
-        <div class="container">
-            <nav class="navbar navbar-inverse navbar-static-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#">RemedySquare</a>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav pull-right">
-                            <li><a href="/user/index.html#/user/login">
-                                <button class="btn btn-success" type="button">Login / Register</button></a></li>
-                            <li><a href="/user/index.html#/user/help">FAQ</a></li>
-                            <!-- <li><a href="/pgm/provider_landing/index.html">Are you Doctor?</a></li> -->
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-    <!-- Carousel data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==
-      ================================================== -->
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner" role="listbox">
-            <div class="item active">
-                <!-- <img src="/img/ulanding_img1.jpg" alt="First slide"> -->
-                <img class="img-square" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP4LMT+HwAFFAIMlb8cTQAAAABJRU5ErkJggg==" alt="Generic placeholder image" xyzstyle="width: 400px; height: 400px;">
-                <div class="container">
-                    <div class="carousel-caption">
-                        <h1>Online Doctor Consultation</h1>
-                        <p><small>when you cannot visit Doctor physically</small></p>
+    	<header class="header">
+		<div class="container">
+			<div class="logo pull-left">
+				<a href="index.html">
+					<img src="img/resources/" alt="Awesome Image"/>
+				</a>
+			</div>
+			<div class="header-right-info pull-right clearfix">
+				<div class="single-header-info">
+					<div class="icon-box">
+						<div class="inner-box">
+							<i class="flaticon-interface"></i>
+						</div>
+					</div>
+					<div class="content">
+						<h3>EMAIL</h3>
+						<p>companyname@mail.com</p>
+					</div>
+				</div>
+				<div class="single-header-info">
+					<div class="icon-box">
+						<div class="inner-box">
+							<i class="flaticon-telephone"></i>
+						</div>
+					</div>
+					<div class="content">
+						<h3>Call Now</h3>
+						<p><b>(000) 000-000-000</b></p>
+					</div>
+				</div>
+				<div class="single-header-info">
+					<a href="" class="thm-btn">Appointment</a>
+				</div>
+			</div>
+		</div>
+	</header> <!-- /.header -->
 
-                        
-                        <p>
-                            <a class="btn btn-warning" href="#by_online" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Online Video</a>
-                            <a class="btn btn-warning" href="#by_phone" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> By Phone</a>
-                            <!-- <a class="btn btn-warning" href="#by_email" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> By Email</a> -->
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="item">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP4LMT+HwAFFAIMlb8cTQAAAABJRU5ErkJggg==" alt="Second slide">
-                <div class="container">
-                    <div class="carousel-caption">
-                        <h1>Online Doctor Consultation</h1>
-                        <p><small>when you want to get back your 6 hours lost in driving, finding parking, and waiting just for a 30 minute appointment</small></p>
 
-                        <p>
-                            <a class="btn btn-warning" href="#by_online" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Online Video</a>
-                            <a class="btn btn-warning" href="#by_phone" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> By Phone</a>
-                            <!-- <a class="btn btn-warning" href="#by_email" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> By Email</a> -->
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="item">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP4LMT+HwAFFAIMlb8cTQAAAABJRU5ErkJggg==" alt="Third slide">
-                <div class="container">
-                    <div class="carousel-caption">
-                        <h1>Online Doctor Consultation</h1>
-                        <p><small>when your doctor is out of city or state</small></p>
-                        <p>
-                            <a class="btn btn-warning" href="#by_online" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Online Video</a>
-                            <a class="btn btn-warning" href="#by_phone" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> By Phone</a>
-                            <!-- <a class="btn btn-warning" href="#by_email" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> By Email</a> -->
-                        </p>
+	<nav class="mainmenu-area stricky">
+		<div class="container">
+			<div class="navigation pull-left">
+				<div class="nav-header">
+					<ul>
+						<li class="dropdown">
+							<a href="#">Home</a>
+						</li>
+						<li><a href="">About</a></li>						
+						<li>
+							<a href="">Services</a>
+						</li>
+						<li>
+							<a href="">Doctors</a>
+						</li>
+						<li>
+							<a href="#">FAQ</a>
+						</li>
+						<li><a href="">Contact Us</a></li>
+						<li><a href="">Login</a></li>
+					</ul>
+				</div>
+				<div class="nav-footer">
+					<button><i class="fa fa-bars"></i></button>
+				</div>
+			</div>
+			<div class="search-box pull-right">
+				<form action="#">
+					<input type="text" placeholder="Search...">
+					<button type="submit"><i class="fa fa-search"></i></button>
+				</form>
+			</div>
+		</div>
+	</nav> <!-- /.mainmenu-area -->
 
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-    <div><h1 class="text-center"><u>How it works</u></h1><br/></div>
-    <!-- /.carousel -->
-    <!-- Marketing messaging and featurettes
-      ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
-    <div class="container marketing">
-        <!-- Three columns of text below the carousel -->
-        <div class="row">
-            <div class="col-lg-3">
-                <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-            <h2>1. Setup Online Appointment</h2>
-            <p>Find your homepathic doctor, see his timings and set up an appointment.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
-                <div class="media">
-                    <div class="media-left img-circle">
-                        <a href="#">
-                            <img class="media-object" src="/img/ulanding_setup_appt.png" alt="Generic placeholder image" style="width: 120px; height: 120px;">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        
-                                <h4 class="media-heading">1. Setup online appointment</h4>
-                                <p>Find your doctor and set up an appointment by chosing video or phone consultation</p>
-                                <a class="btn btn-primary" href="/user/index.html" role="button">Start &raquo;</a>
-                                <!-- <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> -->
-                            
-                    </div>
-                </div>
-            </div>
-            <!-- /.col-lg-4 -->
-            <div class="col-lg-3">
-                <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-            <h2>2. Make Payment</h2>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
-                <div class="media">
-                    <div class="media-left img-circle">
-                        <a href="#">
-                            <img class="media-object" src="/img/ulanding_make_payment.jpg" alt="Generic placeholder image" style="width: 120px; height: 120px;">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">2. Make Payment</h4>
-                        <p>Pay yourself using Credit or Debit Card. In future, someone else can pay on your behalf or you can pre-pay your account.</p>
-                        <!-- <p><a class="btn btn-primary" href="#" role="button">Start &raquo;</a></p> -->
-                    </div>
-                </div>
-            </div>
-            <!-- /.col-lg-4 -->
-            <div class="col-lg-3">
-                <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-            <h2>3. Doctor will contact you</h2>
-            <p>If you have made online appointment, be available in the online visiting room and doctor will video call you. If have an appointment for a phone call, doctor will call on your phone.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
-                <div class="media">
-                    <div class="media-left img-circle">
-                        <a href="#">
-                            <img class="media-object" src="/img/ulanding_doc_will_contact.jpg" alt="Generic placeholder image" style="width: 120px; height: 120px;">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">3. Doctor will contact you</h4>
-                        <p>Doctor will make video or phone call to you. Video call just works with browser; no extra software to install </p>
-                        <!-- <p><a class="btn btn-primary" href="#" role="button">Start &raquo;</a></p> -->
-                    </div>
-                </div>
-            </div>
-            <!-- /.col-lg-4 -->
-            <div class="col-lg-3">
-                <!-- <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
-            <h2>4. Medicine delivered to your home</h2>
-            <p>At the end of video or phone consultation, doctor will upload a prescription for you. If you chose to, we will deliver the medicine to your home.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
-                <div class="media">
-                    <div class="media-left img-circle">
-                        <a href="#">
-                            <img class="media-object" src="/img/ulanding_delvrd_to_home.png" alt="Generic placeholder image" style="width: 120px; height: 120px;">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading">4. Medicine delivered to home</h4>
-                        <p>After consultation, we can deliver medicine directly to your home. No need to hunt for or visit pharmacy stores. </p>
-                        <!-- <p><a class="btn btn-primary" href="#" role="button">Start &raquo;</a></p> -->
-                    </div>
-                </div>
-            </div>
-            <!-- /.col-lg-4 -->
-        </div>
-        <!-- /.row -->
-        <!-- START THE FEATURETTES -->
-        <hr class="featurette-divider">
-        <a name="by_online" />
-        <div class="row featurette">
-            <div class="col-md-7">
-                <h2 class="featurette-heading"> Consult through online video<span class="text-muted"></span></h2>
-                <p class="lead">At your appointment time, Doctor will visit in the online consulting room and will be expecting you. Doctor will start a video session with you if you are available. You can take this video call either from a computer or from your smartphone like iPhone</p>
-            </div>
-            <div class="col-md-5">
-                <!-- <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image"/> -->
-                <img class="featurette-image img-responsive" src="/img/ulanding_video_consult.jpg" alt="Generic placeholder image" style="height:300px;"/>
-            </div>
-        </div>
-        <hr class="featurette-divider">
-        <a name="by_phone" />
-        <div class="row featurette">
-            <div class="col-md-7">
-                <h2 class="featurette-heading"> or Consult by Phone <span class="text-muted"></span></h2>
-                <p class="lead">You can choose for a phone consultation. At your appointment time, Doctor will make a call on your phone. If the phone gets disconnected, Doctor will call you again. After the consultation, you can find your prescription online</p>
-            </div>
-            <div class="col-md-5">
-                <img class="featurette-image img-responsive" src="/img/ulanding_phone_consult.jpg" alt="Generic placeholder image" style="height:300px;"/>
-            </div>
-        </div>
-        <!-- <hr class="featurette-divider">
-        <a name="by_email" />
-        <div class="row featurette">
-            <div class="col-md-7">
-                <h2 class="featurette-heading">Consult by Email works too<span class="text-muted"></span></h2>
-                <p class="lead">If you prefer to talk to Doctor only through email, that is possible too. Upload all your records and reports online and send an email to the Doctor who will then reply back at the appointment time. If you need clarification, you can also send followup questions in email again.</p>
-            </div>
-            <div class="col-md-5">
-                <img class="featurette-image img-responsive" src="/img/ulanding_email_consult.png" alt="Generic placeholder image" style="height:300px;"/>
-            </div>
-        </div> -->
-        <hr class="featurette-divider">
-        <div class="row featurette">
-            <div class="col-md-7">
-                <h2 class="featurette-heading">Exclusively for Homeopathic Treatment <span class="text-muted"></span></h2>
-                <p class="lead">You trust Homeopathy. We find the best Homeopathy Doctors in your city for online remote consultation.</p>
-            </div>
-            <div class="col-md-5">
-                <img class="featurette-image img-responsive" src="/img/ulanding_exclu_homeo.png" alt="Generic placeholder image" style="height:300px;"/>
-            </div>
-        </div>
-        <hr class="featurette-divider">
-        <!-- <div class="row featurette">
-            <div class="col-md-5">
-                <img class="featurette-image img-responsive" src="/img/ulanding_unified_prescri.png" alt="Generic placeholder image"/>
-            </div>
-            <div class="col-md-7">
-                <h2 class="featurette-heading">One Place for all your prescriptions <span class="text-muted"></span></h2>
-                <p class="lead">Sign up to create an account and access your current and older prescriptions</p>
-            </div>
-        </div>
-        <hr class="featurette-divider"> -->
-        <div class="row featurette">
-            <div class="col-md-7">
-                <h2 class="featurette-heading">Convenient for you <span class="text-muted"></span></h2>
-                <p class="lead">No wasting time in driving. No parking hassle. No waiting time in Doctor's office. We make the best Doctors available to you from all over the world.</p>
-            </div>
-            <div class="col-md-5">
-                <img class="featurette-image img-responsive" src="/img/ulanding_convenient.png" alt="Generic placeholder image" style="height:300px;"/>
-            </div>
-        </div>
-        <hr class="featurette-divider">
-        <!-- /END THE FEATURETTES -->
-        <!-- FOOTER -->
-        <footer>
-            <p class="pull-right"><a href="#">Back to top</a></p>
-            <p>&copy; M/P Labs, 2015 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a>
-                &middot; <a href="/pgm/provider_landing/index.html"> Are you a Doctor?</a>
-            </p>
-        </footer>
-    </div>
-    <!-- /.container -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script>
-    window.jQuery || document.write('<script src="/bower_components/jquery/dist/jquery.min.js"><\/script>')
-    </script>
-    <script src="/bower_components/html5-boilerplate/js/plugins.js"></script>
-    <script src="/bower_components/html5-boilerplate/js/main.js"></script>
-    <script src="/bower_components/holderjs/holder.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-    (function(b, o, i, l, e, r) {
-        b.GoogleAnalyticsObject = l;
-        b[l] || (b[l] =
-            function() {
-                (b[l].q = b[l].q || []).push(arguments)
-            });
-        b[l].l = +new Date;
-        e = o.createElement(i);
-        r = o.getElementsByTagName(i)[0];
-        e.src = '//www.google-analytics.com/analytics.js';
-        r.parentNode.insertBefore(e, r)
-    }(window, document, 'script', 'ga'));
-    ga('create', 'UA-XXXXX-X');
-    ga('send', 'pageview');
-    </script>
+
+	<section class="rev_slider_wrapper">
+		<div id="slider1" class="rev_slider"  data-version="5.0">
+			<ul>
+				<li data-transition="parallaxvertical">
+					<img src="img/slides/1.jpg"  alt="" width="1920" height="705" data-bgposition="top center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="1" >
+					<div class="tp-caption sfl tp-resizeme thm-banner-h1" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="225" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="500">
+						Busy Working Life
+				    </div>
+					<div class="tp-caption sfr tp-resizeme thm-banner-h1 heavy" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="280" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="1000">
+						Find Doctor's Online
+				    </div>
+					<div class="tp-caption sfb tp-resizeme thm-banner-h3" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="353" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="1500">
+						We Serve Better than Any Other
+				    </div>
+					<div class="tp-caption sfb tp-resizeme thm-banner-p" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="404" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="2000">
+						Save From Waiting Queue And Traffic <br>No Side Effect, Free Treatment Of Homeopathy !!
+				    </div>
+					<div class="tp-caption sfl tp-resizeme" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="474" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="2300">
+						<a href="/user/index.html#/user/login#" class="thm-btn">Log In</a>
+				    </div>
+					<div class="tp-caption sfr tp-resizeme" 
+				        data-x="left" data-hoffset="185" 
+				        data-y="top" data-voffset="474" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="2600">
+						<a href="/user/index.html#/user/login#" class="thm-btn inverse">Register</a>
+				    </div>
+				</li>
+				<li data-transition="parallaxvertical">
+					<img src="img/slides/2.jpg"  alt=""  width="1920" height="705" data-bgposition="top center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="2" >
+					<div class="tp-caption sfl tp-resizeme thm-banner-h1 blue-bg" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="209" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="500">
+						Your Health
+				    </div>
+					<div class="tp-caption sfr tp-resizeme thm-banner-h1 heavy black-bg" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="263" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="1000">
+						Our First Priority
+				    </div>
+					<div class="tp-caption sfb tp-resizeme thm-banner-h3" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="341" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="1500">
+						We Serve Better than Any Other
+				    </div>
+					<div class="tp-caption sfb tp-resizeme thm-banner-p" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="393" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="2000">
+						Not sure what is going on, come in Today for a Symptom <br>Check up, There are many kind of process!!
+				    </div>
+					<div class="tp-caption sfl tp-resizeme" 
+				        data-x="left" data-hoffset="0" 
+				        data-y="top" data-voffset="465" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="2300">
+						<a href="/user/index.html#/user/login" class="thm-btn">Call us Today</a>
+				    </div>
+					<div class="tp-caption sfr tp-resizeme" 
+				        data-x="left" data-hoffset="185" 
+				        data-y="top" data-voffset="465" 
+				        data-whitespace="nowrap"
+				        data-transform_idle="o:1;" 
+				        data-transform_in="o:0" 
+				        data-transform_out="o:0" 
+				        data-start="2600">
+						<a href=""/user/index.html#/user/login" class="thm-btn inverse">Learn More</a>
+				    </div>
+				</li>
+			</ul>
+		</div>
+	</section>
+<section class="home-appointment-form">
+		<div class="container">
+			<div class="heading">
+				<h3>Make an Appoinment</h3>
+			</div>
+			<div class="form-grp clearfix">
+				<form action="#" class="clearfix contact-form" id="appointment-form">
+					<div class="single-form">
+						<input type="text" placeholder="Full Name" name="name">
+					</div>
+					<div class="single-form">
+						<input type="text" placeholder="Email" name="email">
+					</div>
+					<div class="single-form">
+						<input type="text" placeholder="Select Date" name="date" class="date-picker">
+					</div>
+					<div class="single-form">
+						<div class="select-input-wrapper">
+							<select class="select-input" name="category">
+								<option value="" selected="selected">Select Category</option>
+								<option value="General Motors">Primary Health Care</option>
+								<option value="Land Rover">Dental Care</option>
+								<option value="Lexus">Neurology</option>
+								<option value="Lincoln">Kidney Treatment</option>
+								<option value="Lincoln">Eye Treatment</option>
+							</select>
+						</div>
+					</div>
+					<div class="single-form">
+						<button type="submit">Book Now</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+
+
+	<section class="call-to-action boxed">
+		<div class="container">
+			<div class="clearfix">
+				<div class="call-to-action-corner col-md-4" style="background-image: url(img/call-to-action/left-box-bg.jpg);">
+					<div class="single-call-to-action">
+						<div class="icon-box">
+							<div class="inner-box">
+								<i class="flaticon-clock"></i>
+							</div>						
+						</div>
+						<div class="content-box">
+							<h3>Setup Online Appointment</h3>
+							<p>Find Your Doctor And Set Up An Appointment By Choosing Video or Phone Consultation</p>
+						</div>
+					</div>
+				</div>
+				<div class="call-to-action-center col-md-4" style="background-image: url(img/call-to-action/center-box-bg.jpg);">
+					<div class="single-call-to-action">
+						<div class="icon-box">
+							<div class="inner-box">
+								<i class="flaticon-coins"></i>
+							</div>						
+						</div>
+						<div class="content-box">
+							<h3>Make Payment</h3>
+							<p>Pay yourself using Credit or Debit Card.</p>
+							<a href="#" class="thm-btn inverse">Book Now</a>
+						</div>
+					</div>
+				</div>
+				<div class="call-to-action-corner col-md-4" style="background-image: url(img/call-to-action/right-box-bg.jpg);">
+					<div class="single-call-to-action">
+						<div class="icon-box">
+							<div class="inner-box">
+								<i class="flaticon-medical"></i>
+							</div>						
+						</div>
+						<div class="content-box">
+							<h3>Doctor Will Contact & Medicine Will Deliver to Home</h3>
+							<p> After consultation, we can deliver medicine directly to your home.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="sec-padding faq-home">
+		<div class="container">
+			<hr>
+			<div class="row">
+				<div class="col-lg-6 col-md-12">
+					<div class="sec-title style-two">
+						<h2>Why Choose us?</h2>
+						<span class="decor">
+							<span class="inner"></span>
+						</span>
+					</div>
+					<div class="accrodion-grp" data-grp-name="faq-accrodion">
+						<div class="accrodion active">
+							<div class="accrodion-title">
+								<h4>
+									<span class="decor">
+										<span class="inner"></span>
+									</span>
+									<span class="text">Experienced Doctors </span>
+								</h4>
+							</div>
+							<div class="accrodion-content">
+								<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+								<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+							</div>
+						</div>
+						<div class="accrodion ">
+							<div class="accrodion-title">
+								<h4>
+									<span class="decor">
+										<span class="inner"></span>
+									</span>
+									<span class="text">Hassle Free Homeopathy Meadicine Delivary</span>
+								</h4>
+							</div>
+							<div class="accrodion-content">
+								<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+								<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+							</div>
+						</div>
+						<div class="accrodion ">
+							<div class="accrodion-title">
+								<h4>
+									<span class="decor">
+										<span class="inner"></span>
+									</span>
+									<span class="text">Belive In Homeopathy</span>
+								</h4>
+							</div>
+							<div class="accrodion-content">
+								<p>Little explanation  Little explanation Little explanation  Little explanation Little explanation Little explanation Little explanation </p>
+								<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation Little explanation  </p>
+							</div>
+						</div>
+						<div class="accrodion ">
+							<div class="accrodion-title">
+								<h4>
+									<span class="decor">
+										<span class="inner"></span>
+									</span>
+									<span class="text">Online payment seystem </span>
+								</h4>
+							</div>
+							<div class="accrodion-content">
+								<p>Little explanation  Little explanation  Little explanation  Little explanation Little explanation  Little explanation </p>
+								<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 hidden-md">
+					<div class="img-masonary">
+						<div class="img-w1">
+							<img src="img/faq/1.jpg" height="450" width="280" alt="">
+						</div>
+						<div class="img-w1 img-h1">
+							<img src="img/faq/2.jpg" height="450" width="280" alt="">
+						</div>
+						<div class="img-w1 img-h1">
+							<img src="img/faq/3.jpg" height="450" width="280" alt="">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="sec-padding testimonials-wrapper">
+		<div class="container">
+			<div class="sec-title colored text-center">
+				<h2>Testimonials</h2>
+				<span class="decor">
+					<span class="inner"></span>
+				</span>
+			</div>
+			<div class="testimonaials-carousel owl-carousel owl-theme">
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation  </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+				<div class="item">
+					<div class="single-testimonaials">
+						<div class="qoute-box">
+							<i class="qoute">“</i>
+						</div>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  Little explanation </p>
+						<h3>Roberto Carlos</h3>
+						<span>Patient of Asthama</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="footer-call-to-action">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9">
+					<h3>Here will be any kind RemedySquare heading</h3>
+					<p>Little explanation  Little explanation  Little explanation ...</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<footer class="footer sec-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="footer-widget about-widget">
+						<a href="#">
+							<img src="img/resources/" alt="Awesome Image"/>
+						</a>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  </p>
+						<ul class="contact">
+							<li><i class="fa fa-map-marker"></i> <span>60 . Airport Road, Bengaluru</span></li>
+							<li><i class="fa fa-phone"></i> <span>(000) 000 000 0000</span></li>
+							<li><i class="fa fa-envelope-o"></i> <span>example@gmail.com</span></li>
+						</ul>
+						<ul class="social">
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+							<li><a href="#"><i class="fa fa-youtube"></i></a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="footer-widget quick-links">
+						<h3 class="title">Services</h3>
+						<ul>
+							<li><a href="service-details.html">Dental</a></li>
+							<li><a href="service-details.html">Cadilogy</a></li>
+							<li><a href="service-details.html">Neurology</a></li>
+							<li><a href="service-details.html">Bond Bindin</a></li>
+							<li><a href="service-details.html">X-Ray</a></li>
+							<li><a href="service-details.html">Pregency</a></li>
+							<li><a href="service-details.html">Heart Dieases</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="footer-widget contact-widget">
+						<h3 class="title">Contact Form</h3>
+						<form action="" class="contact-form" id="footer-cf">
+							<input type="text" name="name"  placeholder="Full Name">
+							<input type="text" name="email" placeholder="Email Address" >
+							<textarea name="message" placeholder="Your Message"></textarea>
+							<button type="submit">Send</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+
+	<!-- main jQuery -->
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<!-- bootstrap -->
+	<script src="js/bootstrap.min.js"></script>
+	<!-- bx slider -->
+	<script src="js/jquery.bxslider.min.js"></script>
+	<!-- appear js -->
+	<script src="js/jquery.appear.js"></script>
+	<!-- count to -->
+	<script src="js/jquery.countTo.js"></script>
+	<!-- owl carousel -->
+	<script src="js/owl.carousel.min.js"></script>
+	<!-- validate -->
+	<script src="js/validate.js"></script>
+	<!-- mixit up -->
+	<script src="js/jquery.mixitup.min.js"></script>
+	<!-- fancybox -->
+	<script src="js/jquery.fancybox.pack.js"></script>
+	<!-- easing -->
+	<script src="js/jquery.easing.min.js"></script>
+	<
+	<!-- gmap main script -->
+	<script src="js/gmap.js"></script>
+
+	<!-- isotope script -->
+	<script src="js/isotope.pkgd.min.js"></script>
+	<!-- jQuery ui js -->
+	<script src="js/jquery-ui-1.11.4/jquery-ui.js"></script>
+	
+	<!-- revolution scripts -->
+
+	<script src="revolution/js/jquery.themepunch.tools.min.js"></script>
+	<script src="revolution/js/jquery.themepunch.revolution.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.actions.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.migration.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.video.min.js"></script>
+
+
+	
+	<script src="js/custom.js"></script>
+
+
+
 </body>
 
 </html>
