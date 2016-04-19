@@ -1,191 +1,337 @@
-<!-- Marketing messaging and featurettes
-      ================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
-<!-- <link rel="stylesheet" href="/bower_components/fullcalendar/fullcalendar.css"/> -->
-<div class="container marketing" ng-controller="DocProfileCtrl">
-	<hr class="visual-profile">
-	<div class="row">
-        <div class="col-md-5">
-            <div>
-                <img class="featurette-image img-responsive" src="/img/doc_profile_default2.png" alt="Generic placeholder image">
-                <!-- <img class="featurette-image img-responsive" my-holder="holder.js/300x200/auto" alt="Generic placeholder image"> -->
-            </div>
-            <div>
-                <h4>Education</h4>
-                <p>{{provider.education.strucHead}}</p>
-                <p>{{provider.education.strucDesc}}</p>
-                <ul>
-                    <li ng-repeat="value in provider.education.strucValues">
-                            <p>{{value}}</p>
-                    </li>
-                </ul>
-                <p>{{provider.education.strucFoot}}</p>
-            </div>
-            <div>
-                <h4>Registration</h4>
-                <p>{{provider.registration.strucHead}}</p>
-                <p>{{provider.registration.strucDesc}}</p>
-                <ul>
-                    <li ng-repeat="value in provider.registration.strucValues">
-                            <p>{{value}}</p>
-                    </li>
-                </ul>
-                <p>{{provider.registration.strucFoot}}</p>
-            </div>
-        </div>
-        <div class="col-md-7">
-            <div>
-                <h2 class="featurette-heading">{{provider.name}} <span class="text-muted"> {{provider.oneLiner}}</span></h2>
-                <div ng-repeat="profileDescSnippet in provider.profileDesc">
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+<meta charset="UTF-8">
+	<title>Doctor Profile || RemedySquare </title>
+
+	<!-- responsive meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- master stylesheet -->
+	<link rel="stylesheet" href="css/style.css">
+	<!-- responsive stylesheet -->
+	<link rel="stylesheet" href="css/responsive.css">
+    <link rel="icon" href="../../favicon.ico">
+    <title>Remedy Square</title> 
+  
+</head>
+
+<body>
+    	<header class="header">
+		<div class="container">
+			<div class="logo pull-left">
+				<a href="index.html">
+					<img src="img/resources/" alt="Awesome Image"/>
+				</a>
+			</div>
+		</div>
+	</header> <!-- /.header -->
+
+
+	<nav class="mainmenu-area stricky">
+		<div class="container">
+			<div class="navigation pull-left">
+				<div class="nav-header">
+					<ul>
+						<li class="dropdown">
+							<a href="#">Home</a>
+						</li>
+						<li>
+							<a href="#">FAQ</a>
+						</li>
+						<li><a href="">Contact Us</a></li>
+						<li><a href="/user/index.html#/user/login#">Login</a></li>
+						<li><a href="/user/index.html#/user/login#">Register</a></li>
+					</ul>
+				</div>
+				<div class="nav-footer">
+					<button><i class="fa fa-bars"></i></button>
+				</div>
+			</div>
+			<div class="search-box pull-right">
+				<form action="#">
+					<input type="text" placeholder="Search...">
+					<button type="submit"><i class="fa fa-search"></i></button>
+				</form>
+			</div>
+		</div>
+	</nav> <!-- /.mainmenu-area -->
+
+
+	<section class="inner-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 sec-title colored text-center">
+					<h2>Doctor Profile</h2>
+					<ul class="breadcumb">
+						<li><a href="index.html">Home</a></li>
+						<li><i class="fa fa-angle-right"></i></li>
+						<li><span>Doctor Profile</span></li>
+					</ul>
+					<span class="decor"><span class="inner"></span></span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="sec-padding doctor-profile">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-5">
+		    <img class="featurette-image img-responsive" src="img/team/uindex_doc_headshot.jpg" alt="Generic placeholder image">
+                <!-- <img class="featurette-image img-responsive" my-holder="holder.js/300x200/auto" alt="Generic placeholder image"> --></div>
+				<div class="col-md-7 single-team-member">
+					<h3 class ="featurette-heading">{{provider.name}} <span class="text-muted"> {{provider.oneLiner}}</span></h3>
+					 <div ng-repeat="profileDescSnippet in provider.profileDesc">
                     <p class="lead">{{profileDescSnippet}}</p>
                 </div>
-            </div>
-            <div class="row">
-                <!-- <div class="col-lg-4"><a href="#">Rating</a></div>
-                <div class="col-lg-4"><a href="#">Reviews <span class="badge">6</span></a></div>
-                <div class="col-lg-4"><a ng-if="userIsProvider===false" ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a></div> -->
-                <div ng-if="userIsProvider===false" class="btn-group" role="group" aria-label="Appointment">
-                  <button type="button" class="btn btn-primary" ng-click="beginWF()">Begin Appointment</button>
-                  
-                  <!-- <button type="button" class="btn btn-default" ng-click="beginWF()" disabled="disabled">Begin Appointment by Email</button> -->
-                </div>
-                <!-- <a ng-if="userIsProvider===false" ng-click="beginWF()" class=" btn btn-primary">Begin Appointment</a> -->
-            </div>
-            
-        </div>
-	</div>
-
-	<hr class="featurette-divider">
-
-    <div class="row">
-        <div>
-            <div class="col-lg-3">
-                <h3><i class="fa fa-map-signs"></i>Location</h3>
-                <!-- <img class="img-square" src="/img/doc_profile_loc_default.png" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <h3>1. </h3>
-                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
-                <div ng-repeat="locationSnippet in provider.genLocation">
-                    <p>{{locationSnippet}}</p>
-                </div>
-                <!-- <p>Domlur, Bangalore</p>
-                <p> Karnataka, India </p>
-                <p>Phone - 322-323-2222</p> -->
-            </div>
-            <div class="col-lg-3">
-                <h3><i class="fa fa-calendar-check-o"></i>Timings</h3>
-                <!-- <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <img class="img-square" src="/img/doc_profile_time_default.jpg" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <h3>1. </h3>
-                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
-                
-                <!-- <p>Dr Kumar's preferred timing for online consultation is</p>
-                <p> Monday to Friday - Anytime after 10 am </p>
-                <p>Saturday - Between 8 am - 4 pm</p>
-                <p>Sunday - No new consultation. But if you are existing patient, then request for appointment</p> -->
-                <!-- <div ng-repeat="timingSnippet in provider.timing">
-                    <p>{{timingSnippet}}</p>
-                </div> -->
-                <p><strong>Monday - </strong> {{provider.calStruc.mon}}</p>
-                <p><strong>Tue - </strong> {{provider.calStruc.tue}}</p>
-                <p><strong>Wed - </strong> {{provider.calStruc.wed}}</p>
-                <p><strong>Thu - </strong> {{provider.calStruc.thu}}</p>
-                <p><strong>Fri - </strong> {{provider.calStruc.fri}}</p>
-                <p><strong>Sat - </strong> {{provider.calStruc.sat}}</p>
-                <p><strong>Sun - </strong> {{provider.calStruc.sun}}</p>
-                <!-- <p><strong> Exceptions - </strong> {{provider.calStruc.exc}}</p> -->
-
-            </div>
-            <div class="col-lg-3">
-                <h3><i class="fa fa-plus-square"></i>Specialty</h3>
-                <!-- <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-
-                <!-- <img class="img-square" src="/img/doc_profile_services_default.png" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <h3>1. </h3>
-                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
-                
-                <!-- <h5>Consultation By Appointment</h5>
-                <p>Emergency Consultation</p>
-                <p>Package Treatment Options</p>
-                <p>Medicine Delivery</p> -->
-                <div ng-repeat="specialtySnippet in provider.specialty">
-                    <p>{{specialtySnippet}}</p>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <h3><i class="fa fa-usd"></i>Fees</h3>
-                <!-- <img class="img-square" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <img class="img-square" src="/img/doc_profile_fees_default.jpg" alt="Generic placeholder image" style="width: 240px; height: 140px;"> -->
-                <!-- <h3>1. </h3>
-                <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div> -->
-                
-                
-                <p> Regular Consultation - {{provider.feeStruc.baseCurrency}} {{provider.feeStruc.regularFee + provider.feeStruc.platformFee}} </p>
-                <p> Followup Consultation - {{provider.feeStruc.baseCurrency}} {{provider.feeStruc.followupFee + provider.feeStruc.platformFee}} </p>
-                <!-- <div ng-repeat="feeSnippet in provider.feeStructure">
-                    <p>{{feeSnippet}}</p>
-                </div> -->
-            </div>
-            
-        </div>
-    </div>
-
-    <hr class="featurette-divider">
-    <div><a class="link" href="#" ng-click="showMoreOrLess()"> {{more_less_text}}</a></div>
-    <div ng-show="showMoreFlag">
-        <div class='row'>
-            <div>
-                <h3>Awards/Recognitions</h3>
-                <p>{{provider.awardsRecognitions.strucHead}}</p>
-                <p>{{provider.awardsRecognitions.strucDesc}}</p>
-                <ul>
-                    <li ng-repeat="value in provider.awardsRecognitions.strucValues">
-                            <p>{{value}}</p>
-                    </li>
+					<div class="awards-wrapper clearfix">
+						<div class="single-award">
+							<div class="inner">
+								<i class="flaticon-cup"></i>									
+								<p><span class="block">Award And</span> Recognitions</p>
+								  <p>{{provider.awardsRecognitions.strucHead}}</p>
+                                  <p>{{provider.awardsRecognitions.strucDesc}}</p>
+                                  <ul>
+                                  <li ng-repeat="value in provider.awardsRecognitions.strucValues">
+                                  <p>{{value}}</p>
+                                 </li>
                 </ul>
                 <p>{{provider.awardsRecognitions.strucFoot}}</p>
-
-            </div>
-        </div>
-        <hr class="featurette-divider">
-        <div class='row'>
-            <div>
-                <h3>Experience</h3>
-                <p>{{provider.experience.strucHead}}</p>
-                <p>{{provider.experience.strucDesc}}</p>
-                <ul>
-                    <li ng-repeat="value in provider.experience.strucValues">
+							</div>
+						</div>
+						<div class="single-award">
+							<div class="inner">
+								<i class="flaticon-medical-1"></i>									
+								<p><span class="block">Availability</span> Monday to Saturday</p>
+								<span class="number">
+									05
+								</span>
+							</div>
+						</div>
+						<div class="single-award">
+							<div class="inner">
+								<i class="fa fa-map-marker"></i>									
+								<p><span class="block">Location</span> </p>
+								<div ng-repeat="locationSnippet in provider.genLocation">
+                                <p>{{locationSnippet}}</p>
+                                </div>
+							</div>
+						</div>
+						<div class="single-award">
+							<div class="inner">
+								<i class="fa fa-usd"></i>									
+								<p><span class="block">Fees</span> </p>
+								 <p> Regular  - {{provider.feeStruc.baseCurrency}} {{provider.feeStruc.regularFee + provider.feeStruc.platformFee}} </p>
+                                 <p> Followup - {{provider.feeStruc.baseCurrency}} {{provider.feeStruc.followupFee + provider.feeStruc.platformFee}} </p>
+							</div>
+						</div>
+					</div>
+					 <div ng-repeat="profileDescSnippet in provider.profileDesc">
+                    <p class="lead">{{profileDescSnippet}}</p>
+					<ul class="infos">
+						<li><span>Speciality</span> <span>
+						<div ng-repeat="specialtySnippet in provider.specialty">
+                        <p>{{specialtySnippet}}</p>
+                       </div> </span>
+					   </li>
+						<li><span>Degrees</span> <span> 
+						<p>{{provider.education.strucHead}}</p>
+                        <p>{{provider.education.strucDesc}}</p>
+                        <ul>
+                        <li ng-repeat="value in provider.education.strucValues">
+                        <p>{{value}}</p>
+                       </li>
+                       </ul>
+                        <p>{{provider.education.strucFoot}}</p> </span></li>
+						<li><span>Experience</span> <span> 
+						<p>{{provider.experience.strucHead}}</p>
+                        <p>{{provider.experience.strucDesc}}</p>
+                        <ul>
+                        <li ng-repeat="value in provider.experience.strucValues">
                             <p>{{value}}</p>
-                    </li>
-                </ul>
-                <p>{{provider.experience.strucFoot}}</p>
-
-            </div>
-        </div>
-        <hr class="featurette-divider">
-        <div class='row'>
-            <div>
-                <h3>Membership</h3>
-                <p>{{provider.membership.strucHead}}</p>
-                <p>{{provider.membership.strucDesc}}</p>
-                <ul>
+                        </li>
+                        </ul>
+                        <p>{{provider.experience.strucFoot}}</p></span></li>
+						<li><span>Registration</span> <span> 
+						<p>{{provider.registration.strucHead}}</p>
+                        <p>{{provider.registration.strucDesc}}</p>
+                        <ul>
+                        <li ng-repeat="value in provider.registration.strucValues">
+                            <p>{{value}}</p>
+                       </li>
+                       </ul>
+                       <p>{{provider.registration.strucFoot}}</p></span></li>
+				 	<li><span>Membership</span> <span>  
+					<p>{{provider.membership.strucHead}}</p>
+                    <p>{{provider.membership.strucDesc}}</p>
+                    <ul>
                     <li ng-repeat="value in provider.membership.strucValues">
                             <p>{{value}}</p>
                     </li>
-                </ul>
-                <p>{{provider.membership.strucFoot}}</p>
+                    </ul>
+                    <p>{{provider.membership.strucFoot}}</p></span></li>
+					</ul>
+					<ul class="social">
+						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+						<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
 
-            </div>
-        </div>
-    </div>
-    <hr class="featurette-divider">
-    <!-- /.row -->
-    <div class="row" ng-if="userIsProvider===true">
-        <div class="alert alert-success" role="alert">
-            Please 
-          <a ui-sref="feedback" class="alert-link">contact us </a>
-          for any change in your profile.
-        </div>
-    </div>
 
-</div>
+
+
+	<section class="home-appointment-form doctor-profile">
+		<div class="container">
+			<hr>
+			<div class="heading">
+				<h3>Make an Appoinment With {{provider.name}} ? <br> Book Now!!</h3>
+			</div>
+			<div class="form-grp clearfix">
+				<form action="#" class="clearfix contact-form" id="appointment-form">
+					<div class="single-form">
+						<input type="text" placeholder="Full Name" name="name">
+					</div>
+					<div class="single-form">
+						<input type="text" placeholder="Email" name="email">
+					</div>
+					<div class="single-form">
+						<input type="text" placeholder="Select Date" name="date" class="date-picker">
+					</div>
+					<div class="single-form">
+						<div class="select-input-wrapper">
+							<select class="select-input" name="category">
+								<option value="" selected="selected">Consultation Mode</option>
+								<option value="General Motors">Video Consultation</option>
+								<option value="General Motors">Audio Consultation</option>
+							</select>
+						</div>
+					</div>
+					<div class="single-form">
+						<button type="submit">Book Now</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+
+
+	<section class="footer-call-to-action">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9">
+					<h3>RemedySquare.com </h3>
+					<p>Little explanation  Little explanation  Little explanation ...</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<footer class="footer sec-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="footer-widget about-widget">
+						<a href="#">
+							<img src="img/resources/" alt="Awesome Image"/>
+						</a>
+						<p>Little explanation  Little explanation  Little explanation  Little explanation  </p>
+						<ul class="contact">
+							<li><i class="fa fa-map-marker"></i> <span>60 . Airport Road, Bengaluru</span></li>
+							<li><i class="fa fa-phone"></i> <span>(000) 000 000 0000</span></li>
+							<li><i class="fa fa-envelope-o"></i> <span>example@gmail.com</span></li>
+						</ul>
+						<ul class="social">
+							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+							<li><a href="#"><i class="fa fa-youtube"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			
+				<div class="col-md-4">
+					<div class="footer-widget contact-widget">
+						<h3 class="title">Contact Form</h3>
+						<form action="" class="contact-form" id="footer-cf">
+							<input type="text" name="name"  placeholder="Full Name">
+							<input type="text" name="email" placeholder="Email Address" >
+							<textarea name="message" placeholder="Your Message"></textarea>
+							<button type="submit">Send</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<section class="footer-bottom">
+		<div class="container text-center">
+			<p> © Copyright 2016 Remedy square <a href="/policy/privacy.html">Privacy</a> | <a href="/policy/utc.html">Terms</a> | <a href="/pgm/provider_landing/index.html">Are You Doctor?</a></p>
+		</div>
+	</section>
+
+	<!-- main jQuery -->
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<!-- bootstrap -->
+	<script src="js/bootstrap.min.js"></script>
+	<!-- bx slider -->
+	<script src="js/jquery.bxslider.min.js"></script>
+	<!-- appear js -->
+	<script src="js/jquery.appear.js"></script>
+	<!-- count to -->
+	<script src="js/jquery.countTo.js"></script>
+	<!-- owl carousel -->
+	<script src="js/owl.carousel.min.js"></script>
+	<!-- validate -->
+	<script src="js/validate.js"></script>
+	<!-- mixit up -->
+	<script src="js/jquery.mixitup.min.js"></script>
+	<!-- fancybox -->
+	<script src="js/jquery.fancybox.pack.js"></script>
+	<!-- easing -->
+	<script src="js/jquery.easing.min.js"></script>
+	<
+	<!-- gmap main script -->
+	<script src="js/gmap.js"></script>
+
+	<!-- isotope script -->
+	<script src="js/isotope.pkgd.min.js"></script>
+	<!-- jQuery ui js -->
+	<script src="js/jquery-ui-1.11.4/jquery-ui.js"></script>
+	
+	<!-- revolution scripts -->
+
+	<script src="revolution/js/jquery.themepunch.tools.min.js"></script>
+	<script src="revolution/js/jquery.themepunch.revolution.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.actions.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.migration.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+	<script type="text/javascript" src="revolution/js/extensions/revolution.extension.video.min.js"></script>
+
+
+	
+	<script src="js/custom.js"></script>
+
+
+
+</body>
+
+</html>
