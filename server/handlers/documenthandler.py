@@ -47,6 +47,9 @@ def parse_gae_blobkey2(content_type_val):
 			print 'blob_key_part_value',blob_key_part_value
 			blobKeyValue = blob_key_part_value #[1:-1]
 			print 'blob-key', blobKeyValue
+			# remove the leading and trailing doublequote characters if present. there is difference in blob-key value in dev vs production instance of app engine
+			blobKeyValue = blobKeyValue.strip('"')
+			print 'trimmed blob-key'
 			return blobKeyValue
 
 	# we should never reach here.... it means we were unable to parse the blobkey
@@ -62,10 +65,13 @@ def prescription_uploaded(cref):
 	print 'content_type', f.content_type
 	print 'content_length', f.content_length
 
-	print 'blobkey', parse_gae_blobkey2(f.content_type)
+	parsedBlobKey = parse_gae_blobkey2(f.content_type)
+
+	print 'blobkey', parsedBlobKey
 	args = {}
 	args['cref'] = cref;
-	args['blob_key'] = parse_gae_blobkey2(f.content_type)
+	args['filename'] = f.filename
+	args['blob_key'] = parsedBlobKey
 
 	consultAPI.handlePrescriptionOnUpload(args)
 
@@ -73,9 +79,14 @@ def prescription_uploaded(cref):
 
 @docHandlerApp.route('/s/consult/cwf/<cref>/prescription/<blobKey>', method='GET')
 def prescription_download(cref, blobKey):
-	print 'prescription uploaded for cref, blobkey', cref, blobKey[1:-1]
+	print 'prescription download requested for cref, blobkey', cref, blobKey
+	# response.set_header('X-AppEngine-BlobKey', blobKey) #base64.b64decode(blobKey[1:-1] ) )
+	# response.set_header('content-disposition', 'attachment; filename=prescription_'+cref+'.pdf')
+	# return response;
+
+	subscriberDoc = consultAPI.getPrescriptionDocByBlobKey(cref,blobKey)
 	response.set_header('X-AppEngine-BlobKey', blobKey) #base64.b64decode(blobKey[1:-1] ) )
-	response.set_header('content-disposition', 'attachment; filename=prescription_'+cref+'.pdf')
+	response.set_header('content-disposition', 'attachment; filename='+subscriberDoc.fileName)
 	return response;
 
 
@@ -102,11 +113,11 @@ def document_uploaded_callback(cref, documentNo):
 
 	
 	
-
-	print 'blobkey', parse_gae_blobkey2(f.content_type)
+	parsedBlobKey = parse_gae_blobkey2(f.content_type)
+	print 'blobkey', parsedBlobKey
 	args = {}
 	args['cref'] = cref;
-	args['blob_key'] = parse_gae_blobkey2(f.content_type)
+	args['blob_key'] = parsedBlobKey
 	args['documentNo'] = documentNo
 	args['filename'] = f.filename
 	args['filesummary'] = "Description Not available"

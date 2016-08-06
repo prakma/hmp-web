@@ -32,6 +32,11 @@ angular.module('hmp.hmpservices', [])
 					providerId: '@providerId'
 				}
 			},
+			getFavoriteProviders: {
+				method: 'GET',
+				url: '/s/subscriber/favoritedocs',
+				isArray:true
+			},
 			getUserSubscriber: {
 				method: 'GET',
 				url: '/s/subscriber/user/:userSubscriberId',

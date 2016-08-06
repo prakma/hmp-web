@@ -2,80 +2,139 @@
 
 <!-- Example row of columns -->
 <div class="container">
-
     <div class="row">
-        <form class="form-inline">
-            <div class="form-group">
-                <label class="sr-only" for="emailInput">Email address</label>
-                <input type="text" class="form-control input-lg input-lg" id="emailInput" placeholder="Enter Doctor's name and place" ng-model="docSearchText">
+        <div class="page-header">
+                  <h3>Only consult Doctors that you personally know</h3>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-md-8">
+        <div ng-if="authFlag != true">
+            <div class="row">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <p>Do you know the Doctor you want to consult?</p>
+                        <label class="radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-model="doctorOption" ng-change="onInputChange(doctorOption)" value="option1Yes"> Yes
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="doctorOption" ng-change="onInputChange(doctorOption)" value="option2No"> No
+                        </label>
+                    </div>
             </div>
-            <button type="submit" class="btn btn-primary" ng-click="docSearch()">Search</button>
-        </form>
+
+            <div class="row" ng-show="doctorOption == 'option1Yes' ">
+                <form class="form-inline">
+                    <!-- <div class="form-group">
+                        <label class="sr-only" for="emailInput">Email address</label>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Enter Doctor's name and place" ng-model="docSearchText">
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-click="docSearch()">Search</button> -->
+                </form>
+
+                <form class="form-inline">
+                    <h6>Search for your Doctor to setup appointment</h6>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="docName" placeholder="Jane Doe">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="docPlace" placeholder="Domlur Bangalore">
+                  </div>
+                  <div class="form-group">
+                    <input type="phone" class="form-control" id="docPlace" placeholder="9898885763">
+                  </div>
+                  <button type="submit" class="btn btn-default" ng-click="docSearch()">Find</button>
+                </form>
+            </div>
+
+            <div class="row" ng-show="doctorOption == 'option2No' ">
+                <h6>Maybe try with one of these suggested doctors</h6>
+                
+            </div>
+        </div>
+
+        <div ng-if="authFlag == true">
+            <div class="row">
+                <!-- <h3 class="sub-header">Search for a new Doctor</h3>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="doctor">Doctor</label>
+                        <input type="text" class="form-control input-lg input-lg" id="doctor" placeholder="Enter Doctor's name and place" ng-model="docSearchText">
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-click="docSearch()">Search</button>
+                </form> -->
+                <form class="form-inline">
+                    <!-- <div class="form-group">
+                        <label class="sr-only" for="emailInput">Email address</label>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Enter Doctor's name and place" ng-model="docSearchText">
+                    </div>
+                    <button type="submit" class="btn btn-primary" ng-click="docSearch()">Search</button> -->
+                </form>
+
+                <form class="form-inline">
+                    <h6>Search for your Doctor to setup appointment</h6>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="docName" placeholder="Jane Doe">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="docPlace" placeholder="Domlur Bangalore">
+                  </div>
+                  <div class="form-group">
+                    <input type="phone" class="form-control" id="docPlace" placeholder="9898885763">
+                  </div>
+                  <button type="submit" class="btn btn-default" ng-click="docSearch()">Find</button>
+                </form>
+            </div>
+            <div class="row" ng-show="docSearchedFlag">
+                <h6>Sorry. The doctor you searched is not on RemedySquare yet. If you must need to consult, here are some doctors to consider. </h6>
+                
+            </div>
+        </div>
+      </div>
+
+
+      <div class="col-xs-6 col-md-4">
+        <p></p>
+
+        <div class="row" ng-show="(doctorOption == 'option2No') || docSearchedFlag">
+            <!-- <h3 class="sub-header">These are our handpicked trusted doctors</h2> -->
+            
+            <!-- <div class="col-xs-6 col-sm-3 placeholder" ng-repeat="provider in providerList">
+                <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                <h4><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
+                <span class="text-muted">{{provider.primaryLocationStr}}</span>
+            </div> -->
+
+            <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Suggested Doctors</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-repeat="provider in providerList">
+                            <div class="media">
+                              <div class="media-left media-middle">
+                                <a ui-sref="doc_profile({docId:{{provider._id}} })">
+                                  <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                                </a>
+                              </div>
+                              <div class="media-body">
+                                <h4 class="media-heading"><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
+                                <span class="text-muted">{{provider.primaryLocationStr}}</span><p/><p/>
+                                <a class="btn btn-success" ui-sref="doc_profile({docId:{{provider._id}} })" role="button">Consult &raquo;</a>
+                              </div>
+                            </div>
+                            <div><hr/></div>
+                        </div>
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <span>  </span>
+                    </div>
+            </div>
+        </div>
+
+      </div>
+
     </div>
-
-    <div class="row">
-        <h2 class="sub-header">Were you looking for one of these doctors?</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Doctor</th>
-                    <th>Location</th>
-                    <th>Specialty</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a ui-sref="doc_profile({docProfileId:22})">Nulla</a></td>
-                    <td>quis</td>
-                    <td>sem</td>
-                    <td>at</td>
-                </tr>
-                <tr>
-                    <td>nibh</td>
-                    <td>elementum</td>
-                    <td>imperdiet</td>
-                    <td>Duis</td>
-                </tr>
-                <tr>
-                    <td>sagittis</td>
-                    <td>ipsum</td>
-                    <td>Praesent</td>
-                    <td>mauris</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <h2 class="sub-header">Recently Consulted Doctors</h2>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Doctor</th>
-                    <th>Location</th>
-                    <th>Specialty</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Lorem</td>
-                    <td>ipsum</td>
-                    <td>dolor</td>
-                    <td>sit</td>
-                </tr>
-                <tr>
-                    <td>amet</td>
-                    <td>consectetur</td>
-                    <td>adipiscing</td>
-                    <td>elit</td>
-                </tr>
-
-
-            </tbody>
-        </table>
-    </div>
-
 
 </div>

@@ -64,6 +64,10 @@ def getDefaultSubscribers():
 	providerCursor = queryAPI.findDefaultProviders()
 	return ndb_json.dumps(providerCursor)
 
+# def getFavoriteProviders():
+# 	providerCursor = queryAPI.findDefaultProviders()
+# 	return ndb_json.dumps(providerCursor)
+
 def getProviderByKey(providerId):
 	providerObj = queryAPI.findProviderById(providerId)
 	if(providerObj != None):

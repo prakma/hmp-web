@@ -47,6 +47,12 @@ angular.module('providerApp.version.interpolate-filter', [])
   		break;
       case 'meeting':
         switch(status){
+          case 1:
+            return 'Meeting Pending';
+          case 2:
+            return 'Meeting In Progress';
+          case 3:
+            return 'Meeting Completed';
           default:
             return 'Not started';
         }
@@ -162,9 +168,20 @@ angular.module('providerApp.version.interpolate-filter', [])
         return false;
 
       case 'apptCancelByUser':
+
+        if(cwf.apptWF == null){
+            return true;
+        }
         if(cwf.overallStatus < 3){
           if(cwf.apptWF.apptStatus <= 5){
-            return true;
+
+            // check if meeting has not happened
+            if(cwf.meetingWf == null){
+              return true;
+            }
+            if(cwf.meetingWf.meetingStatus < 3){
+              return true
+            }
           }
         }
         return false;
@@ -176,7 +193,13 @@ angular.module('providerApp.version.interpolate-filter', [])
         // then if appt is in "rescheduledbyuser" state, then allow, otherwise deny
         if(cwf.overallStatus < 3){
           if(cwf.apptWF.apptStatus < 6){
-            return true;
+            // check if meeting has not happened
+            if(cwf.meetingWf == null){
+              return true;
+            }
+            if(cwf.meetingWf.meetingStatus < 3){
+              return true
+            }
           }
         }
         return false;
@@ -230,7 +253,7 @@ angular.module('providerApp.version.interpolate-filter', [])
       break;
 
       case 'cwfGoToPrescriptionByUser':
-      break;
+      return cwf.fullfillmentWF && cwf.fullfillmentWF.fulfillmentStatus == 3;
 
       case 'cwfFeedbackByUser':
       break;
@@ -239,10 +262,24 @@ angular.module('providerApp.version.interpolate-filter', [])
       break;
       
       case 'cwfDoneByUser':
-      break;
-
+        // console.log('cwf overallStatus', cwf.overallStatus, cwf.meetingWF.meetingStatus);
+        if(cwf.overallStatus < 3){
+          // console.log('cwf overallStatus2', cwf.overallStatus, cwf.meetingWF.meetingStatus);
+          if(cwf.meetingWF && cwf.meetingWF.meetingStatus == 3){
+              return true;
+          }
+        } 
+        return false;
+      
       case 'cwfDoneByProvider':
-      break;
+        if(cwf.overallStatus < 3){
+          if(cwf.apptWF && cwf.apptWF.apptStatus < 6){
+            if(cwf.meetingWF && cwf.meetingWF.meetingStatus < 3){
+              return true
+            }
+          }
+        } 
+        return false;
       
       default:
         return false;

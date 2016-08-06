@@ -56,7 +56,7 @@
 
                     </div>
                     <div class="btn-group btn-group-xs pull-right" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptCancelByProvider' ">Cancel</button>
+                        <button type="button" class="btn btn-default" ng-click="cancelAppt(appt)" ng-show="appt | cwfStateTransitionAllowed : 'apptCancelByProvider' ">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -77,13 +77,15 @@
                     <label for="consultationMode">Patient Contact No</label>
                     <span id="consultationMode"><strong>{{appt.patientDetailsWF.patientPhone}}</strong></span>
                 </div> -->
+                <br/>
+                <p><small>Status</small> <strong>{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</strong> </p>
 
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-xs" ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="cancelAppt(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</button>
+
+                    <button type="button" class="btn btn-primary btn-xs" ng-click="markMeetingAsComplete(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfDoneByProvider' ">Mark meeting as complete</button>
                     <!-- <a ng-click="gotoCRoom(appt)" ng-show="appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByProvider' ">Go to Consultation Room</a> -->
                 </div>
-                
-                
             </div>
         </div>
         <div class="panel panel-default">

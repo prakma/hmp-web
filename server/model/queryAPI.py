@@ -28,10 +28,13 @@ def createKeyFromId(entity_name,key_id):
 def findDefaultProviders():
 	return Subscriber.query(Subscriber.providerFlag == True,
 		Subscriber.subscribeStatus == 1,
-		).order(Subscriber.lastUpdatedTS).fetch(5)
+		).order(Subscriber.lastUpdatedTS).fetch(10)
 
-def findProviderById(providerId):
-	return findProviderById(providerId)
+# def findProviderById(providerId):
+# 	print '******** findProviderById is called. Strange if it is working !!! **********'
+# 	return findProviderById(providerId)
+
+
 
 def findSubscriberById(subscriberId):
 	subscriberKey = ndb.Key('Subscriber', subscriberId)
@@ -55,10 +58,36 @@ def findConsultationByProviderId(providerId):
 			).order(ConsultationWF.overallStatus, ConsultationWF.apptWF.confirmedTS).fetch() 
 
 def findProfileByProviderId(providerId):
+	print 'findProfileByProviderId', str(providerId)
 	return PbProfile.query(
 		PbProfile.subscriber == ndb.Key('Subscriber', providerId),
-		).fetch(1);
-	
+		).fetch(1)
+
+def getProvidersByProviderIds(providerIds):
+	print 'getProvidersByProviderIds', providerIds
+	providerKeys = []
+	for x in providerIds:
+		providerKeys.append(ndb.Key('Subscriber', x))
+	list_of_entities = ndb.get_multi(providerKeys)
+	return list_of_entities
+
+def findProfilesByGivenProviderIds(providerIds):
+	print 'find profiles by given provider ids', providerIds
+	providerKeys = []
+	for x in providerIds:
+		providerKeys.append(ndb.Key('Subscriber', x))
+
+	return PbProfile.query(PbProfile.subscriber.IN(providerKeys)).fetch()
+	# providerProfiles = []
+	# for pId in providerIds:
+	# 	providerProfiles.append(findProfileByProviderId(pId))
+	# return providerProfiles
+
+# def findProfilesByGivenProviderIds(providerIds):
+# 	return PbProfile.query(
+# 		PbProfile.subscriber.IN(providerIds,
+# 		).fetch()
+
 def findFeedbackById(feedbackId):
 	feedbackKey = ndb.Key('GeneralFeedback', feedbackId)
 	return feedbackKey.get()

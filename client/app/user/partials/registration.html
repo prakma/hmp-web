@@ -8,7 +8,7 @@
 			    <h3 class="panel-title">Signup</h3>
 			</div>
 			<div class="panel-body">
-		    	<form ng-submit="register(givenName,givenEmail,givenPassword)">
+		    	<form ng-submit="register(givenName,givenEmail,givenPassword, tp_agree)">
 				  <div class="form-group">
 				    <label for="inputName">Name</label>
 				    <input type="text" class="form-control" id="inputName" ng-model="givenName" placeholder="Enter Name">
@@ -25,7 +25,7 @@
 			  		<div class="form-group">
 					    <div class="checkbox">
 						  <label>
-						    <input type="checkbox" value="">
+						    <input type="checkbox" ng-model="tp_agree">
 						    I agree to the <a target="_blank" href="/policy/utc.html">RemedySquare Terms</a> and <a target="_blank" href="/policy/privacy.html">Privacy</a>.
 						  </label>
 						</div>

@@ -139,6 +139,48 @@
         </div> -->
 
         <div ng-if="authFlag != true">
+
+            <div class="row">
+                <div class="col-xs-12 col-md-8">
+                    <div class="row">
+                        <h2 class="sub-header">Do you already know the Doctor you want to consult?</h2>
+                        <label class="radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-model="doctorOption" value="option1"> Yes
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="doctorOption" value="option2"> No. Suggest your trusted doctors.
+                        </label>
+                        
+                    </div>
+
+                    <div class="row" ng-show="doctorOption == 'option1' ">
+                        <h3 class="sub-header">Find your Doctor to setup appointment</h3>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <label class="sr-only" for="emailInput">Email address</label>
+                                <input type="text" class="form-control input-lg input-lg" id="emailInput" placeholder="Enter Doctor's name and place" ng-model="docSearchText">
+                            </div>
+                            <button type="submit" class="btn btn-primary" ng-click="docSearch()">Search</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-md-4">
+                    <h2 class="page-header">My Doctors</h2>
+                    <div class="row placeholders">
+                        <div class="col-xs-6 col-sm-3 placeholder" ng-repeat="provider in providerList">
+                            <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                            <h4><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
+                            <span class="text-muted">{{provider.primaryLocationStr}}</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
             <h2 class="page-header">Doctors to consult</h2>
             <div class="row placeholders">
                 <div class="col-xs-6 col-sm-3 placeholder" ng-repeat="provider in providerList">
@@ -146,21 +188,7 @@
                     <h4><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
                     <span class="text-muted">{{provider.primaryLocationStr}}</span>
                 </div>
-                <!-- <div class="col-xs-6 col-sm-3 placeholder">
-                        <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-                        <h4>Dr. Veena Gupta</h4>
-                        <span class="text-muted">BG Road</span>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 placeholder">
-                        <img my-holder="holder.js/100x100/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-                        <h4>Dr.Srikanth Satya</h4>
-                        <span class="text-muted">Rajaji Nagar</span>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 placeholder">
-                        <img my-holder="holder.js/100x100/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-                        <h4>Dr. Vincent Vishard</h4>
-                        <span class="text-muted">Domlur</span>
-                    </div> -->
+                
             </div>
         </div>
     </div>

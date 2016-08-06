@@ -8,6 +8,7 @@ angular.module('userApp', [
 ]).
 config(function($stateProvider, $urlRouterProvider){
 	$urlRouterProvider.otherwise("/user/index");
+	//$urlRouterProvider.otherwise("/user/doc");
 	$stateProvider.
 		state('login',{
 			url: '/user/login',
@@ -19,7 +20,15 @@ config(function($stateProvider, $urlRouterProvider){
 		}).
 		state('userLanding',{
 			url: '/user/index',
-			templateUrl: '/user/partials/userLanding.html'
+			templateUrl: '/user/partials/userdashboard.html'
+		}).
+		state('userLanding.loggedIn',{
+			url: '/user/index',
+			templateUrl: '/user/partials/logged_dashboard.html'
+		}).
+		state('userLanding.unlogged',{
+			url: '/user/index',
+			templateUrl: '/user/partials/unlogged_dashboard.html'
 		}).
 		state('appt',{
 			url: '/user/appt/:docId',
@@ -28,7 +37,7 @@ config(function($stateProvider, $urlRouterProvider){
 		state('doc',{
 			url: '/user/doc',
 			templateUrl: '/user/partials/doctor.html',
-			params: {searchText:{}},
+			/*params: {searchText:{}},*/
 			controller: 'DocCtrl'
 		}).
 		state('doc_profile',{
@@ -48,7 +57,7 @@ config(function($stateProvider, $urlRouterProvider){
 			url: '/user/cwf/:cref',
 			templateUrl: '/user/partials/consult_wf.html',
 			controller: 'CwfCtrl',
-			params: {'new_appt_flow':false}
+			params: {'new_appt_flow':false,'from_state':'consultation_list'}
 		}).
 		state('consult_wf.appt',{
 			url: '^/user/cwf/:cref/appt',
@@ -108,7 +117,6 @@ config(function($stateProvider, $urlRouterProvider){
 		//console.log('refresh status',$scope.hourDiff, $scope.minDiff, $scope.secondsDiff );
 		$scope.actionEventMomentText = $scope.hourDiff+'h: '+ $scope.minDiff+'m: '+ $scope.secondsDiff+' seconds ago';
 		
-
 	}, 5000);
 
 
@@ -132,13 +140,16 @@ config(function($stateProvider, $urlRouterProvider){
 		$timeout (function() {
 			Subscriber.logout({},{},function (){
 				resetUser();
+				$state.go('login');
 			}, function () {
 				resetUser();
+				$state.go('login');
 			});
 			
 			//$route.reload();
 			//$window.location.href = '/user/index.html';
-			$state.go('userLanding');
+			// $state.go('userLanding');
+			$state.go('login');
 		},2000);
 
 	}
@@ -152,9 +163,31 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 	//debug('UserMainCtrl called');
 	if (HMPUser.isLoggedId()){
 		$state.go('userLanding');
-	}
-	$scope.register = function (givenName, givenEmail, givenPassword) {
-		debug('register func called ', givenName, givenEmail, givenPassword);
+	} 
+	// else{
+	// 	$state.go('doc');
+	// }
+	$scope.register = function (givenName, givenEmail, givenPassword, tp_agree) {
+		debug('register func called ', givenName, givenEmail, givenPassword, tp_agree);
+		if( !givenName ){
+    		$scope.subscriptionStatus = "Registration Form is not valid. Please enter your name";
+    		return;
+    	}
+
+    	if( !givenEmail ){
+    		$scope.subscriptionStatus = "Registration Form is not valid. Please enter your email";
+    		return;
+    	}
+
+    	if( !givenPassword || givenPassword.length < 6 ){
+    		$scope.subscriptionStatus = "Registration Form is not valid. Please select a little longer password";
+    		return;
+    	}
+
+    	if( !tp_agree ){
+    		$scope.subscriptionStatus = "Please review and agree to our Terms and Conditions and Privacy policies before continuing";
+    		return;
+    	}
 		var newUser = new Subscriber();
 		newUser.name = givenName;
 		newUser.email = givenEmail;
@@ -172,7 +205,8 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 				$scope.subscriptionStatus = "";
 				//$route.reload();
 				//$window.location.href = '/user/index.html';
-				$state.go('userLanding');
+				// $state.go('userLanding');
+				$state.go('userLanding.loggedIn');
 			},3000);
 		}, function(responseHeaders){
 			$scope.subscriptionStatus = "We are sorry. Something went wrong. Could you please try again ?";
@@ -188,7 +222,8 @@ controller('UserMainCtrl', function($scope, $window, $timeout, $state, ipCookie,
 				$scope.$emit('loginEvent', 'some junk');
 				//debug('main controller emitted login event');
 				//$window.location.href = '/user/index.html';
-				$state.go('userLanding');
+				// $state.go('userLanding');
+				$state.go('userLanding.loggedIn');
 			} else{
 				// something was wrong. login was not successful
 				$scope.loginError = value.message;
@@ -205,7 +240,7 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 	//var authUserAccount = ipCookie('hmp_account');
 	//debug('authuseraccount, scope', authUserAccount, $scope);
 	// debug('HomeCtrlDefault invoked');
-	$scope.providerList = Subscriber.getDefault();
+	
 	// debug('$scope.providerList', $scope.providerList);
 
 	var currTime = fmoment();    
@@ -224,11 +259,16 @@ controller('HomeCtrlDefault', function($scope, $window, $timeout, $state, ipCook
 		// 	});
 		// 	console.log('unfinished appt list', $scope.unfinishedApptList);
 		// });
+		$scope.providerList = Subscriber.getFavoriteProviders();//getDefault();
 		
 		refreshDashboard();
+		$state.go('userLanding.loggedIn');
 
 		
 		
+	} else{
+		//$state.go('userLanding.unlogged');
+		$state.go('doc');
 	}
 
 	function refreshDashboard(){
@@ -539,9 +579,11 @@ controller('ConsultationListCtrl', function($scope, Consultation, fmoment){
 }).
 controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber, HMPUser, SubscriberDoc, Consultation, CwfEvent, fmoment){
 
-	console.log('cwfctrl invoked');
+	// console.log('cwfctrl invoked', $state, $stateParams);
 	var cref = $stateParams.cref;
 	var newApptFlow = $stateParams.new_appt_flow;
+	var previousStateName = $stateParams.from_state;
+	// console.log('cwfctrl invoked from state', previousStateName);
 	var providerId = $stateParams.docId;
 	var cwf;
 	if(cref){
@@ -566,7 +608,7 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 
 	}
 	
-	console.log('new appt flow stateparams',$stateParams, $state );
+	// console.log('new appt flow stateparams',$stateParams, $state );
 
 	function refresh(){
 		cwf = Consultation.get_cwf({cref:cref});
@@ -619,15 +661,15 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 
 	};
 
-	$scope.cancelCwf = function(){
+	// $scope.cancelCwf = function(){
 
-		console.log(" implement appt cancel later");
-		$timeout(function(){
-	       $window.alert("Cancel Appointment feature is coming soon");
-	    });
+	// 	console.log(" implement appt cancel later");
+	// 	$timeout(function(){
+	//        $window.alert("Cancel Appointment feature is coming soon");
+	//     });
 
 
-	};
+	// };
 	
 	$scope.rescheduleCwf = function(thisWf){
 		console.log("appt will be rescheduled to ", thisWf.apptWF.requestedTS);
@@ -790,7 +832,56 @@ controller('CwfCtrl', function($scope, $window, $timeout, $state, $stateParams, 
 	$scope.closeStatusDisplay = function(){
 		console.log("Close status display called");
 		$scope.statusMsg = "";
-	}
+	};
+
+	$scope.markConsultationAsComplete = function(){
+		console.log("consultation will be marked as completed and closed");
+		var newCwfEvent = new CwfEvent();
+        newCwfEvent.cref = cref;
+        newCwfEvent.eventName = 'markConsultationAsComplete';
+        
+        newCwfEvent.$save(function(result){
+            console.log('Coupon Info sent to server', result);
+            
+            //apptObj.apptWF.apptStatus = 3;
+            if(result.result=="Success"){
+            	console.log('Coupon was successful.');
+            	$scope.statusMsg="Thank you. This consultation is now considered complete.";
+            	$scope.$emit('actionEvent', 'This consultation is now considered complete');
+
+            	// redirect the user to back page
+            	$state.go(previousStateName);
+
+                
+
+            } else {
+            	console.log("Coupon apply failed");
+            	$scope.statusMsg="We are sorry. Consultation could not be marked complete. Please try later.";
+            	$scope.$emit('actionEvent', 'Consultation could not be marked complete. Please try later.');
+            }
+        });
+
+	};
+
+	$scope.cancelCwf = function (apptObj) {
+		debug('removing this appt', apptObj);
+
+		apptObj.$set_apptWFState({
+	            cref: apptObj._id,
+	            aptWFCd: 6
+	        },
+	        function(value, responseHeaders) {
+	            console.log('appt deleted', value);
+	            $scope.$emit('actionEvent', 'Consultation Canceled');
+	            // redirect the user to back page
+            	$state.go(previousStateName);
+	        },
+	        function(httpResponse) {
+	            console.log('consultation could not be canceled. something wrong with the server', httpResponse);
+	        });
+		
+
+	};
 
 	
 
@@ -906,6 +997,37 @@ controller('ApptCtrl', function($scope, $window, $timeout, $state, $stateParams,
     	$scope.wf.requestedTS = requestedDate;
     	//console.log('composed requstedTS ',requestedDate.toJSON() );
     	//console.log('scopewf', $scope.wf, wf);
+
+    	if( !$scope.wf.patientName ){
+    		$scope.errMsg = "Appointment Form is not valid. Please enter valid Patient Name";
+    		return;
+    	}
+    	if( !$scope.wf.patientPhone ){
+    		$scope.errMsg = "Appointment Form is not valid. Please enter valid Phone Number";
+    		return;
+    	}
+
+    	if( !$scope.wf.consult_mode_pref ){
+    		$scope.errMsg = "Appointment Form is not valid. Please select Consultation Mode";
+    		return;
+    	}
+
+    	if( !$scope.wf.age ){
+    		$scope.errMsg = "Appointment Form is not valid. Please enter a valid age";
+    		return;
+    	}
+
+    	if( !$scope.wf.sex ){
+    		$scope.errMsg = "Appointment Form is not valid. Please select your gender";
+    		return;
+    	}
+
+    	if( !$scope.wf.problemSummary ){
+    		$scope.errMsg = "Appointment Form is not valid. Please enter short description";
+    		return;
+    	}
+
+
 
     	if( !$scope.wf.patientName 
     		|| !$scope.wf.patientPhone 
@@ -1038,11 +1160,33 @@ controller('PatientQCtrl', function($scope, $window, $timeout, $state, $statePar
     		$state.go('userLanding');
     	})
     };
-    
 }).
 controller('DocCtrl', function($scope, $window, $timeout, $state, $stateParams, Subscriber){
 	$scope.docSearchText = $stateParams.searchText;
+	$scope.doctorOption = 'option1Yes';
+	console.log('doc search text parameters ', $stateParams.searchText);
 	$scope.docSearch = function(){
-		console.log("todo - do a doc free text search with this text - ", $state.searchText);
+		console.log("todo - do a doc free text search with this text - ", $scope.docSearchText);
+		$scope.providerList = Subscriber.getDefault();
+		$scope.docSearchedFlag = true;
+
 	}
+	$scope.onInputChange = function(inputValue){
+		console.log(' user input changed to this value ', inputValue);
+		console.log(' doctorOption value ', $scope.doctorOption);
+		$scope.doctorOption = inputValue;
+
+		if(inputValue == 'option1Yes'){
+			$scope.providerList = [];
+			$scope.docSearchedFlag = false;
+		} else{
+			$scope.providerList = Subscriber.getDefault();
+			$scope.docSearchedFlag = false;
+		}
+	}
+	// $scope.suggestedDocs = function(){
+	// 	console.log("show the suggested doc list ");
+	// 	$scope.providerList = Subscriber.getDefault();
+		
+	// }
 });

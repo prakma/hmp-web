@@ -9,6 +9,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 import sys
 
 import hmpconstants
+from collections import OrderedDict
 
 
 def beginConsultWF (args):
@@ -211,6 +212,39 @@ def getRecentAppointmentsForUser (args):
 
 
 	return ndb_json.dumps(appts)
+
+def getFavoriteProviderProfilesForUser (args):
+
+	user = args['user']
+
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		userId = user.key.id()
+		appts = queryAPI.findConsultationByUserId(user.key.id())
+		allProviderIds = []
+		for x in appts:
+			allProviderIds.append(x.provider.id())
+		# remove the duplicates
+		seen = set()
+		seen_add = seen.add
+		uniqueProviderIds =  [x for x in allProviderIds if not (x in seen or seen_add(x))]
+		# uniqueProviderIds = allProviderIds # list(OrderedDict.fromkeys(allProviderIds))
+		# favoriteProfiles = queryAPI.findProfilesByGivenProviderIds(uniqueProviderIds)
+		favoriteProviders = queryAPI.getProvidersByProviderIds(uniqueProviderIds)
+		print ' favorites profiles fetched in a dumb synchronous way. fix it'
+		return ndb_json.dumps(favoriteProviders)
+
+	except Exception as ex:
+		print 'exception raised is ', ex
+		failureResult['message'] = 'Invalid user - ' + str(userId)
+		return failureResult
+
+	
+	
 
 	
 
@@ -431,6 +465,8 @@ def handlePrescriptionOnUpload(args):
 	print 'todo - handle prescription on upload'
 	cref = args['cref']
 	blobKey = args['blob_key']
+	fileName = args['filename']
+	
 
 	failureResult = { 'result' : 'Failure', 'message' : '' }
 	successResult = {'result' : 'Success', 'message' : '','reference':'' }
@@ -447,12 +483,20 @@ def handlePrescriptionOnUpload(args):
 		failureResult['message'] = 'Invalid CWF Reference in prescription upload - ' + str(cref)
 		return failureResult
 
+	prescriptionDocument = subscriber.PrescriptionDoc()	
+	prescriptionDocument.fileBlobKey = blobKey
+	prescriptionDocument.fileName = fileName
 	if not cwf.fullfillmentWF:
 		cwf.fullfillmentWF = subscriber.FulfillmentWF()
 
+	if not cwf.fullfillmentWF.prescriptionDocuments:
+		cwf.fullfillmentWF.prescriptionDocuments = [prescriptionDocument]
+	else:
+		cwf.fullfillmentWF.prescriptionDocuments.append(prescriptionDocument)	
+
 	cwf.fullfillmentWF.prescription_ref = blobKey
 	cwf.fullfillmentWF.prescriptionTS = datetime.datetime.now()
-	cwf.fullfillmentWF.fulfillmentStatus = 1
+	cwf.fullfillmentWF.fulfillmentStatus = 3
 
 	cwf.put()
 	
@@ -514,14 +558,30 @@ def getSubscriptionDocByBlobKey(cref, blobkey):
 
 	return cwf.patientDetailsWF.getDocument(blobkey)
 
+def getPrescriptionDocByBlobKey(cref, blobkey):
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(int(cref))
+	except:
+		failureResult['message'] = 'Invalid Cref - ' + str(cref)
+		# todo - log the payment handback errors
+		return failureResult
+
+	if (cwf == None):
+		failureResult['message'] = 'Invalid CWF Reference in prescription download - ' + str(cref)
+		return failureResult
+
+	return cwf.fullfillmentWF.getDocument(blobkey)	
+
 
 
 def processCwfEvent(args):
 	eventName = args['eventName']
 	# eventBody = args['eventBody']
 	user = args['user']
-
-
 
 	if(eventName == 'RescheduleByProvider'):
 		args['rescheduledDt'] = dateutil.parser.parse(args['reschedDT']).replace(tzinfo=None)
@@ -720,30 +780,75 @@ def applyPaymentCoupon(args):
 	cwf.put()
 	return { 'result' : 'Success', 'message' : 'Coupon applied', 'cref' : cref, 'expected_payment' : cwf.paymentWF.ttlExpAmt }
 
-			
+
+def markMeetingAsComplete(args):
+	print 'markConsultationAsComplete impl method'
+	# return { 'result' : 'Failure', 'message' : 'implementing change patient info shortly' }	
+
+	cref = args['cref']
+	user = args['user']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		cwf = queryAPI.findConsultationWFById(cref)
+	except:
+		failureResult['message'] = 'Invalid Reference - ' + str(cref)
+		return failureResult
+
+	# check that cwf was initiated by this same user
+	if(cwf.provider.id() != user.key.id()):
+		failureResult['message'] = 'Invalid Meeting Complete Request. C-Ref belongs to another doctor'
+		return failureResult
+
+	# allow the completion only if meetingWF exists
+	if(cwf.meetingWF == None):
+		failureResult['message'] = 'Invalid CWF/Meeting State '+str(cref)
+		return failureResult
+
+	# set meetingWF status to complete
+	cwf.meetingWF.meetingStatus = 3
+	cwf.put()
+
+	return { 'result' : 'Success', 'message' : 'Meeting Completed ', 'cref' : cref }
+
+def markConsultationAsComplete(args):
+	print 'markConsultationAsComplete impl method'
+	# return { 'result' : 'Failure', 'message' : 'implementing change patient info shortly' }	
+
+	cref = args['cref']
+	user = args['user']
+
+	failureResult = { 'result' : 'Failure', 'message' : '' }
+	successResult = {'result' : 'Success', 'message' : '','reference':'' }
+
+	#
+	try:
+		print 'cref is', cref
+		cwf = queryAPI.findConsultationWFById(int(cref))
+		print 'cwf with cref', cwf
+	except:
+		failureResult['message'] = 'Invalid Reference - ' + str(cref)
+		return failureResult
+
+	# check that cwf was initiated by this same user
+	if(cwf.user.id() != user.key.id()):
+		failureResult['message'] = 'Invalid Consultation Complete Request. C-Ref belongs to another doctor'
+		return failureResult
+
+	# delete this consultation if apptWF, paymentWF, meetingWF etc does not exist
+	if(cwf.meetingWF == None and cwf.apptWF == None and cwf.paymentWF == None and cwf.patientDetailsWF == None):
+		cwf.key.delete()
+		return {'result' : 'Success', 'message' : 'Unfinished Appointment Deleted','reference':cref }
+
 	
+	# set overall status to complete
+	cwf.overallStatus = 3
+	cwf.put()
 
+	return { 'result' : 'Success', 'message' : 'Consultation Completed ', 'cref' : cref }
 
-
-	
-
-	
-
-	
-
-
-
-
-
-		
-
-
-
-	
-
-
-
-
-	
 
 

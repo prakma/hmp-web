@@ -188,6 +188,13 @@ class PaymemtWF(ndb.Model):
 		# self.ttlExpAmt = adjustedTotalAmount
 
 
+# docs uploaded by doctor
+class PrescriptionDoc(ndb.Model):
+	fileName = ndb.StringProperty()
+	fileSummary = ndb.StringProperty()
+	fileBlobKey = ndb.StringProperty()
+
+# docs uploaded by Patient
 class SubscriberDoc(ndb.Model):
 	fileName = ndb.StringProperty()
 	fileSummary = ndb.StringProperty()
@@ -236,8 +243,17 @@ class MeetingWF(ndb.Model):
 class FulfillmentWF(ndb.Model):
 	prescription_ref = ndb.StringProperty()
 	prescriptionTS = ndb.DateTimeProperty()
+	prescriptionDocuments = ndb.StructuredProperty(PrescriptionDoc, repeated=True)
 	#1 = prescription uploaded, #3 = fulfillment complete
 	fulfillmentStatus = ndb.IntegerProperty()
+
+	def getDocument(self, blobKey):
+		if (self.prescriptionDocuments == None):
+			return None
+		for doc in self.prescriptionDocuments:
+			if(blobKey == doc.fileBlobKey):
+				return doc
+		return None
 
 
 class StatusWF(ndb.Model):

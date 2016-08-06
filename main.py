@@ -25,7 +25,7 @@ cookie_secret = 'baltibloombuttonberg'
 def ensureLogin(func):
 	token = request.get_cookie("hmp_account", secret=cookie_secret)
 
-	print 'ensureLogin called'
+	# print 'ensureLogin called with token', token
 	# def func_unauthenticated(*args, **kwargs):
 	# 	return {'result':'Failure', 'message':'Unauthenticated'}
 	# def func_wrapper(*args, **kwargs):
@@ -156,6 +156,16 @@ def fetchProvider(userSubscriberId):
 def fetchProvider(docProfileId):
 	print 'fetchprovider queried', docProfileId
 	return subscriberAPI.getProviderByKey(docProfileId)
+
+# get all doctors with whom this user had consultations in past
+@bottle.route('/s/subscriber/favoritedocs', method='GET')
+def fetchFavoriteProviders():
+	print 'fetch_favorite_providers queried'
+	user = ensureLogin(None)
+	if(user == None):
+		return {'result':'Failure', 'message':'Unauthenticated'}
+	args = {'user':user}
+	return consultAPI.getFavoriteProviderProfilesForUser(args)
 
 # # consultation workflow methods
 # consult_args = {

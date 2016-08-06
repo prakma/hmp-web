@@ -1,0 +1,35 @@
+<div>
+	<div class="row">
+                <div class="col-xs-12 col-md-8">
+                    <div class="row">
+                        <h2 class="sub-header">Do you already know the Doctor you want to consult?</h2>
+                        <label class="radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-model="doctorOption" value="option1"> Yes
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-model="doctorOption" value="option2"> No. Suggest your trusted doctors.
+                        </label>
+                        
+                    </div>
+
+                    <div class="row" ng-show="doctorOption == 'option1' ">
+                        <h3 class="sub-header">Find your Doctor to setup appointment</h3>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <label class="sr-only" for="emailInput">Email address</label>
+                                <input type="text" class="form-control input-lg input-lg" id="emailInput" placeholder="Enter Doctor's name and place" ng-model="docSearchText">
+                            </div>
+                            <button type="submit" class="btn btn-primary" ng-click="docSearch()">Search</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                	<small><a ui-sref="doc({searchText:''})" >Search for a new Doctor </a> </small>
+                </div>
+
+                
+            </div>
+
+
+</div>

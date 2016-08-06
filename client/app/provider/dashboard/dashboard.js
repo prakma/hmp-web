@@ -328,9 +328,15 @@ angular.module('providerApp.dashboard', ['ngRoute'])
             
         };
 
+        $scope.cancelAppt = function(apptObj) {
+            console.log('Cancel this appointmeny. But how?');
+        };
+
+        
+
     }])
-    .controller('PatientApptCtrl', ['$scope', '$state', '$stateParams', '$q', 'Consultation', 'fPatientQBank', 'Prescription',
-        function($scope, $state, $stateParams, $q, Consultation, fPatientQBank, Prescription) {
+    .controller('PatientApptCtrl', ['$scope', '$state', '$stateParams', '$q', 'Consultation', 'fPatientQBank', 'Prescription','CwfEvent',
+        function($scope, $state, $stateParams, $q, Consultation, fPatientQBank, Prescription, CwfEvent) {
             console.log('PatientApptCtrl controller called !');
             //$scope.appt = $stateParams.appt;
             console.log('cref in appt detail view', $stateParams.cref);
@@ -400,7 +406,23 @@ angular.module('providerApp.dashboard', ['ngRoute'])
                             console.log('error in preparing the file upload');
                         });
                 });
-            }
+            };
+            $scope.markMeetingAsComplete = function(apptObj) {
+                console.log('todo - implement markMeetingAsComplete');
+                var newCwfEvent = new CwfEvent();
+                newCwfEvent.cref = apptObj._id;
+                newCwfEvent.eventName = 'markMeetingAsComplete';
+                newCwfEvent.$save(function(result){
+                    console.log('consultation complete event saved', result);
+                    //apptObj.apptWF.apptStatus = 5;
+                    console.log('refreshing the dashboard after consultation complete');
+                    setTimeout(function(){
+                        refreshCwfDetails();
+                        
+                    },2000);
+                    
+                });
+            };
 
             console.log('PatientApptCtrl controller finished !');
 

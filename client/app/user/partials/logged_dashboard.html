@@ -1,0 +1,123 @@
+<div>
+	<div class="row">
+        <div class="col-xs-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Your Appointments <small>as of {{lastRefreshedTS}} <!-- <i class="fa fa-refresh"></i>  Refresh --></small></h3>
+                </div>
+                <div class="panel-body">
+                    <div ng-if="apptList.length>0">
+                        <div class="col-xs-12" ng-repeat="appt in apptList | filter: currApptFilterFn">
+                            <h4><!-- <span class="glyphicon glyphicon-minus" aria-hidden="true"> </span> -->&rsaquo; With <a href="#">{{appt.providerName}} </a></h4>
+                            <p><span class="text-muted">On {{appt.apptWF.confirmedTS | date:'MMM d, y h:mm:ss a'}} </span><br/>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label for="apptStatus">Appointment Status</label>
+                                        <p class="form-control-static"><a ui-sref="consult_wf.appt({ cref: appt._id })">{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</a></p>
+                                    </div>
+                                    <div class="form-group" ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">
+                                        <label for="apptStatus">Doctor <span class="text-primary" data-animation="am-flip-x" bs-tooltip title="{{appt.apptWF.reasonChain.slice(-1).pop()}}">suggested</span> a different time - </label>
+                                        <p class="form-control-static">{{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}</p>
+                                        
+                                        <button class="btn btn-info btn-xs" ng-click="confirmApptAtProposedTime(appt)">Confirm</button>
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label for="apptStatus">Payment Status</label>
+                                        <p class="form-control-static">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</p>
+                                    </div>
+                                    <div class="form-group" ng-show="(appt | cwfStateTransitionAllowed : 'cwfPaymentByUser' )">
+                                        <a class="btn btn-primary btn-xs" ui-sref="consult_wf.payment({ cref: appt._id })">Pay Now</a>
+                                    </div>
+                                </div>
+
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label for="apptStatus">Meeting Status</label>
+                                        <p class="form-control-static">{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</p>
+                                    </div>
+                                    <div class="form-group" ng-show="(appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' )">
+                                        <a type="button" class="btn btn-primary btn-xs" ng-click="gotoCRoom(appt)" ng-show="(appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' )">Goto Consultation Room</a>
+                                    </div>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <label for="apptStatus">Reference</label>
+                                        <p class="form-control-static"><a ui-sref="consult_wf.appt({ cref: appt._id })">{{appt._id}}</a></p>
+                                    </div>
+                                    
+                                </div>
+                            <!-- <span class="text-muted">Appointment Status - <strong>{{appt.apptWF.apptStatus | cwfFilter:'appt'}}</strong></span><small><span ng-show="(appt | cwfStateTransitionAllowed : 'apptConfirmByUser' )">Doctor proposed new time - {{appt.apptWF.proposedTS | date:'MMM d, y h:mm:ss a'}}<a type="button" class="btn btn-primary btn-xs" ng-click="confirmApptAtProposedTime(appt)" >Confirm</a></span></small><br/>
+                            <span class="text-muted">Payment Status - <strong><a ui-sref="consult_wf.payment({ cref: appt._id })">{{appt.paymentWF.paymentStatus | cwfFilter:'payment'}}</a></strong></span><br/>
+                            <span class="text-muted">Meeting Status - <strong>{{appt.meetingWF.meetingStatus | cwfFilter:'meeting'}}</strong></span><br/>
+
+                            <span class="text-muted">Reference : {{appt._id}} </span></p> -->
+                            
+                            <div class="btn-group" role="group" aria-label="...">
+                                <a type="button" class="btn btn-success" ui-sref="consult_wf.appt({ cref: appt._id })">See Details</a>
+                                <a type="button" class="btn btn-primary" ng-click="gotoCRoom(appt)" ng-show="(appt | cwfStateTransitionAllowed : 'cwfGoToMeetingRoomByUser' )">Goto Consultation Room</a>
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div ng-if="apptList.length==0">
+                        <p>To create appointment, first <a ui-sref="doc">find your doctor</a> and begin making appointment request.</p> 
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ng-if="unfinishedApptList.length>0">
+                        <h4>Appointments you started to create but did not complete</h4>
+                        <div ng-repeat="appt in unfinishedApptList">
+                            <span class="label label-default">{{$index+1}} .</span><span> <a ui-sref="consult_wf.appt({ cref: appt._id,from_state:'userLanding' })">Reference : {{appt._id}}</a></span>
+                            <p> With <strong>{{appt.providerName}}</strong> 
+                            <span class="text-muted">Started on {{appt.lastRefreshedTS | date:'MMM d, y h:mm:ss a'}} </span>
+                            <button type="button" class="close" aria-label="Close" ng-click="removeUnfinishedAppt(appt)"><span aria-hidden="true">&times;</span></button>
+                            <hr/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-5">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">My Doctors</h3>
+
+                    <span> <small><a ui-sref="doc({searchText:''})" >Search for a new Doctor </a> </small> </span>
+
+                    
+                </div>
+                <div class="panel-body">
+                    <div ng-repeat="provider in providerList">
+                        <div class="media">
+                          <div class="media-left media-middle">
+                            <a ui-sref="doc_profile({docId:{{provider._id}} })">
+                              <img src="/img/uindex_doc_headshot.jpg" class="media-object" alt="Generic placeholder thumbnail" style="width: 100px; height: 100px;">
+                            </a>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="media-heading"><a ui-sref="doc_profile({docId:{{provider._id}} })">{{provider.name}}</a></h4>
+                            <span class="text-muted">{{provider.primaryLocationStr}}</span><p/><p/>
+                            <a class="btn btn-success" ui-sref="doc_profile({docId:{{provider._id}} })" role="button">Consult &raquo;</a>
+                          </div>
+                        </div>
+                        <div><hr/></div>
+                    </div>
+                    <div ng-if="providerList.length==0">
+                        <p>You do not have any favorite doctor. <a ui-sref="doc">Search your doctor</a> and create appointment.</p> 
+                    </div>
+                    
+                </div>
+                <div class="panel-footer">
+                    <div ng-if="providerList.length > 5">
+                        <span> <small><a ui-sref="doc" >Search for a new Doctor </a> </small> </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
