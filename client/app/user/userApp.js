@@ -109,13 +109,13 @@ config(function($stateProvider, $urlRouterProvider){
 	
 
 	$interval(function refreshStatus(){
-		var currTime = fmoment();
-		var diffInSeconds = currTime.diff($scope.actionEventTime, 'seconds');
-		$scope.hourDiff = diffInSeconds/3600|0;
-		$scope.minDiff = ((diffInSeconds%3600)/60) | 0;
-		$scope.secondsDiff = (diffInSeconds%3600)%60;
-		//console.log('refresh status',$scope.hourDiff, $scope.minDiff, $scope.secondsDiff );
-		$scope.actionEventMomentText = $scope.hourDiff+'h: '+ $scope.minDiff+'m: '+ $scope.secondsDiff+' seconds ago';
+		// var currTime = fmoment();
+		// var diffInSeconds = currTime.diff($scope.actionEventTime, 'seconds');
+		// $scope.hourDiff = diffInSeconds/3600|0;
+		// $scope.minDiff = ((diffInSeconds%3600)/60) | 0;
+		// $scope.secondsDiff = (diffInSeconds%3600)%60;
+		// //console.log('refresh status',$scope.hourDiff, $scope.minDiff, $scope.secondsDiff );
+		// $scope.actionEventMomentText = $scope.hourDiff+'h: '+ $scope.minDiff+'m: '+ $scope.secondsDiff+' seconds ago';
 		
 	}, 5000);
 

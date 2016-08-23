@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/bower_components/html5-boilerplate/css/main.css">
     <!-- <link rel="stylesheet" href="app.css"> -->
     <script src="/bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
-    <title>Repeat Consultation Online</title>
+    <title>Consult Doctor Anywhere</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
@@ -53,7 +53,7 @@
                             
                         </ul>
                         <ul class="nav navbar-nav navbar-right" ng-if="authFlag">
-                            <li><a href="#/dashboard">{{userName}}'s Dashboard</a>
+                            <li><a ui-sref="userLanding.loggedIn">{{userName}}'s Dashboard</a>
                             </li>
                             <li><a ui-sref="consultation_list">Consultations</a>
                             </li>
@@ -75,7 +75,8 @@
 
         <div class="container-fluid">
             <hr/>
-            <p ng-if="authFlag && actionEventText"> <code>({{actionEventMomentText}}) {{actionEventText}}</code> </p>
+            <!-- <p ng-if="authFlag && actionEventText"> <code>({{actionEventMomentText}}) {{actionEventText}}</code> </p> -->
+
         </div>
       
 

@@ -778,7 +778,7 @@ def applyPaymentCoupon(args):
 			cwf.paymentWF.paymentStatusChain = [cwf.paymentWF.paymentStatus]
 
 	cwf.put()
-	return { 'result' : 'Success', 'message' : 'Coupon applied', 'cref' : cref, 'expected_payment' : cwf.paymentWF.ttlExpAmt }
+	return { 'result' : 'Success', 'message' : 'Coupon applied', 'cref' : cref, 'expected_payment' : adjustedExpectedAmount }
 
 
 def markMeetingAsComplete(args):

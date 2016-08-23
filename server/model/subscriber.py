@@ -120,12 +120,13 @@ class ApptWF(ndb.Model):
 		self.apptStatusChain.append(5)
 		self.reasonChain.append('P: ' + reason)
 
-	def cancelByUser(self, reason):
+	def cancelByUser(self, reason, dt_dummy):
 		self.apptStatus = 6
 		self.apptStatusChain.append(6)
-		self.reasonChain.append('P: ' + reason)
+		if(reason != None):
+			self.reasonChain.append('U: ' + reason)
 
-	def cancelByProvider(self, reason):
+	def cancelByProvider(self, reason, dt_dummy):
 		self.apptStatus = 7
 		self.apptStatusChain.append(7)
 		self.reasonChain.append('P: ' + reason)
