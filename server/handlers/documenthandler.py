@@ -75,7 +75,7 @@ def prescription_uploaded(cref):
 
 	consultAPI.handlePrescriptionOnUpload(args)
 
-	redirect('/provider/provider_index.html#/provider/dashboard/'+cref+'/appt_view.html')
+	redirect('/provider/provider_index.html#/'+cref+'/appt_view.html')
 
 @docHandlerApp.route('/s/consult/cwf/<cref>/prescription/<blobKey>', method='GET')
 def prescription_download(cref, blobKey):
